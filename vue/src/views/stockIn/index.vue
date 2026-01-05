@@ -102,6 +102,13 @@
             @click="handleStockIn(scope.row)"
             v-hasPermi="['wms:WmsStockInEntry:edit']"
           >入库</el-button>
+          <el-button style="padding-left: 6px;padding-right: 6px;"
+                     plain
+                     size="mini"
+                     type="text"
+                     icon="el-icon-view"
+                     @click="handleStockDetail(scope.row)"
+          >入库单详情</el-button>
           <el-button
             v-if="scope.row.status ===1 "
             size="mini"
@@ -125,58 +132,41 @@
     <!-- 添加或修改入库单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px" inline>
-<!--        <el-descriptions title="表单信息">-->
-<!--          <el-descriptions-item label="ID">{{form.id}}</el-descriptions-item>-->
-<!--          <el-descriptions-item label="入库单号">{{form.stockInNum}}</el-descriptions-item>-->
-<!--          <el-descriptions-item label="来源单号">{{form.sourceNo}}</el-descriptions-item>-->
-<!--          <el-descriptions-item label="类型">-->
-<!--            <el-tag size="small" v-if="form.stockInType ===1 ">采购入库</el-tag>-->
-<!--            <el-tag size="small" v-if="form.stockInType ===2 ">退货入库</el-tag>-->
-<!--          </el-descriptions-item>-->
+        <el-descriptions title="表单信息">
+          <el-descriptions-item label="ID">{{form.id}}</el-descriptions-item>
+          <el-descriptions-item label="入库单号">{{form.stockInNum}}</el-descriptions-item>
+          <el-descriptions-item label="来源单号">{{form.sourceNo}}</el-descriptions-item>
+          <el-descriptions-item label="类型">
+            <el-tag size="small" v-if="form.stockInType ===1 ">采购入库</el-tag>
+            <el-tag size="small" v-if="form.stockInType ===2 ">退货入库</el-tag>
+          </el-descriptions-item>
 
-<!--          <el-descriptions-item label="备注">-->
-<!--            {{form.remark}}-->
-<!--          </el-descriptions-item>-->
-<!--          <el-descriptions-item label="状态">-->
-<!--            <el-tag size="small" v-if="form.status ===0 ">待入库</el-tag>-->
-<!--            <el-tag size="small" v-if="form.status ===1 ">部分入库</el-tag>-->
-<!--            <el-tag size="small" v-if="form.status ===2 ">完全入库</el-tag>-->
-<!--          </el-descriptions-item>-->
+          <el-descriptions-item label="备注">
+            {{form.remark}}
+          </el-descriptions-item>
+          <el-descriptions-item label="状态">
+            <el-tag size="small" v-if="form.status ===0 ">待入库</el-tag>
+            <el-tag size="small" v-if="form.status ===1 ">部分入库</el-tag>
+            <el-tag size="small" v-if="form.status ===2 ">完全入库</el-tag>
+          </el-descriptions-item>
 
-<!--          <el-descriptions-item label="创建时间">-->
-<!--            {{ parseTime(form.createTime) }}-->
-<!--          </el-descriptions-item>-->
-<!--          <el-descriptions-item label="上次入库时间">-->
-<!--           {{ parseTime(form.stockInTime) }}-->
-<!--          </el-descriptions-item>-->
-<!--        </el-descriptions>-->
-<!--        <el-descriptions title="商品统计">-->
-<!--          <el-descriptions-item label="商品数"> {{ form.sourceGoodsUnit }}</el-descriptions-item>-->
-<!--          <el-descriptions-item label="商品规格数"> {{ form.sourceSpecUnit }}</el-descriptions-item>-->
-<!--          <el-descriptions-item label="总件数"> {{ form.sourceSpecUnitTotal }}</el-descriptions-item>-->
-<!--        </el-descriptions>-->
-<!--        <el-descriptions title="入库操作"></el-descriptions>-->
-        <el-form-item label="入库仓库" prop="warehouseId">
-          <el-select v-model="form.warehouseId" filterable r placeholder="入库类型" >
-            <el-option v-for="item in warehouseList" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="入库人" prop="stockInOperator">
-          <el-input v-model="form.stockInOperator" placeholder="请输入操作入库人" />
-        </el-form-item>
-<!--        <el-form-item label="入库时间" prop="stockInTime">-->
-<!--          <el-date-picker clearable-->
-<!--                          v-model="form.stockInTime"-->
-<!--                          type="datetime"-->
-<!--                          value-format="yyyy-MM-dd HH:mm:ss"-->
-<!--                          placeholder="请选择入库时间">-->
-<!--          </el-date-picker>-->
-<!--        </el-form-item>-->
+          <el-descriptions-item label="创建时间">
+            {{ parseTime(form.createTime) }}
+          </el-descriptions-item>
+          <el-descriptions-item label="最后入库时间">
+           {{ parseTime(form.stockInTime) }}
+          </el-descriptions-item>
+        </el-descriptions>
+        <el-descriptions title="商品统计">
+          <el-descriptions-item label="商品数"> {{ form.sourceGoodsUnit }}</el-descriptions-item>
+          <el-descriptions-item label="商品规格数"> {{ form.sourceSpecUnit }}</el-descriptions-item>
+          <el-descriptions-item label="总件数"> {{ form.sourceSpecUnitTotal }}</el-descriptions-item>
+        </el-descriptions>
+
 
         <el-divider content-position="center">入库明细</el-divider>
 
-        <el-table style="margin-bottom: 10px;" :data="itemList" :row-class-name="rowWmsStockInEntryItemIndex" ref="wmsStockInEntryItem">
+        <el-table style="margin-bottom: 10px;" :data="form.itemList" :row-class-name="rowWmsStockInEntryItemIndex" ref="wmsStockInEntryItem">
 <!--          <el-table-column type="selection" width="50" align="center" />-->
           <el-table-column label="序号" align="center" prop="index" width="50"/>
           <el-table-column label="商品图片" width="80">
@@ -190,26 +180,7 @@
           <el-table-column label="sku编码" prop="skuCode"></el-table-column>
           <el-table-column label="数量" prop="quantity"></el-table-column>
           <el-table-column label="已入库" prop="inQuantity"></el-table-column>
-          <el-table-column label="入库数量" prop="intoQuantity" width="110">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.intoQuantity" placeholder="入库数量" />
-            </template>
-          </el-table-column>
-          <el-table-column label="入库仓位编码" prop="positionId" width="150">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.positionId" filterable remote reserve-keyword placeholder="搜索仓位编码"
-                         :remote-method="searchLocation" :loading="locationLoading" @change="locationChanage(scope.row)">
-                <el-option v-for="item in locationList" :key="item.id"
-                           :label="item.name"
-                           :value="item.id">
-                  <span style="float: left">{{ item.name }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.number }}</span>
-                </el-option>
-              </el-select>
-<!--              <el-input v-model="scope.row.locationNum" placeholder="请输入入库仓位编码" />-->
-            </template>
-          </el-table-column>
-<!--          <el-table-column label="总入库数量" prop="totalQuantity"></el-table-column>-->
+
         </el-table>
 
 <!--        <el-form-item label="操作入库人id" prop="stockInOperatorId">-->
@@ -218,8 +189,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <el-button @click="cancel">关闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -376,57 +346,22 @@ export default {
     },
     /** 入库按钮操作 */
     handleStockIn(row) {
-      this.$router.push({path:"/stock_in/in",query:{id:row.id}})
-      // this.reset();
-      // const id = row.id || this.ids
-      //
-      // listWarehouse({status:1}).then(resp=>{
-      //   this.warehouseList = resp.rows;
-      // })
-      // getWmsStockInEntry(id).then(response => {
-      //   // this.form = response.data;
-      //   this.form.stockInId = response.data.id
-      //   this.itemList = response.data.itemList;
-      //   this.itemList.forEach(x=>{
-      //     x.intoQuantity = x.quantity - x.inQuantity
-      //     x.positionId = null
-      //     x.positionNum = null
-      //   })
-      //   this.open = true;
-      //   this.title = "入库操作";
-      // });
+      this.$router.push({path: "/stock_in/in", query: {id: row.id}})
     },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          this.form.itemList = this.itemList;
-          // 验证数据
-          let isValid = false
-          for(let i = 0;i<this.form.itemList.length;i++){
-            const x = this.form.itemList[i]
-            if(x.intoQuantity && !x.positionId){
-                isValid = false;
-                break
-            }else if(x.positionId && !x.intoQuantity){
-              isValid = false;
-              break
-            }else isValid = true
-          }
+    handleStockDetail(row) {
+      this.reset();
+      const id = row.id || this.ids
 
-          if(isValid){
-            console.log('=======验证通过了========',this.form)
-            stockIn(this.form).then(response => {
-              this.$modal.msgSuccess("入库操作成功");
-              this.open = false;
-              this.getList();
-            });
-          }else{
-            this.$modal.msgError("请填写入库数量和仓位编码");
-          }
-        }
+      listWarehouse({status:1}).then(resp=>{
+        this.warehouseList = resp.rows;
+      })
+      getWmsStockInEntry(id).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "入库操作";
       });
     },
+
 	/** 入库单明细序号 */
     rowWmsStockInEntryItemIndex({ row, rowIndex }) {
       row.index = rowIndex + 1;

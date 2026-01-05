@@ -208,6 +208,7 @@ public class ErpStockInServiceImpl extends ServiceImpl<ErpStockInMapper, ErpStoc
         inUpdate.setId(erpStockIn.getId());
         inUpdate.setUpdateBy(userName);
         inUpdate.setUpdateTime(new Date());
+        inUpdate.setStockInTime(new Date());
         inUpdate.setStatus(2);
         mapper.updateById(inUpdate);
         return ResultVo.success();
