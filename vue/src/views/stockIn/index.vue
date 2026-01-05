@@ -376,24 +376,25 @@ export default {
     },
     /** 入库按钮操作 */
     handleStockIn(row) {
-      this.reset();
-      const id = row.id || this.ids
-
-      listWarehouse({status:1}).then(resp=>{
-        this.warehouseList = resp.rows;
-      })
-      getWmsStockInEntry(id).then(response => {
-        // this.form = response.data;
-        this.form.stockInId = response.data.id
-        this.itemList = response.data.itemList;
-        this.itemList.forEach(x=>{
-          x.intoQuantity = x.quantity - x.inQuantity
-          x.positionId = null
-          x.positionNum = null
-        })
-        this.open = true;
-        this.title = "入库操作";
-      });
+      this.$router.push({path:"/stock_in/in",query:{id:row.id}})
+      // this.reset();
+      // const id = row.id || this.ids
+      //
+      // listWarehouse({status:1}).then(resp=>{
+      //   this.warehouseList = resp.rows;
+      // })
+      // getWmsStockInEntry(id).then(response => {
+      //   // this.form = response.data;
+      //   this.form.stockInId = response.data.id
+      //   this.itemList = response.data.itemList;
+      //   this.itemList.forEach(x=>{
+      //     x.intoQuantity = x.quantity - x.inQuantity
+      //     x.positionId = null
+      //     x.positionNum = null
+      //   })
+      //   this.open = true;
+      //   this.title = "入库操作";
+      // });
     },
     /** 提交按钮 */
     submitForm() {

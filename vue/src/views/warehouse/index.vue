@@ -334,7 +334,7 @@ export default {
     },
     /**  */
     handlePostion(row) {
-      this.$router.push({path:"/wms/position",query:{warehouseId:row.id}})
+      this.$router.push({path:"/warehouse/position",query:{warehouseId:row.id}})
     }
   }
 };

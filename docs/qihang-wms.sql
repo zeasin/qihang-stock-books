@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 05/01/2026 15:21:17
+ Date: 05/01/2026 16:31:57
 */
 
 SET NAMES utf8mb4;
@@ -357,7 +357,7 @@ CREATE TABLE `erp_stock_out_item_position`  (
   `out_time` datetime NULL DEFAULT NULL COMMENT '出库时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `goods_stock_info_item_id_index`(`goods_inventory_detail_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库仓位详情' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库仓位详情' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of erp_stock_out_item_position
@@ -383,11 +383,12 @@ CREATE TABLE `erp_warehouse`  (
   `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '仓库表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '仓库表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of erp_warehouse
 -- ----------------------------
+INSERT INTO `erp_warehouse` VALUES (6, 'aac', 'aa', '河北省', '邯郸市', '复兴区', 'aa', NULL, NULL, 1, 'admin', '2026-01-05 16:20:34', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for erp_warehouse_position
@@ -410,11 +411,12 @@ CREATE TABLE `erp_warehouse_position`  (
   `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '仓库仓位表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '仓库仓位表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of erp_warehouse_position
 -- ----------------------------
+INSERT INTO `erp_warehouse_position` VALUES (25, 6, 'aac', 'aa', 0, 1, 0, 0, NULL, NULL, 0, 'admin', '2026-01-05 16:20:34', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for o_after_sale
@@ -2755,7 +2757,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2137 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2138 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -2791,13 +2793,14 @@ INSERT INTO `sys_menu` VALUES (2099, '私域订单管理', 1, 10, 'offline_order
 INSERT INTO `sys_menu` VALUES (2100, '私域售后管理', 2, 3, 'offline_aftersale', 'refund/private/index', NULL, 1, 0, 'C', '0', '1', '', 'code', 'admin', '2024-07-27 17:33:33', 'admin', '2025-05-25 14:59:03', '');
 INSERT INTO `sys_menu` VALUES (2103, '手动创建订单', 1, 49, 'order_create', 'order/create', NULL, 1, 0, 'C', '1', '0', '', 'date', 'admin', '2024-07-27 20:30:07', 'admin', '2026-01-03 02:48:11', '');
 INSERT INTO `sys_menu` VALUES (2106, '入库管理', 2, 10, 'stock_in_list', 'stockIn/index.vue', NULL, 1, 0, 'C', '0', '0', '', 'stock-in', 'admin', '2024-08-25 15:56:04', 'admin', '2026-01-05 07:16:07', '');
-INSERT INTO `sys_menu` VALUES (2114, '库位管理', 7, 90, 'warehouse', 'warehouse/index.vue', NULL, 1, 0, 'C', '0', '0', '', 'cascader', 'admin', '2024-09-21 20:07:26', 'admin', '2026-01-04 11:10:53', '');
+INSERT INTO `sys_menu` VALUES (2114, '仓库管理', 7, 90, 'warehouse', 'warehouse/index.vue', NULL, 1, 0, 'C', '0', '0', '', 'warehouse', 'admin', '2024-09-21 20:07:26', 'admin', '2026-01-05 08:23:58', '');
 INSERT INTO `sys_menu` VALUES (2115, '商品库存', 4, 10, 'goods_inventory', 'goods/goodsInventory/index', NULL, 1, 0, 'C', '0', '0', '', 'chart', 'admin', '2024-09-21 20:43:00', 'admin', '2026-01-04 11:11:52', '');
 INSERT INTO `sys_menu` VALUES (2116, '出库管理', 6, 20, 'out_list', 'stockOut/index', NULL, 1, 0, 'C', '0', '0', '', 'stock_out1', 'admin', '2024-09-21 20:44:46', 'admin', '2026-01-05 07:18:55', '');
-INSERT INTO `sys_menu` VALUES (2117, '仓位管理', 7, 91, 'position', 'warehouse/position', NULL, 1, 0, 'C', '1', '0', '', '404', 'admin', '2024-09-22 11:52:18', 'admin', '2026-01-04 11:10:59', '');
+INSERT INTO `sys_menu` VALUES (2117, '仓位货架', 7, 91, 'position', 'warehouse/position', NULL, 1, 0, 'C', '0', '0', '', 'shinshop', 'admin', '2024-09-22 11:52:18', 'admin', '2026-01-05 08:25:26', '');
 INSERT INTO `sys_menu` VALUES (2118, '新建入库单', 2, 11, 'create', 'stockIn/create.vue', NULL, 1, 0, 'C', '1', '0', '', '404', 'admin', '2024-09-22 14:49:40', 'admin', '2026-01-05 06:59:51', '');
 INSERT INTO `sys_menu` VALUES (2135, '退货入库', 2, 20, 's', NULL, NULL, 1, 0, 'C', '0', '0', '', 'return_stock_in', 'admin', '2025-12-30 02:58:18', 'admin', '2026-01-05 07:20:30', '');
 INSERT INTO `sys_menu` VALUES (2136, '采购入库', 2, 30, 'p', NULL, NULL, 1, 0, 'C', '0', '0', NULL, 'checkbox', 'admin', '2025-12-30 02:58:43', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2137, '入库操作', 2, 12, 'in', 'stockIn/in', NULL, 1, 0, 'C', '1', '0', '', 'stockin', 'admin', '2026-01-05 08:27:23', 'admin', '2026-01-05 08:27:32', '');
 
 -- ----------------------------
 -- Table structure for sys_oss
@@ -2970,7 +2973,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-05 13:46:04', 'admin', '2023-08-07 19:31:37', '', '2026-01-05 05:46:03', '管理员');
+INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-05 16:18:45', 'admin', '2023-08-07 19:31:37', '', '2026-01-05 08:18:45', '管理员');
 INSERT INTO `sys_user` VALUES (2, NULL, 'openapi', 'openApi接口专用', '00', '2806456181@qq.com', '15818590000', '0', '', '$2a$10$fHkhoqbMiyracAsTzl38H.55bu.M.of1FXk2EK7RQBjfic3tLU0Ue', '0', '0', '127.0.0.1', '2024-06-24 10:23:35', 'admin', '2024-03-17 14:55:22', 'admin', '2024-06-24 10:23:35', NULL);
 INSERT INTO `sys_user` VALUES (101, 101, '15818590119', 'aaa123', '00', '', '', '0', '', '$2a$10$pXcT6cHaObMeKuYd9vZb5uEb8PyUdF2AcqqRN1cBqiA9rV4qYQW7G', '0', '2', '', NULL, 'admin', '2024-08-15 13:45:25', '', NULL, NULL);
 INSERT INTO `sys_user` VALUES (102, 101, '15818590119', '老齐', '00', '', '', '0', '', '$2a$10$ysk.zgJ8wh25c7vOjKyZ8uarM2hkG0S51j8GYdJSo2kZmc3f8HdKe', '0', '0', '', NULL, 'admin', '2024-08-15 13:49:59', 'admin', '2025-02-10 16:26:20', NULL);
@@ -3124,7 +3127,7 @@ CREATE TABLE `wms_stock_out`  (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `update_by` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1794205460481933314 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库单' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库单' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of wms_stock_out
@@ -3154,7 +3157,7 @@ CREATE TABLE `wms_stock_out_item`  (
   `update_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `specIndex`(`spec_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1794205460544847874 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库单明细' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库单明细' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of wms_stock_out_item
@@ -3177,7 +3180,7 @@ CREATE TABLE `wms_stock_out_item_position`  (
   `out_time` datetime NULL DEFAULT NULL COMMENT '出库时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `goods_stock_info_item_id_index`(`goods_inventory_detail_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1786228283631636482 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库仓位详情' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库仓位详情' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of wms_stock_out_item_position
