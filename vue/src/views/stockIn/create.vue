@@ -48,9 +48,9 @@
               <!-- <el-input v-model="scope.row.goodsTitle" placeholder="请输入商品标题" /> -->
               <el-select v-model="scope.row.skuId" filterable remote reserve-keyword placeholder="搜索商品SKU" style="width: 330px;"
                 :remote-method="searchSku" :loading="skuListLoading" @change="skuChanage(scope.row)">
-                <el-option v-for="item in skuList" :key="item.id"
+                <el-option v-for="item in skuList" :key="item.skuId"
                   :label="item.goodsName + ' ' + item.skuName +' - ' + item.skuCode"
-                  :value="item.id">
+                  :value="item.skuId">
                 </el-option>
               </el-select>
             </template>
@@ -159,12 +159,11 @@ export default {
     },
     skuChanage(row) {
       console.log('=====0000====',row)
-      const spec = this.skuList.find(x => x.id === row.skuId);
+      const spec = this.skuList.find(x => x.skuId === row.skuId);
       if (spec) {
         console.log('=======11111==', spec)
-        row.skuId = spec.id
+        row.skuId = spec.skuId
         row.goodsId = spec.goodsId
-        // row.sku = spec.colorValue + ' ' + spec.sizeValue + ' ' + spec.styleValue
         row.skuName = spec.skuName
         row.goodsImg = spec.colorImage
         row.skuCode = spec.skuCode
@@ -228,7 +227,7 @@ export default {
               this.$modal.msgSuccess("订单创建成功");
               // 调用全局挂载的方法,关闭当前标签页
               this.$store.dispatch("tagsView/delView", this.$route);
-              this.$router.push('/wms/stock_in');
+              this.$router.push('/stock_in/stock_in_list');
             });
 
         }else{

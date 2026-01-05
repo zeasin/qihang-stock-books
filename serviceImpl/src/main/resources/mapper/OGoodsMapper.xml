@@ -77,7 +77,7 @@
     </sql>
 
     <select id="searchGoodsSpec" parameterType="String" resultMap="GoodsSpecListVoResult">
-        SELECT g.`name`,spec.id as sku_id,spec.outer_erp_goods_id,spec.outer_erp_sku_id,spec.`sku_name`,
+        SELECT g.`name`,spec.goods_id,spec.id as sku_id,spec.outer_erp_goods_id,spec.outer_erp_sku_id,spec.`sku_name`,
                spec.sku_code,spec.color_value,spec.color_image,spec.size_value,spec.style_value,
                spec.retail_price,spec.pur_price,spec.goods_name
         FROM `o_goods_sku` as spec

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class GoodsSpecListVo {
 
     private Long skuId;
-//    private Long goodsId;
+    private Long goodsId;
 
     /** 商品名称 */
     private String goodsName;

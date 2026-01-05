@@ -346,6 +346,7 @@ export default {
       if (spec) {
         console.log('=======11111==', spec)
         row.skuId = spec.skuId
+        row.goodsId = spec.goodsId
         row.salePrice = spec.retailPrice
         // row.sku = spec.colorValue + ' ' + spec.sizeValue + ' ' + spec.styleValue
         row.skuName = spec.skuName

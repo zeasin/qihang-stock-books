@@ -93,7 +93,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
+          <el-button style="padding-left: 6px;padding-right: 6px;"
+                     plain
             v-if="scope.row.status === 0 || scope.row.status === 1"
             size="mini"
             type="primary"
@@ -292,7 +293,7 @@ export default {
   },
   methods: {
     handleAdd(){
-      this.$router.push({path:"/wms/stock_in/create"})
+      this.$router.push({path:"/stock_in/create"})
     },
     searchLocation(query){
       if(!this.form.warehouseId){

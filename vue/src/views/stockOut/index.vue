@@ -132,7 +132,7 @@
       <el-table-column label="总件数" align="center" prop="specUnitTotal" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
+          <el-button style="padding-left: 6px;padding-right: 6px;" plain
             size="mini"
             type="primary"
             icon="el-icon-d-arrow-right"
