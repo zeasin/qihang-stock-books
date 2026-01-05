@@ -17,10 +17,18 @@ export function pullGoodsItem(data) {
   })
 }
 
+export function linkErpGoodsSkuId(data) {
+  return request({
+    url: '/shop/goods/sku/linkErp',
+    method: 'post',
+    data: data
+  })
+}
+
 // 查询店铺商品详细
 export function getGoods(id) {
   return request({
-    url: '/shop/goods/' + id,
+    url: '/shop/goods/sku/' + id,
     method: 'get'
   })
 }

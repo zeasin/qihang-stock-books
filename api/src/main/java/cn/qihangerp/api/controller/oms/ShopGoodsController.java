@@ -32,6 +32,12 @@ public class ShopGoodsController extends BaseController {
     {
         return AjaxResult.success(skuService.getById(id));
     }
+
+    /**
+     * 关联erp
+     * @param bo
+     * @return
+     */
     @PostMapping(value = "/sku/linkErp")
     public AjaxResult linkErp(@RequestBody LinkErpGoodsSkuBo bo)
     {

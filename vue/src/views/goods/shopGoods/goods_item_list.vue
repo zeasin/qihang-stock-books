@@ -142,7 +142,7 @@
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import {getToken} from "@/utils/auth";
-import {listGoodsSku,getGoodsSku,linkErpGoodsSkuId,pullGoodsItem} from "@/api/shop/goods";
+import {listGoodsSku,linkErpGoodsSkuId,pullGoodsItem} from "@/api/shop/goods";
 import {listShop} from "@/api/shop/shop";
 import {MessageBox} from "element-ui";
 import {isRelogin} from "@/utils/request";
@@ -254,12 +254,8 @@ export default {
     },
     handleLink(row) {
       this.reset();
-      const id = row.id || this.ids
-      getGoodsSku(id).then(response => {
-        console.log('=====00000000============',response)
-        this.form = response.data;
-        this.open = true;
-      });
+      this.form = row;
+      this.open = true;
     },
     /** 提交按钮 */
     submitForm() {

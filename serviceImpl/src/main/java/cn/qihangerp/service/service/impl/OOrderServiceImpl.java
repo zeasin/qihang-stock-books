@@ -353,8 +353,8 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
                     .eq(OmsShopGoodsSku::getSkuId, orderItem.getSkuId())
                     .eq(OmsShopGoodsSku::getShopId, orderItem.getShopId()));
             if(!omsShopGoodsSkus.isEmpty()){
-                orderItem.setGoodsId(0L);
-                orderItem.setGoodsSkuId(omsShopGoodsSkus.get(0).getId());
+                orderItem.setGoodsId(omsShopGoodsSkus.get(0).getErpGoodsId());
+                orderItem.setGoodsSkuId(omsShopGoodsSkus.get(0).getErpGoodsSkuId());
             }else{
                 orderItem.setGoodsId(0L);
                 orderItem.setGoodsSkuId(0L);

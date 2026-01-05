@@ -176,6 +176,7 @@
         <el-table :data="wmsStockOutEntryItemList" :row-class-name="rowWmsStockOutEntryItemIndex" ref="wmsStockOutEntryItem">
 <!--          <el-table-column type="selection" width="50" align="center" />-->
           <el-table-column label="序号" align="center" prop="index" width="50"/>
+          <el-table-column label="SkuId" align="center" prop="goodsSkuId" width="80"/>
           <el-table-column label="图片" prop="goodsImg" width="50">
             <template slot-scope="scope">
               <el-image style="width: 40px; height: 40px" :src="scope.row.goodsImg"></el-image>
