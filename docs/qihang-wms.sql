@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 04/01/2026 22:27:07
+ Date: 05/01/2026 14:22:52
 */
 
 SET NAMES utf8mb4;
@@ -314,9 +314,13 @@ CREATE TABLE `erp_stock_out_item`  (
   `source_order_num` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '来源订单号',
   `source_sub_order_num` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '来源子订单号',
   `goods_id` bigint NOT NULL COMMENT '商品id',
-  `spec_id` bigint NOT NULL COMMENT '商品规格id',
-  `spec_num` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '规格编码',
-  `original_quantity` int NOT NULL COMMENT '总数量',
+  `goods_title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品标题',
+  `goods_img` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品图片',
+  `goods_num` varchar(35) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品编码',
+  `goods_sku_id` bigint NOT NULL DEFAULT 0 COMMENT '商品规格id',
+  `sku_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '规格编码',
+  `sku_name` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品规格',
+  `quantity` int NOT NULL COMMENT '总数量',
   `out_quantity` int NOT NULL DEFAULT 0 COMMENT '已出库数量',
   `complete_time` datetime NULL DEFAULT NULL COMMENT '完成出库时间',
   `picked_time` datetime NULL DEFAULT NULL COMMENT '完成拣货时间',
@@ -324,13 +328,13 @@ CREATE TABLE `erp_stock_out_item`  (
   `create_time` datetime NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `specIndex`(`spec_id` ASC) USING BTREE
+  INDEX `specIndex`(`goods_sku_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库单明细' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of erp_stock_out_item
 -- ----------------------------
-INSERT INTO `erp_stock_out_item` VALUES (1, 1, 1, 2, 2, '260103-064550356563156', '260103-064550356563156-1742164849116', 0, 12, 'LEDDX00102', 1, 0, NULL, NULL, 0, '2026-01-04 18:01:12', NULL);
+INSERT INTO `erp_stock_out_item` VALUES (1, 1, 1, 2, 2, '260103-064550356563156', '260103-064550356563156-1742164849116', 0, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 'LEDDX001', 12, 'LEDDX00102', '18W白光-175mm', 1, 0, NULL, NULL, 0, '2026-01-04 18:01:12', NULL);
 
 -- ----------------------------
 -- Table structure for erp_stock_out_item_position
@@ -933,89 +937,6 @@ CREATE TABLE `o_order_item`  (
 -- ----------------------------
 INSERT INTO `o_order_item` VALUES (1, 1011, 300, 1, '260103-143340377723488', '260103-143340377723488-1742164849117', '1742164849117', 0, 13, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 'LEDDX001', '24W白光-215mm', 'LEDDX00103', 39.32, 39.32, 0, 39.32, 1, NULL, 0, 1, 1, 0, 0, 0, '2026-01-03 16:08:13', NULL, '2026-01-03 16:37:49', NULL, NULL, NULL);
 INSERT INTO `o_order_item` VALUES (2, 1011, 300, 2, '260103-064550356563156', '260103-064550356563156-1742164849116', '1742164849116', 0, 12, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 'LEDDX001', '18W白光-175mm', 'LEDDX00102', 33.93, 33.93, 0, 33.93, 1, NULL, 0, 1, 2, 0, 0, 2, '2026-01-03 16:08:13', NULL, '2026-01-04 18:01:12', '出库备货', NULL, NULL);
-
--- ----------------------------
--- Table structure for o_order_ship_list
--- ----------------------------
-DROP TABLE IF EXISTS `o_order_ship_list`;
-CREATE TABLE `o_order_ship_list`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `shop_id` bigint NOT NULL COMMENT '店铺id',
-  `shop_type` int NOT NULL COMMENT '店铺类型',
-  `shipper` bigint NOT NULL COMMENT '发货方 0 仓库发货 1 供应商发货',
-  `ship_supplier_id` bigint NOT NULL DEFAULT 0 COMMENT '发货供应商ID（0自己发货）',
-  `ship_supplier` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发货供应商',
-  `order_id` bigint NULL DEFAULT NULL COMMENT 'erp订单id',
-  `order_num` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单编号',
-  `receiver_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '收件人姓名',
-  `receiver_mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '收件人手机号',
-  `address` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '收件人地址',
-  `province` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '省',
-  `city` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '市',
-  `town` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '区',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `buyer_memo` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '买家留言信息',
-  `seller_memo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '卖家留言信息',
-  `ship_logistics_company` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '物流公司',
-  `ship_logistics_company_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '物流公司code',
-  `ship_logistics_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '物流单号',
-  `ship_status` int NOT NULL COMMENT '发货状态1：待发货，2：已发货，3已推送',
-  `status` int NOT NULL COMMENT '状态0待备货1备货中2备货完成3已发货',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `create_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '发货-备货表（取号发货加入备货清单、分配供应商发货加入备货清单）' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of o_order_ship_list
--- ----------------------------
-INSERT INTO `o_order_ship_list` VALUES (3, 1007, 400, 0, 0, '仓库发货', 74, '6921377343921159820', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '极兔速递', 'JTSD', 'AAAAA', 2, 2, '2025-10-06 20:29:42', '手动发货', '2025-10-07 13:52:45', '备货完成');
-INSERT INTO `o_order_ship_list` VALUES (4, 1011, 300, 1, 34, 'ASAA', 76, '251002-085338365560640', '彭**', '***********', '江西省***********************', '江西省', '南昌市', '西湖区', NULL, '', '', '极兔速递', 'JTSD', 'aaaaa', 2, 3, '2025-10-07 14:43:05', '分配供应商发货', '2025-10-07 16:02:43', '供应商手动发货');
-INSERT INTO `o_order_ship_list` VALUES (5, 1011, 300, 0, 0, '仓库发货', 75, '251002-171237742200640', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', 'AA', 'AA', 'AAAAA', 2, 3, '2025-10-09 12:53:46', '手动发货', '2025-10-09 14:52:09', '生成出库单');
-
--- ----------------------------
--- Table structure for o_order_ship_list_item
--- ----------------------------
-DROP TABLE IF EXISTS `o_order_ship_list_item`;
-CREATE TABLE `o_order_ship_list_item`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `list_id` bigint NOT NULL COMMENT '外键id',
-  `shop_id` bigint NOT NULL COMMENT '店铺id',
-  `shop_type` int NOT NULL COMMENT '店铺类型',
-  `shipper` bigint NOT NULL DEFAULT 0 COMMENT '发货方 0 仓库发货 1 供应商发货',
-  `ship_supplier_id` bigint NOT NULL DEFAULT 0 COMMENT '发货供应商ID（0自己发货）',
-  `ship_supplier` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发货供应商',
-  `order_id` bigint NULL DEFAULT NULL COMMENT 'erp订单id',
-  `order_item_id` bigint NULL DEFAULT NULL COMMENT 'erp订单itemid',
-  `order_num` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单编号',
-  `original_sku_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '原始订单skuid',
-  `goods_id` bigint NULL DEFAULT 0 COMMENT 'erp系统商品id',
-  `sku_id` bigint NULL DEFAULT 0 COMMENT 'erp系统商品规格id',
-  `goods_title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品标题',
-  `goods_img` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品图片',
-  `goods_num` varchar(35) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品编码',
-  `sku_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品规格',
-  `sku_num` varchar(35) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品规格编码',
-  `quantity` int NOT NULL COMMENT '商品数量',
-  `status` int NOT NULL COMMENT '状态0待备货1备货中2备货完成3已发货',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `create_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '发货-备货表（打单加入备货清单）' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of o_order_ship_list_item
--- ----------------------------
-INSERT INTO `o_order_ship_list_item` VALUES (1, 3, 1007, 400, 0, 0, '仓库发货', 74, 54, '6921377343921159820', '3415147054562818', 0, 0, '通用气质针织春夏收腰欧美法式潮流短款外套', 'https://p3-aio.ecombdimg.com/obj/ecom-shop-material/ALSUvYM_m_6b2c63f75ace689f2e1b03224ce5fd7e_sx_27680_www600-600', '0', '[{\"name\":\"颜色分类\",\"value\":\"乳白色22234\"},{\"name\":\"尺码大小\",\"value\":\"XL\"}]', '', 1, 2, '2025-10-06 20:29:59', '手动发货', '2025-10-07 12:25:15', '备货完成');
-INSERT INTO `o_order_ship_list_item` VALUES (2, 3, 1007, 400, 0, 0, '仓库发货', 74, 55, '6921377343921159820', '3415147054562562', 0, 0, '通用气质针织春夏收腰欧美法式潮流短款外套', 'https://p3-aio.ecombdimg.com/obj/ecom-shop-material/ALSUvYM_m_6b2c63f75ace689f2e1b03224ce5fd7e_sx_27680_www600-600', '0', '[{\"name\":\"颜色分类\",\"value\":\"乳白色22234\"},{\"name\":\"尺码大小\",\"value\":\"L\"}]', '', 1, 2, '2025-10-06 20:30:12', '手动发货', '2025-10-07 12:25:15', '备货完成');
-INSERT INTO `o_order_ship_list_item` VALUES (3, 3, 1007, 400, 0, 0, '仓库发货', 74, 56, '6921377343921159820', '3415147054562306', 0, 0, '通用气质针织春夏收腰欧美法式潮流短款外套', 'https://p3-aio.ecombdimg.com/obj/ecom-shop-material/ALSUvYM_m_6b2c63f75ace689f2e1b03224ce5fd7e_sx_27680_www600-600', '0', '[{\"name\":\"颜色分类\",\"value\":\"乳白色22234\"},{\"name\":\"尺码大小\",\"value\":\"M\"}]', '', 1, 2, '2025-10-06 20:30:12', '手动发货', '2025-10-07 12:25:15', '备货完成');
-INSERT INTO `o_order_ship_list_item` VALUES (4, 3, 1007, 400, 0, 0, '仓库发货', 74, 57, '6921377343921159820', '3415147054562050', 0, 0, '通用气质针织春夏收腰欧美法式潮流短款外套', 'https://p3-aio.ecombdimg.com/obj/ecom-shop-material/ALSUvYM_m_6b2c63f75ace689f2e1b03224ce5fd7e_sx_27680_www600-600', '0', '[{\"name\":\"颜色分类\",\"value\":\"乳白色22234\"},{\"name\":\"尺码大小\",\"value\":\"S\"}]', '', 1, 2, '2025-10-06 20:30:12', '手动发货', '2025-10-07 12:25:15', '备货完成');
-INSERT INTO `o_order_ship_list_item` VALUES (5, 4, 1011, 300, 1, 34, 'ASAA', 76, 59, '251002-085338365560640', '1742373848729', 0, 0, NULL, 'https://img.pddpic.com/mms-material-img/2025-06-02/0d875ad2-529b-43be-b699-96748b4c0bb4.jpeg.a.jpeg', 'LEDDP001', 'E27螺口 3瓦白光 1级能效', 'LEDDP00101', 1, 3, '2025-10-07 14:43:05', '分配供应商发货', '2025-10-07 16:02:43', '供应商发货手动确认');
-INSERT INTO `o_order_ship_list_item` VALUES (6, 5, 1011, 300, 0, 0, '仓库发货', 75, 58, '251002-171237742200640', '0', 0, 45, NULL, 'https://img.pddpic.com/mms-material-img/2025-06-02/0d875ad2-529b-43be-b699-96748b4c0bb4.jpeg.a.jpeg', 'LEDDP001', 'E27螺口 5瓦白光 1级能效', 'LEDDP00102', 1, 3, '2025-10-09 12:53:46', '手动发货', '2025-10-09 14:52:09', '备货完成');
 
 -- ----------------------------
 -- Table structure for o_refund
@@ -3047,7 +2968,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-04 21:47:05', 'admin', '2023-08-07 19:31:37', '', '2026-01-04 13:47:05', '管理员');
+INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-05 13:46:04', 'admin', '2023-08-07 19:31:37', '', '2026-01-05 05:46:03', '管理员');
 INSERT INTO `sys_user` VALUES (2, NULL, 'openapi', 'openApi接口专用', '00', '2806456181@qq.com', '15818590000', '0', '', '$2a$10$fHkhoqbMiyracAsTzl38H.55bu.M.of1FXk2EK7RQBjfic3tLU0Ue', '0', '0', '127.0.0.1', '2024-06-24 10:23:35', 'admin', '2024-03-17 14:55:22', 'admin', '2024-06-24 10:23:35', NULL);
 INSERT INTO `sys_user` VALUES (101, 101, '15818590119', 'aaa123', '00', '', '', '0', '', '$2a$10$pXcT6cHaObMeKuYd9vZb5uEb8PyUdF2AcqqRN1cBqiA9rV4qYQW7G', '0', '2', '', NULL, 'admin', '2024-08-15 13:45:25', '', NULL, NULL);
 INSERT INTO `sys_user` VALUES (102, 101, '15818590119', '老齐', '00', '', '', '0', '', '$2a$10$ysk.zgJ8wh25c7vOjKyZ8uarM2hkG0S51j8GYdJSo2kZmc3f8HdKe', '0', '0', '', NULL, 'admin', '2024-08-15 13:49:59', 'admin', '2025-02-10 16:26:20', NULL);

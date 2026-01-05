@@ -12,7 +12,7 @@ export function listStockOut(query) {
 // 查询出库单详细
 export function getStockOutEntry(id) {
   return request({
-    url: '/wms/stockOutEntry/' + id,
+    url: '/erp-api/stockOut/' + id,
     method: 'get'
   })
 }

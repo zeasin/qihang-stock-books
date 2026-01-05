@@ -12,10 +12,14 @@
             <result property="sourceOrderItemId" column="source_order_item_id" jdbcType="BIGINT"/>
             <result property="sourceOrderNum" column="source_order_num" jdbcType="VARCHAR"/>
             <result property="sourceSubOrderNum" column="source_sub_order_num" jdbcType="VARCHAR"/>
-            <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
-            <result property="specId" column="spec_id" jdbcType="INTEGER"/>
-            <result property="specNum" column="spec_num" jdbcType="VARCHAR"/>
-            <result property="originalQuantity" column="original_quantity" jdbcType="BIGINT"/>
+            <result property="goodsId" column="goods_id" jdbcType="BIGINT"/>
+            <result property="goodsTitle" column="goods_title" jdbcType="VARCHAR"/>
+            <result property="goodsImg" column="goods_img" jdbcType="VARCHAR"/>
+            <result property="goodsNum" column="goods_num" jdbcType="VARCHAR"/>
+            <result property="goodsSkuId" column="goods_sku_id" jdbcType="INTEGER"/>
+            <result property="skuCode" column="sku_code" jdbcType="VARCHAR"/>
+            <result property="skuName" column="sku_name" jdbcType="VARCHAR"/>
+            <result property="quantity" column="quantity" jdbcType="BIGINT"/>
             <result property="outQuantity" column="out_quantity" jdbcType="BIGINT"/>
             <result property="completeTime" column="complete_time" jdbcType="TIMESTAMP"/>
             <result property="pickedTime" column="picked_time" jdbcType="TIMESTAMP"/>
@@ -27,8 +31,8 @@
     <sql id="Base_Column_List">
         id,stock_out_type,entry_id,source_sub_order_num,
         source_order_id,source_order_item_id,source_order_num,
-        goods_id,spec_id,spec_num,
-        original_quantity,out_quantity,complete_time,
+        goods_id,goods_title,goods_img,goods_num,goods_sku_id,sku_code,sku_name,
+        quantity,out_quantity,complete_time,
         picked_time,status,create_time,
         update_time
     </sql>

@@ -513,9 +513,13 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
             outItem.setSourceOrderNum(item.getOrderNum());
             outItem.setSourceSubOrderNum(item.getSubOrderNum());
             outItem.setGoodsId(item.getGoodsId());
-            outItem.setSpecId(item.getGoodsSkuId());
-            outItem.setSpecNum(item.getSkuNum());
-            outItem.setOriginalQuantity(item.getQuantity());
+            outItem.setGoodsTitle(item.getGoodsTitle());
+            outItem.setGoodsImg(item.getGoodsImg());
+            outItem.setGoodsNum(item.getGoodsNum());
+            outItem.setGoodsSkuId(item.getGoodsSkuId());
+            outItem.setSkuCode(item.getSkuNum());
+            outItem.setSkuName(item.getGoodsSpec());
+            outItem.setQuantity(item.getQuantity());
             outItem.setOutQuantity(0);
             outItem.setStatus(0);
             outItem.setCreateTime(new Date());

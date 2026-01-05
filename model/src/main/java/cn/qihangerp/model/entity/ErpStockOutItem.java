@@ -2,8 +2,10 @@ package cn.qihangerp.model.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
@@ -50,21 +52,25 @@ public class ErpStockOutItem implements Serializable {
      * 商品id
      */
     private Long goodsId;
+    private String goodsTitle;
+    private String goodsImg;
+    private String goodsNum;
 
     /**
      * 商品规格id
      */
-    private Long specId;
+    private Long goodsSkuId;
 
     /**
      * 规格编码
      */
-    private String specNum;
+    private String skuCode;
+    private String skuName;
 
     /**
      * 总数量
      */
-    private Integer originalQuantity;
+    private Integer quantity;
 
     /**
      * 已出库数量
@@ -95,6 +101,9 @@ public class ErpStockOutItem implements Serializable {
      * 
      */
     private Date updateTime;
+
+    @TableField(exist = false)
+    private List<OGoodsInventoryBatch> inventoryBatchList;
 
     private static final long serialVersionUID = 1L;
 }

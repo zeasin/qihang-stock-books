@@ -152,7 +152,7 @@
     />
 
     <!-- 添加或修改出库单对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="1200px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-descriptions title="出库单详情">
           <el-descriptions-item label="单号">{{form.stockOutNum}}</el-descriptions-item>
@@ -176,33 +176,33 @@
         <el-table :data="wmsStockOutEntryItemList" :row-class-name="rowWmsStockOutEntryItemIndex" ref="wmsStockOutEntryItem">
 <!--          <el-table-column type="selection" width="50" align="center" />-->
           <el-table-column label="序号" align="center" prop="index" width="50"/>
-          <el-table-column label="商品图片" prop="colorImage" >
+          <el-table-column label="图片" prop="goodsImg" width="50">
             <template slot-scope="scope">
-              <el-image style="width: 70px; height: 70px" :src="scope.row.colorImage"></el-image>
+              <el-image style="width: 40px; height: 40px" :src="scope.row.goodsImg"></el-image>
             </template>
           </el-table-column>
-          <el-table-column label="规格编码" prop="specNum"></el-table-column>
+          <el-table-column label="商品名称" prop="goodsTitle"></el-table-column>
+
           <el-table-column label="规格"  >
             <template slot-scope="scope">
-              <el-tag size="small">{{scope.row.colorValue}} {{scope.row.sizeValue}} {{scope.row.styleValue}}</el-tag>
+              <el-tag size="small">{{scope.row.skuName}}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="数量" prop="originalQuantity"></el-table-column>
-          <el-table-column label="已出库数量" prop="outQuantity"></el-table-column>
+          <el-table-column label="规格编码" prop="skuCode"></el-table-column>
+          <el-table-column label="数量" prop="quantity" width="55"></el-table-column>
+          <el-table-column label="已出库" prop="outQuantity" width="65"></el-table-column>
 
-          <el-table-column label="出库仓位" prop="inventoryId" width="150">
+          <el-table-column label="出库批次" prop="inventoryId" width="170">
             <template slot-scope="scope">
-              <el-select v-model="scope.row.inventoryDetailId" placeholder="请选择出库仓位" v-if="scope.row.status < 2">
-                <el-option v-for="item in scope.row.inventoryDetails" :key="item.id" :label="item.locationNum" :value="item.id">
+              <el-select v-model="scope.row.inventoryDetailId" placeholder="请选择出库批次" v-if="scope.row.status < 2">
+                <el-option v-for="item in scope.row.inventoryBatchList" :key="item.id" :label="item.locationNum" :value="item.id">
                   <span style="float: left">{{ item.locationNum }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px"  >剩余库存：{{ item.currentQty }}</span>
-
                 </el-option>
-
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column label="出库数量" prop="outQty" width="100">
+          <el-table-column label="出库数量" prop="outQty" width="110">
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.outQty" placeholder="出库数量"  v-if="scope.row.status < 2" />
             </template>
@@ -352,7 +352,7 @@ export default {
       const id = row.id || this.ids
       getStockOutEntry(id).then(response => {
         this.form = response.data;
-        this.wmsStockOutEntryItemList = response.data.wmsStockOutEntryItemList;
+        this.wmsStockOutEntryItemList = response.data.itemList;
         // this.wmsStockOutEntryItemList.forEach(x=>{
         //   x.inventoryId = null;
         //   x.outQty = null

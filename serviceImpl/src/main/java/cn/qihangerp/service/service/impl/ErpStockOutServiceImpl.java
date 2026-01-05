@@ -112,8 +112,12 @@ public class ErpStockOutServiceImpl extends ServiceImpl<ErpStockOutMapper, ErpSt
             outItem.setSourceOrderItemId("0");
             outItem.setSourceOrderNum("");
             outItem.setGoodsId(item.getGoodsId());
-            outItem.setSpecId(item.getSkuId());
-            outItem.setSpecNum(item.getSkuCode());
+            outItem.setGoodsTitle(item.getGoodsName());
+            outItem.setGoodsImg(item.getGoodsImg());
+            outItem.setGoodsNum(item.getGoodsNum());
+            outItem.setGoodsSkuId(item.getSkuId());
+            outItem.setSkuCode(item.getSkuCode());
+            outItem.setSkuName(item.getSkuName());
 //            inItem.setPurPrice(item.getPurPrice());
 //            inItem.setSkuId(item.getSkuId());
 //            inItem.setSkuCode(item.getSkuCode());
@@ -121,7 +125,7 @@ public class ErpStockOutServiceImpl extends ServiceImpl<ErpStockOutMapper, ErpSt
 //            inItem.setGoodsNum(item.getGoodsNum());
 //            inItem.setSkuName(item.getSkuName());
 //            inItem.setGoodsImage(item.getGoodsImg());
-            outItem.setOriginalQuantity(item.getQuantity());
+            outItem.setQuantity(item.getQuantity());
             outItem.setOutQuantity(0);
             outItem.setStatus(0);
             outItem.setCreateTime(new Date());
@@ -141,9 +145,9 @@ public class ErpStockOutServiceImpl extends ServiceImpl<ErpStockOutMapper, ErpSt
             if(outItemList!=null && outItemList.size()>0){
                 // 查找outItem skuid相对应的库存批次list
                 for(ErpStockOutItem item: outItemList){
-                    item.setOutQuantity(item.getOriginalQuantity()-item.getOutQuantity());
-//                    List<ErpGoodsInventoryBatch> erpGoodsInventoryBatches = goodsInventoryBatchService.querySkuBatchList(item.getSkuId());
-//                    item.setInventoryBatchList(erpGoodsInventoryBatches);
+//                    item.setOutQuantity(item.getQuantity()-item.getOutQuantity());
+                    List<OGoodsInventoryBatch> erpGoodsInventoryBatches = goodsInventoryBatchService.querySkuBatchList(item.getGoodsSkuId());
+                    item.setInventoryBatchList(erpGoodsInventoryBatches);
                 }
 
             }
