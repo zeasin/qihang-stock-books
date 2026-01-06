@@ -78,6 +78,7 @@ public class OGoodsInventoryBatch implements Serializable {
      * 仓位id
      */
     private Long positionId;
+    private String positionNum;
 
     /**
      * 创建时间

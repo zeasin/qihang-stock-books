@@ -8,7 +8,14 @@ export function listStockIn(query) {
     params: query
   })
 }
-
+// 查询入库单列表
+export function listStockInDetail(query) {
+  return request({
+    url: '/erp-api/stockIn/detail_list',
+    method: 'get',
+    params: query
+  })
+}
 // 查询入库单详细
 export function getWmsStockInEntry(id) {
   return request({

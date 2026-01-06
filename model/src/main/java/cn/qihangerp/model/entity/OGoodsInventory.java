@@ -28,6 +28,8 @@ public class OGoodsInventory implements Serializable {
      * 商品编码
      */
     private String goodsNum;
+    private String goodsName;
+    private String goodsImg;
 
     /**
      * 商品规格id
@@ -38,6 +40,7 @@ public class OGoodsInventory implements Serializable {
      * 规格编码（唯一）
      */
     private String skuCode;
+    private String skuName;
 
     /**
      * 当前库存

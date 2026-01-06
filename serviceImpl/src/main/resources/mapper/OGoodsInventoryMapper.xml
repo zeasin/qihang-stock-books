@@ -8,8 +8,11 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="goodsId" column="goods_id" jdbcType="BIGINT"/>
             <result property="goodsNum" column="goods_num" jdbcType="VARCHAR"/>
+        <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
+        <result property="goodsImg" column="goods_img" jdbcType="VARCHAR"/>
             <result property="skuId" column="sku_id" jdbcType="BIGINT"/>
             <result property="skuCode" column="sku_code" jdbcType="VARCHAR"/>
+            <result property="skuName" column="sku_name" jdbcType="VARCHAR"/>
             <result property="quantity" column="quantity" jdbcType="BIGINT"/>
             <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -19,8 +22,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,goods_id,goods_num,
-        sku_id,sku_code,quantity,
+        id,goods_id,goods_num,goods_name,goods_img,
+        sku_id,sku_code,sku_name,quantity,
         is_delete,create_time,create_by,
         update_time,update_by
     </sql>

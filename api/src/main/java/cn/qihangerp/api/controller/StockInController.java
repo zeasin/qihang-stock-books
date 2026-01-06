@@ -5,8 +5,10 @@ import cn.qihangerp.common.PageQuery;
 import cn.qihangerp.common.ResultVo;
 import cn.qihangerp.common.TableDataInfo;
 import cn.qihangerp.model.entity.ErpStockIn;
+import cn.qihangerp.model.entity.ErpStockInItemDetail;
 import cn.qihangerp.model.request.StockInCreateRequest;
 import cn.qihangerp.model.request.StockInRequest;
+import cn.qihangerp.service.service.ErpStockInItemDetailService;
 import cn.qihangerp.service.service.ErpStockInService;
 import cn.qihangerp.security.common.BaseController;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/erp-api/stockIn")
 public class StockInController extends BaseController {
     private final ErpStockInService stockInService;
+    private final ErpStockInItemDetailService erpStockInItemDetailService;
+
     @GetMapping("/list")
     public TableDataInfo list(ErpStockIn bo, PageQuery pageQuery)
     {
@@ -33,6 +37,15 @@ public class StockInController extends BaseController {
         
         return getDataTable(pageList);
     }
+
+
+    @GetMapping("/detail_list")
+    public TableDataInfo detailList(ErpStockInItemDetail bo, PageQuery pageQuery)
+    {
+        var pageList = erpStockInItemDetailService.queryPageList(bo,pageQuery);
+        return getDataTable(pageList);
+    }
+
 
     @PostMapping("/create")
     public AjaxResult createEntry(@RequestBody StockInCreateRequest request)

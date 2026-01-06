@@ -18,6 +18,7 @@
             <result property="skuCode" column="sku_code" jdbcType="VARCHAR"/>
             <result property="warehouseId" column="warehouse_id" jdbcType="BIGINT"/>
             <result property="positionId" column="position_id" jdbcType="BIGINT"/>
+            <result property="positionNum" column="position_num" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -28,7 +29,7 @@
         id,batch_num,origin_qty,
         current_qty,pur_price,pur_id,
         pur_item_id,remark,sku_id,
-        goods_id,sku_code,warehouse_id,
+        goods_id,sku_code,warehouse_id,position_num,
         position_id,create_time,create_by,
         update_time,update_by
     </sql>

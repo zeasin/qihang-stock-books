@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 05/01/2026 18:24:54
+ Date: 06/01/2026 09:08:35
 */
 
 SET NAMES utf8mb4;
@@ -232,8 +232,8 @@ CREATE TABLE `erp_stock_in`  (
 -- ----------------------------
 -- Records of erp_stock_in
 -- ----------------------------
-INSERT INTO `erp_stock_in` VALUES (4, '1767596917937322', 1, 'a', NULL, 1, 1, 1, NULL, 1, 'a', NULL, 0, 'admin', '2026-01-05 15:08:43', NULL, NULL);
-INSERT INTO `erp_stock_in` VALUES (5, '1767596917937322', 1, 'a', NULL, 1, 1, 1, NULL, 1, 'a', NULL, 0, 'admin', '2026-01-05 17:48:09', NULL, NULL);
+INSERT INTO `erp_stock_in` VALUES (4, '1767596917937322', 1, 'a', NULL, 1, 1, 1, NULL, 1, 'a', '2026-01-06 08:55:41', 2, 'admin', '2026-01-05 15:08:43', 'admin', '2026-01-06 08:55:41');
+INSERT INTO `erp_stock_in` VALUES (5, '1767596917937322', 1, 'a', NULL, 1, 1, 1, NULL, 1, 'a', '2026-01-06 08:42:34', 2, 'admin', '2026-01-05 17:48:09', 'admin', '2026-01-06 08:42:34');
 INSERT INTO `erp_stock_in` VALUES (7, '1767606589944162', 1, 'aaaa111', NULL, 1, 1, 1, NULL, 1, '1111', NULL, 2, 'admin', '2026-01-05 17:50:49', 'admin', '2026-01-05 18:24:03');
 
 -- ----------------------------
@@ -269,9 +269,45 @@ CREATE TABLE `erp_stock_in_item`  (
 -- ----------------------------
 -- Records of erp_stock_in_item
 -- ----------------------------
-INSERT INTO `erp_stock_in_item` VALUES (3, 4, 1, 'a', 0, 0, 16, NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/25bf5df9-764b-428c-aae2-59c3ee16f7e6.jpeg.a.jpeg', 45, 'LSZMLED0010012W', '白光 12W', 1, 0, '', 0, 'admin', '2026-01-05 15:08:43', NULL, NULL);
-INSERT INTO `erp_stock_in_item` VALUES (4, 5, 1, 'a', 0, 0, 16, NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', NULL, 45, 'LSZMLED0010012W', '白光 12W', 1, 0, '', 0, 'admin', '2026-01-05 17:48:09', NULL, NULL);
+INSERT INTO `erp_stock_in_item` VALUES (3, 4, 1, 'a', 0, 0, 16, NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/25bf5df9-764b-428c-aae2-59c3ee16f7e6.jpeg.a.jpeg', 45, 'LSZMLED0010012W', '白光 12W', 1, 1, '', 2, 'admin', '2026-01-05 15:08:43', 'admin', '2026-01-06 08:55:41');
+INSERT INTO `erp_stock_in_item` VALUES (4, 5, 1, 'a', 0, 0, 16, NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', NULL, 45, 'LSZMLED0010012W', '白光 12W', 1, 1, '', 2, 'admin', '2026-01-05 17:48:09', 'admin', '2026-01-06 08:42:34');
 INSERT INTO `erp_stock_in_item` VALUES (5, 7, 1, 'aaaa111', 0, 0, 16, NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/25bf5df9-764b-428c-aae2-59c3ee16f7e6.jpeg.a.jpeg', 45, 'LSZMLED0010012W', '白光 12W', 1, 1, '', 2, 'admin', '2026-01-05 17:50:49', 'admin', '2026-01-05 18:24:03');
+
+-- ----------------------------
+-- Table structure for erp_stock_in_item_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `erp_stock_in_item_detail`;
+CREATE TABLE `erp_stock_in_item_detail`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `stock_in_id` bigint NOT NULL COMMENT '入库单ID',
+  `stock_in_item_id` bigint NOT NULL DEFAULT 0 COMMENT '入库单ItemID',
+  `stock_in_num` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '入库单号',
+  `stock_in_source_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '来源单号',
+  `goods_inventory_id` bigint NOT NULL DEFAULT 0 COMMENT '库存ID',
+  `goods_inventory_batch_id` bigint NOT NULL DEFAULT 0 COMMENT '库存详情ID',
+  `quantity` int NOT NULL DEFAULT 0 COMMENT '出库数量',
+  `warehouse_id` bigint NULL DEFAULT NULL COMMENT '仓库ID',
+  `position_id` bigint NULL DEFAULT NULL COMMENT '仓位id',
+  `position_num` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '仓位编码',
+  `operator_id` bigint NULL DEFAULT 0 COMMENT '入库操作人userid',
+  `operator_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入库操作人',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `goods_id` bigint NOT NULL COMMENT '商品id',
+  `goods_num` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品编码',
+  `goods_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品名称',
+  `goods_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品图片',
+  `sku_id` bigint NOT NULL COMMENT '商品规格id',
+  `sku_code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品规格编码',
+  `sku_name` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '颜色',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `goods_stock_info_item_id_index`(`goods_inventory_batch_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库仓位详情' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of erp_stock_in_item_detail
+-- ----------------------------
+INSERT INTO `erp_stock_in_item_detail` VALUES (1, 5, 4, '1767596917937322', 'a', 45, 5, 12, 6, 25, NULL, 1, 'admin', '2026-01-06 08:42:34', 0, NULL, NULL, NULL, 0, NULL, NULL);
+INSERT INTO `erp_stock_in_item_detail` VALUES (2, 4, 3, '1767596917937322', 'a', 45, 6, 22, 6, 25, NULL, 1, 'admin', '2026-01-06 08:55:41', 16, NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/25bf5df9-764b-428c-aae2-59c3ee16f7e6.jpeg.a.jpeg', 45, 'LSZMLED0010012W', '白光 12W');
 
 -- ----------------------------
 -- Table structure for erp_stock_out
@@ -640,7 +676,7 @@ CREATE TABLE `o_goods_inventory`  (
 -- ----------------------------
 -- Records of o_goods_inventory
 -- ----------------------------
-INSERT INTO `o_goods_inventory` VALUES (45, 16, 'LSZMLED001', NULL, NULL, 45, 'LSZMLED0010012W', NULL, 4, 0, '2025-10-09 14:40:12', '添加商品', '2026-01-05 18:24:03', 'admin');
+INSERT INTO `o_goods_inventory` VALUES (45, 16, 'LSZMLED001', NULL, NULL, 45, 'LSZMLED0010012W', NULL, 38, 0, '2025-10-09 14:40:12', '添加商品', '2026-01-06 08:55:41', 'admin');
 INSERT INTO `o_goods_inventory` VALUES (46, 16, 'LSZMLED001', NULL, NULL, 46, 'LSZMLED0010018W', NULL, 0, 0, '2025-10-09 14:40:12', '添加商品', '2025-10-09 06:40:12', NULL);
 INSERT INTO `o_goods_inventory` VALUES (47, 16, 'LSZMLED001', NULL, NULL, 47, 'LSZMLED0010024W', NULL, 0, 0, '2025-10-09 14:40:12', '添加商品', '2025-10-09 06:40:12', NULL);
 
@@ -663,20 +699,23 @@ CREATE TABLE `o_goods_inventory_batch`  (
   `sku_code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'sku编码',
   `warehouse_id` bigint NOT NULL COMMENT '仓库id',
   `position_id` bigint NOT NULL COMMENT '仓位id',
+  `position_num` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '仓位编码',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `create_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商品库存批次' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商品库存批次' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_goods_inventory_batch
 -- ----------------------------
-INSERT INTO `o_goods_inventory_batch` VALUES (1, 45, '20260105181449', 1, 1, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, '2026-01-05 18:14:49', 'admin', '2026-01-05 10:14:49', NULL);
-INSERT INTO `o_goods_inventory_batch` VALUES (2, 45, '20260105181453', 1, 1, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, '2026-01-05 18:14:54', 'admin', '2026-01-05 10:14:53', NULL);
-INSERT INTO `o_goods_inventory_batch` VALUES (3, 45, '20260105182124', 1, 1, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, '2026-01-05 18:21:25', 'admin', '2026-01-05 10:21:24', NULL);
-INSERT INTO `o_goods_inventory_batch` VALUES (4, 45, '20260105182403', 1, 1, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, '2026-01-05 18:24:03', 'admin', '2026-01-05 10:24:03', NULL);
+INSERT INTO `o_goods_inventory_batch` VALUES (1, 45, '20260105181449', 1, 1, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, NULL, '2026-01-05 18:14:49', 'admin', '2026-01-05 10:14:49', NULL);
+INSERT INTO `o_goods_inventory_batch` VALUES (2, 45, '20260105181453', 1, 1, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, NULL, '2026-01-05 18:14:54', 'admin', '2026-01-05 10:14:53', NULL);
+INSERT INTO `o_goods_inventory_batch` VALUES (3, 45, '20260105182124', 1, 1, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, NULL, '2026-01-05 18:21:25', 'admin', '2026-01-05 10:21:24', NULL);
+INSERT INTO `o_goods_inventory_batch` VALUES (4, 45, '20260105182403', 1, 1, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, NULL, '2026-01-05 18:24:03', 'admin', '2026-01-05 10:24:03', NULL);
+INSERT INTO `o_goods_inventory_batch` VALUES (5, 45, '20260106084234', 12, 12, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, NULL, '2026-01-06 08:42:34', 'admin', '2026-01-06 00:42:34', NULL);
+INSERT INTO `o_goods_inventory_batch` VALUES (6, 45, '20260106085541', 22, 22, 0, 0, 0, NULL, 45, 16, 'LSZMLED0010012W', 6, 25, NULL, '2026-01-06 08:55:41', 'admin', '2026-01-06 00:55:41', NULL);
 
 -- ----------------------------
 -- Table structure for o_goods_inventory_operation
@@ -2765,7 +2804,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2138 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2139 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -2806,9 +2845,10 @@ INSERT INTO `sys_menu` VALUES (2115, '商品库存', 4, 10, 'goods_inventory', '
 INSERT INTO `sys_menu` VALUES (2116, '出库管理', 6, 20, 'out_list', 'stockOut/index', NULL, 1, 0, 'C', '0', '0', '', 'stock_out1', 'admin', '2024-09-21 20:44:46', 'admin', '2026-01-05 07:18:55', '');
 INSERT INTO `sys_menu` VALUES (2117, '仓位货架', 7, 91, 'position', 'warehouse/position', NULL, 1, 0, 'C', '0', '0', '', 'shinshop', 'admin', '2024-09-22 11:52:18', 'admin', '2026-01-05 08:25:26', '');
 INSERT INTO `sys_menu` VALUES (2118, '新建入库单', 2, 11, 'create', 'stockIn/create.vue', NULL, 1, 0, 'C', '1', '0', '', '404', 'admin', '2024-09-22 14:49:40', 'admin', '2026-01-05 06:59:51', '');
-INSERT INTO `sys_menu` VALUES (2135, '退货入库', 2, 20, 's', NULL, NULL, 1, 0, 'C', '0', '0', '', 'return_stock_in', 'admin', '2025-12-30 02:58:18', 'admin', '2026-01-05 07:20:30', '');
-INSERT INTO `sys_menu` VALUES (2136, '采购入库', 2, 30, 'p', NULL, NULL, 1, 0, 'C', '0', '0', NULL, 'checkbox', 'admin', '2025-12-30 02:58:43', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2135, '退货入库', 2, 20, 's', NULL, NULL, 1, 0, 'C', '1', '0', '', 'return_stock_in', 'admin', '2025-12-30 02:58:18', 'admin', '2026-01-06 00:42:04', '');
+INSERT INTO `sys_menu` VALUES (2136, '采购入库', 2, 30, 'p', NULL, NULL, 1, 0, 'C', '1', '0', '', 'checkbox', 'admin', '2025-12-30 02:58:43', 'admin', '2026-01-06 00:42:09', '');
 INSERT INTO `sys_menu` VALUES (2137, '入库操作', 2, 12, 'in', 'stockIn/in', NULL, 1, 0, 'C', '1', '0', '', 'stockin', 'admin', '2026-01-05 08:27:23', 'admin', '2026-01-05 08:27:32', '');
+INSERT INTO `sys_menu` VALUES (2138, '入库明细', 2, 13, 'stock_in_detail', 'stockIn/detail', NULL, 1, 0, 'C', '0', '0', NULL, 'stockin', 'admin', '2026-01-05 13:47:02', '', NULL, '');
 
 -- ----------------------------
 -- Table structure for sys_oss
@@ -2981,7 +3021,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-05 17:31:08', 'admin', '2023-08-07 19:31:37', '', '2026-01-05 09:31:08', '管理员');
+INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-06 08:27:34', 'admin', '2023-08-07 19:31:37', '', '2026-01-06 00:27:33', '管理员');
 INSERT INTO `sys_user` VALUES (2, NULL, 'openapi', 'openApi接口专用', '00', '2806456181@qq.com', '15818590000', '0', '', '$2a$10$fHkhoqbMiyracAsTzl38H.55bu.M.of1FXk2EK7RQBjfic3tLU0Ue', '0', '0', '127.0.0.1', '2024-06-24 10:23:35', 'admin', '2024-03-17 14:55:22', 'admin', '2024-06-24 10:23:35', NULL);
 INSERT INTO `sys_user` VALUES (101, 101, '15818590119', 'aaa123', '00', '', '', '0', '', '$2a$10$pXcT6cHaObMeKuYd9vZb5uEb8PyUdF2AcqqRN1cBqiA9rV4qYQW7G', '0', '2', '', NULL, 'admin', '2024-08-15 13:45:25', '', NULL, NULL);
 INSERT INTO `sys_user` VALUES (102, 101, '15818590119', '老齐', '00', '', '', '0', '', '$2a$10$ysk.zgJ8wh25c7vOjKyZ8uarM2hkG0S51j8GYdJSo2kZmc3f8HdKe', '0', '0', '', NULL, 'admin', '2024-08-15 13:49:59', 'admin', '2025-02-10 16:26:20', NULL);
