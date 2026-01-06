@@ -9,6 +9,8 @@
             <result property="batchNum" column="batch_num" jdbcType="VARCHAR"/>
             <result property="originQty" column="origin_qty" jdbcType="BIGINT"/>
             <result property="currentQty" column="current_qty" jdbcType="BIGINT"/>
+            <result property="inQty" column="in_qty" jdbcType="BIGINT"/>
+            <result property="usableQty" column="usable_qty" jdbcType="BIGINT"/>
             <result property="purPrice" column="pur_price" jdbcType="DOUBLE"/>
             <result property="purId" column="pur_id" jdbcType="BIGINT"/>
             <result property="purItemId" column="pur_item_id" jdbcType="BIGINT"/>
@@ -17,6 +19,7 @@
             <result property="goodsId" column="goods_id" jdbcType="BIGINT"/>
             <result property="skuCode" column="sku_code" jdbcType="VARCHAR"/>
             <result property="warehouseId" column="warehouse_id" jdbcType="BIGINT"/>
+            <result property="warehouseName" column="warehouse_name" jdbcType="VARCHAR"/>
             <result property="positionId" column="position_id" jdbcType="BIGINT"/>
             <result property="positionNum" column="position_num" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -26,10 +29,10 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,batch_num,origin_qty,
+        id,batch_num,origin_qty,in_qty,usable_qty,
         current_qty,pur_price,pur_id,
         pur_item_id,remark,sku_id,
-        goods_id,sku_code,warehouse_id,position_num,
+        goods_id,sku_code,warehouse_id,warehouse_name,position_num,
         position_id,create_time,create_by,
         update_time,update_by
     </sql>

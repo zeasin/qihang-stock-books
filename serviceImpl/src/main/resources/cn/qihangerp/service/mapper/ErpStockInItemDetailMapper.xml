@@ -13,6 +13,7 @@
             <result property="quantity" column="quantity" />
             <result property="warehouseId" column="warehouse_id" />
             <result property="positionId" column="position_id" />
+            <result property="warehouseName" column="warehouse_name" />
             <result property="positionNum" column="position_num" />
             <result property="operatorId" column="operator_id" />
             <result property="operatorName" column="operator_name" />
@@ -28,7 +29,7 @@
 
     <sql id="Base_Column_List">
         id,stock_in_id,stock_in_item_id,goods_inventory_id,goods_inventory_batch_id,quantity,
-        warehouse_id,position_id,position_num,operator_id,operator_name,
+        warehouse_id,position_id,position_num,operator_id,operator_name,warehouse_name,
         create_time,goods_id,goods_num,goods_name,goods_image,sku_id,sku_code,sku_name
     </sql>
 </mapper>

@@ -84,6 +84,7 @@ public class ErpStockInItemDetail {
      * 仓库ID
      */
     private Long warehouseId;
+    private String warehouseName;
 
     /**
      * 仓位id

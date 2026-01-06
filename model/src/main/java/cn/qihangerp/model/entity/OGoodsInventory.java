@@ -20,6 +20,12 @@ public class OGoodsInventory implements Serializable {
     private String id;
 
     /**
+     * 仓库id
+     */
+    private Long warehouseId;
+    private String warehouseName;
+
+    /**
      * 商品id
      */
     private String goodsId;

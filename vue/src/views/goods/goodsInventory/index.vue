@@ -57,10 +57,13 @@
     <el-table v-loading="loading" :data="goodsInventoryList" @selection-change="handleSelectionChange">
 <!--      <el-table-column type="selection" width="55" align="center" />-->
 <!--      <el-table-column label="主键ID" align="center" prop="id" />-->
-      <el-table-column label="商品ID" align="center" prop="goodsId" />
-      <el-table-column label="商品编码" align="center" prop="goodsNum" />
       <el-table-column label="SkuId" align="center" prop="skuId" />
       <el-table-column label="Sku编码" align="center" prop="skuCode" />
+      <el-table-column label="商品ID" align="center" prop="goodsId" />
+      <el-table-column label="商品名" align="left" prop="goodsName" width="350"/>
+      <el-table-column label="规格" align="left" prop="skuName" />
+
+      <el-table-column label="仓库" align="center" prop="warehouseName" />
       <el-table-column label="当前库存" align="center" prop="quantity" />
       <el-table-column label="锁定库存" align="center" prop="lockedQty" />
       <el-table-column label="状态" align="center" prop="isDelete" >
@@ -103,21 +106,26 @@
     />
 
     <!-- 添加或修改商品库存对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="1160px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
 
         <el-table :data="erpGoodsInventoryDetailList" :row-class-name="rowErpGoodsInventoryDetailIndex" ref="erpGoodsInventoryDetail">
           <el-table-column label="序号" align="center" prop="index" width="50"/>
-          <el-table-column label="入库时间" prop="createTime" width="180"></el-table-column>
+          <el-table-column label="入库时间" prop="createTime" width="180">
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.createTime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="仓库" prop="warehouseName" width="100"></el-table-column>
+          <el-table-column label="仓位" prop="positionNum" width="100"></el-table-column>
           <el-table-column label="入库数量" prop="inQty" width="80">
           </el-table-column>
-          <el-table-column label="入库仓位id" prop="inLocation" width="100"></el-table-column>
+
           <el-table-column label="入库前数量" prop="originQty" width="100">
           </el-table-column>
-          <el-table-column label="当前库存" prop="currentQty" width="100">
-          </el-table-column>
-          <el-table-column label="备注" prop="remark" width="150">
-          </el-table-column>
+          <el-table-column label="入库后数量" prop="currentQty" width="100"></el-table-column>
+          <el-table-column label="可用库存" prop="usableQty" width="100"></el-table-column>
+          <el-table-column label="备注" prop="remark" width="150"></el-table-column>
           <el-table-column label="操作人" prop="createBy" width="150">
           </el-table-column>
         </el-table>

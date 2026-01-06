@@ -12,6 +12,7 @@ import cn.qihangerp.model.request.StockInItem;
 import cn.qihangerp.model.request.StockInRequest;
 import cn.qihangerp.service.mapper.ErpStockInItemDetailMapper;
 import cn.qihangerp.service.mapper.ErpStockInMapper;
+import cn.qihangerp.service.mapper.ErpWarehouseMapper;
 import cn.qihangerp.service.mapper.ErpWarehousePositionMapper;
 import cn.qihangerp.service.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -41,6 +42,7 @@ public class ErpStockInServiceImpl extends ServiceImpl<ErpStockInMapper, ErpStoc
     implements ErpStockInService {
     private final ErpStockInMapper mapper;
     private final ErpWarehousePositionMapper warehousePositionMapper;
+    private final ErpWarehouseMapper warehouseMapper;
     private final ErpStockInItemDetailMapper erpStockInItemDetailMapper;
     private final ErpStockInItemService inItemService;
     private final OGoodsInventoryBatchService inventoryBatchService;
@@ -129,6 +131,9 @@ public class ErpStockInServiceImpl extends ServiceImpl<ErpStockInMapper, ErpStoc
             return ResultVo.error(ResultVoEnum.SystemException, "入库单状态不能入库");
         }
 
+        ErpWarehouse erpWarehouse = warehouseMapper.selectById(request.getWarehouseId());
+        if(erpWarehouse==null) return ResultVo.error("仓库不存在");
+
         List<StockInItem> waitList = new ArrayList<>();
         for (StockInItem item : request.getItemList()) {
             if (item.getIntoQuantity() != null && item.getPositionId() != null) {
@@ -151,10 +156,15 @@ public class ErpStockInServiceImpl extends ServiceImpl<ErpStockInMapper, ErpStoc
             ErpWarehousePosition erpWarehousePosition = warehousePositionMapper.selectById(item.getPositionId());
             // 添加库存操作表
             Long inventoryId = null;
-            List<OGoodsInventory> inventoryList = inventoryService.list(new LambdaQueryWrapper<OGoodsInventory>().eq(OGoodsInventory::getSkuId, stockInItem.getSkuId()));
+            Long originQty = 0L;
+            List<OGoodsInventory> inventoryList = inventoryService.list(new LambdaQueryWrapper<OGoodsInventory>()
+                    .eq(OGoodsInventory::getSkuId, stockInItem.getSkuId())
+                    .eq(OGoodsInventory::getWarehouseId, request.getWarehouseId()));
             if(inventoryList.isEmpty()) {
                 // 新增
                 OGoodsInventory inventory = new OGoodsInventory();
+                inventory.setWarehouseId(request.getWarehouseId());
+                inventory.setWarehouseName(erpWarehouse.getName());
                 inventory.setGoodsId(stockInItem.getGoodsId());
                 inventory.setGoodsNum(stockInItem.getGoodsNum());
                 inventory.setGoodsName(stockInItem.getGoodsName());
@@ -162,29 +172,34 @@ public class ErpStockInServiceImpl extends ServiceImpl<ErpStockInMapper, ErpStoc
                 inventory.setSkuId(stockInItem.getSkuId());
                 inventory.setSkuCode(stockInItem.getSkuCode());
                 inventory.setSkuName(stockInItem.getSkuName());
-                inventory.setQuantity(stockInItem.getIntoQuantity().longValue());
+                inventory.setQuantity(item.getIntoQuantity());
                 inventory.setIsDelete(0);
                 inventory.setCreateBy(userName);
                 inventory.setCreateTime(new Date());
+                inventory.setUpdateTime(new Date());
                 inventoryService.save(inventory);
                 inventoryId = Long.parseLong(inventory.getId());
+                originQty = 0L;
             }else{
                 //修改
                 OGoodsInventory update = new OGoodsInventory();
                 update.setId(inventoryList.get(0).getId());
                 update.setUpdateBy(userName);
                 update.setUpdateTime(new Date());
-                update.setQuantity(inventoryList.get(0).getQuantity()+item.getIntoQuantity().longValue());
+                update.setQuantity(inventoryList.get(0).getQuantity()+item.getIntoQuantity());
                 inventoryService.updateById(update);
                 inventoryId = Long.parseLong(update.getId());
+                originQty = inventoryList.get(0).getQuantity();
             }
 
             // 增加商品库存批次表
             OGoodsInventoryBatch inventoryBatch = new OGoodsInventoryBatch();
             inventoryBatch.setBatchNum(DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date()));
             inventoryBatch.setInventoryId(inventoryId);
-            inventoryBatch.setOriginQty(item.getIntoQuantity());
-            inventoryBatch.setCurrentQty(item.getIntoQuantity());
+            inventoryBatch.setOriginQty(originQty);
+            inventoryBatch.setInQty(item.getIntoQuantity());
+            inventoryBatch.setCurrentQty(inventoryBatch.getInQty()+originQty);
+            inventoryBatch.setUsableQty(inventoryBatch.getInQty());
             inventoryBatch.setPurPrice(0.0);
             inventoryBatch.setPurId(0L);
             inventoryBatch.setPurItemId(0L);
@@ -192,6 +207,7 @@ public class ErpStockInServiceImpl extends ServiceImpl<ErpStockInMapper, ErpStoc
             inventoryBatch.setSkuCode(stockInItem.getSkuCode());
             inventoryBatch.setGoodsId(stockInItem.getGoodsId());
             inventoryBatch.setWarehouseId(request.getWarehouseId());
+            inventoryBatch.setWarehouseName(erpWarehouse.getName());
             inventoryBatch.setPositionId(item.getPositionId());
             inventoryBatch.setPositionNum(erpWarehousePosition!=null?erpWarehousePosition.getNumber():"");
             inventoryBatch.setCreateTime(new Date());
@@ -226,7 +242,8 @@ public class ErpStockInServiceImpl extends ServiceImpl<ErpStockInMapper, ErpStoc
             inItemUpdate.setId(stockInItem.getId());
             inItemUpdate.setUpdateBy(userName);
             inItemUpdate.setUpdateTime(new Date());
-            inItemUpdate.setInQuantity(stockInItem.getQuantity());
+
+            inItemUpdate.setInQuantity(stockInItem.getInQuantity()+item.getIntoQuantity().intValue());
             inItemUpdate.setStatus(2);
             inItemService.updateById(inItemUpdate);
         }

@@ -28,6 +28,8 @@ public class OGoodsInventoryBatch implements Serializable {
      * 初始数量
      */
     private Long originQty;
+    private Long inQty;
+    private Long usableQty;
 
     /**
      * 当前数量
@@ -73,6 +75,7 @@ public class OGoodsInventoryBatch implements Serializable {
      * 仓库id
      */
     private Long warehouseId;
+    private String warehouseName;
 
     /**
      * 仓位id

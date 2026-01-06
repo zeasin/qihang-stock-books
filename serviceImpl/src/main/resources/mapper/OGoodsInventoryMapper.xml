@@ -6,6 +6,8 @@
 
     <resultMap id="BaseResultMap" type="cn.qihangerp.model.entity.OGoodsInventory">
             <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="warehouseId" column="warehouse_id" jdbcType="BIGINT"/>
+        <result property="warehouseName" column="warehouse_name" jdbcType="VARCHAR"/>
             <result property="goodsId" column="goods_id" jdbcType="BIGINT"/>
             <result property="goodsNum" column="goods_num" jdbcType="VARCHAR"/>
         <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
@@ -25,7 +27,7 @@
         id,goods_id,goods_num,goods_name,goods_img,
         sku_id,sku_code,sku_name,quantity,
         is_delete,create_time,create_by,
-        update_time,update_by
+        update_time,update_by,warehouse_id,warehouse_name
     </sql>
     <select id="getAllInventoryQuantity" resultType="Long">
         SELECT IFNULL(SUM(quantity),0) as count FROM o_goods_inventory where is_delete=0
