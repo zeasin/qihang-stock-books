@@ -34,3 +34,11 @@ export function stockOut(data) {
   })
 }
 
+// 查询入库单列表
+export function listStockOutDetail(query) {
+  return request({
+    url: '/erp-api/stockOut/detail_list',
+    method: 'get',
+    params: query
+  })
+}

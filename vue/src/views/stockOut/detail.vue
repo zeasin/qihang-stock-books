@@ -107,9 +107,9 @@
 </template>
 
 <script>
-import { listStockInDetail, getWmsStockInEntry, stockIn ,complete} from "@/api/wms/stockIn";
-import { listShop } from "@/api/shop/shop";
+
 import {listWarehouse} from "@/api/wms/warehouse";
+import {listStockOutDetail} from "@/api/wms/stockOut";
 
 export default {
   name: "Order",
@@ -179,7 +179,7 @@ export default {
         this.queryParams.endTime = null
       }
       this.loading = true;
-      listStockInDetail(this.queryParams).then(response => {
+      listStockOutDetail(this.queryParams).then(response => {
         this.orderList = response.rows;
         this.total = response.total;
         this.loading = false;

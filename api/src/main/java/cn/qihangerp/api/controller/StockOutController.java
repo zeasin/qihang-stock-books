@@ -4,10 +4,13 @@ import cn.qihangerp.common.AjaxResult;
 import cn.qihangerp.common.PageQuery;
 import cn.qihangerp.common.ResultVo;
 import cn.qihangerp.common.TableDataInfo;
+import cn.qihangerp.model.entity.ErpStockInItemDetail;
 import cn.qihangerp.model.entity.ErpStockOut;
 import cn.qihangerp.model.entity.ErpStockOutItem;
+import cn.qihangerp.model.entity.ErpStockOutItemDetail;
 import cn.qihangerp.model.request.StockOutCreateRequest;
 import cn.qihangerp.model.request.StockOutItemRequest;
+import cn.qihangerp.service.service.ErpStockOutItemDetailService;
 import cn.qihangerp.service.service.ErpStockOutItemService;
 import cn.qihangerp.service.service.ErpStockOutService;
 import cn.qihangerp.security.common.BaseController;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class StockOutController extends BaseController {
     private final ErpStockOutService stockOutService;
     private final ErpStockOutItemService stockOutItemService;
+    private final ErpStockOutItemDetailService stockOutItemDetailService;
 
     @GetMapping("/list")
     public TableDataInfo list(ErpStockOut bo, PageQuery pageQuery)
@@ -32,6 +36,12 @@ public class StockOutController extends BaseController {
     public TableDataInfo itemList(ErpStockOutItem bo, PageQuery pageQuery)
     {
         var pageList = stockOutItemService.queryPageList(bo,pageQuery);
+        return getDataTable(pageList);
+    }
+    @GetMapping("/detail_list")
+    public TableDataInfo detailList(ErpStockOutItemDetail bo, PageQuery pageQuery)
+    {
+        var pageList = stockOutItemDetailService.queryPageList(bo,pageQuery);
         return getDataTable(pageList);
     }
 

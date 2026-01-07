@@ -9,7 +9,7 @@ import lombok.Data;
  * @TableName wms_stock_out_item_position
  */
 @Data
-public class ErpStockOutItemPosition implements Serializable {
+public class ErpStockOutItemDetail implements Serializable {
     /**
      * 主键ID
      */

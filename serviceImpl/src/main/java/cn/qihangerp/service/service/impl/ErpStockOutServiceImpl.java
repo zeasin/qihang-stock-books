@@ -10,11 +10,11 @@ import cn.qihangerp.model.entity.OGoodsInventory;
 import cn.qihangerp.model.entity.OGoodsInventoryBatch;
 import cn.qihangerp.model.entity.ErpStockOut;
 import cn.qihangerp.model.entity.ErpStockOutItem;
-import cn.qihangerp.model.entity.ErpStockOutItemPosition;
+import cn.qihangerp.model.entity.ErpStockOutItemDetail;
 import cn.qihangerp.model.request.GoodsSkuInventoryVo;
 import cn.qihangerp.model.request.StockOutCreateRequest;
 import cn.qihangerp.model.request.StockOutItemRequest;
-import cn.qihangerp.service.mapper.ErpStockOutItemPositionMapper;
+import cn.qihangerp.service.mapper.ErpStockOutItemDetailMapper;
 import cn.qihangerp.service.service.ErpStockOutItemService;
 import cn.qihangerp.service.service.ErpStockOutService;
 import cn.qihangerp.service.service.OGoodsInventoryBatchService;
@@ -44,7 +44,7 @@ public class ErpStockOutServiceImpl extends ServiceImpl<ErpStockOutMapper, ErpSt
     implements ErpStockOutService {
     private final ErpStockOutMapper outMapper;
     private final ErpStockOutItemService outItemService;
-    private final ErpStockOutItemPositionMapper outItemPositionMapper;
+    private final ErpStockOutItemDetailMapper outItemPositionMapper;
     private final OGoodsInventoryBatchService goodsInventoryBatchService;
     private final OGoodsInventoryService goodsInventoryService;
 
@@ -191,7 +191,7 @@ public class ErpStockOutServiceImpl extends ServiceImpl<ErpStockOutMapper, ErpSt
 
 
         // 添加item
-        ErpStockOutItemPosition outItemPosition = new ErpStockOutItemPosition();
+        ErpStockOutItemDetail outItemPosition = new ErpStockOutItemDetail();
 
         outItemPosition.setEntryId(outItem.getEntryId());
         outItemPosition.setEntryItemId(outItem.getId());

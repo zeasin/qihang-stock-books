@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 07/01/2026 11:12:51
+ Date: 07/01/2026 11:33:52
 */
 
 SET NAMES utf8mb4;
@@ -384,10 +384,10 @@ INSERT INTO `erp_stock_out_item` VALUES (1, 1, 1, 'DDCK-20260104180112', 2, 2, '
 INSERT INTO `erp_stock_out_item` VALUES (2, 1, 2, 'DDCK-20260107094024', 3, 3, '260107-477175560572373', '260107-477175560572373-1742164849117', 16, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 'LEDDX001', 47, 'LEDDX00103', '24W白光-215mm', 1, 0, NULL, NULL, 0, '2026-01-07 09:40:25', NULL);
 
 -- ----------------------------
--- Table structure for erp_stock_out_item_position
+-- Table structure for erp_stock_out_item_detail
 -- ----------------------------
-DROP TABLE IF EXISTS `erp_stock_out_item_position`;
-CREATE TABLE `erp_stock_out_item_position`  (
+DROP TABLE IF EXISTS `erp_stock_out_item_detail`;
+CREATE TABLE `erp_stock_out_item_detail`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `entry_id` bigint NOT NULL COMMENT '出库单ID',
   `entry_item_id` bigint NOT NULL DEFAULT 0 COMMENT '出库单ItemID',
@@ -405,7 +405,7 @@ CREATE TABLE `erp_stock_out_item_position`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '出库仓位详情' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of erp_stock_out_item_position
+-- Records of erp_stock_out_item_detail
 -- ----------------------------
 
 -- ----------------------------

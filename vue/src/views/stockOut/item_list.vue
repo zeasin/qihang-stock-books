@@ -74,11 +74,17 @@
         <template slot-scope="scope">
           <el-button style="padding-left: 6px;padding-right: 6px;" plain
                      size="mini"
-                     type="primary"
+                     type="success"
                      icon="el-icon-d-arrow-right"
                      @click="handleStockOut(scope.row)"
                      v-hasPermi="['wms:stockOutEntry:edit']"
           >出库</el-button>
+          <el-button style="padding-left: 6px;padding-right: 6px;" plain
+                     size="mini"
+                     type="text"
+                     icon="el-icon-view"
+                     @click="handleStockOut(scope.row)"
+          >出库明细</el-button>
         </template>
       </el-table-column>
     </el-table>
