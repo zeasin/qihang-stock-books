@@ -8,19 +8,31 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="entryId" column="entry_id" jdbcType="BIGINT"/>
             <result property="entryItemId" column="entry_item_id" jdbcType="BIGINT"/>
-            <result property="goodsInventoryId" column="goods_inventory_id" jdbcType="BIGINT"/>
-            <result property="goodsInventoryDetailId" column="goods_inventory_detail_id" jdbcType="BIGINT"/>
+            <result property="inventoryId" column="iinventory_id" jdbcType="BIGINT"/>
+            <result property="inventoryBatchId" column="inventory_batch_id" jdbcType="BIGINT"/>
             <result property="quantity" column="quantity" jdbcType="BIGINT"/>
-            <result property="locationId" column="location_id" jdbcType="INTEGER"/>
-            <result property="operatorId" column="operator_id" jdbcType="INTEGER"/>
+            <result property="warehouseId" column="warehouse_id" jdbcType="BIGINT"/>
+            <result property="warehouseName" column="warehouse_name" jdbcType="VARCHAR"/>
+            <result property="positionId" column="position_id" jdbcType="BIGINT"/>
+            <result property="positionNum" column="position_num" jdbcType="VARCHAR"/>
+            <result property="operatorId" column="operator_id" jdbcType="BIGINT"/>
             <result property="operatorName" column="operator_name" jdbcType="VARCHAR"/>
             <result property="outTime" column="out_time" jdbcType="TIMESTAMP"/>
+        <result property="goodsId" column="goods_id" jdbcType="BIGINT"/>
+        <result property="goodsTitle" column="goods_title" jdbcType="VARCHAR"/>
+        <result property="goodsImg" column="goods_img" jdbcType="VARCHAR"/>
+        <result property="goodsNum" column="goods_num" jdbcType="VARCHAR"/>
+        <result property="goodsSkuId" column="goods_sku_id" jdbcType="INTEGER"/>
+        <result property="skuCode" column="sku_code" jdbcType="VARCHAR"/>
+        <result property="skuName" column="sku_name" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,entry_id,entry_item_id,
-        goods_inventory_id,goods_inventory_detail_id,quantity,
-        location_id,operator_id,operator_name,
-        out_time
+        inventory_id,inventory_batch_id,quantity,
+        warehouse_id,warehouse_name,position_id,position_num
+          operator_id,operator_name,out_time,remark,
+          goods_id,goods_title,goods_img,goods_num,goods_sku_id,sku_code,sku_name
     </sql>
 </mapper>

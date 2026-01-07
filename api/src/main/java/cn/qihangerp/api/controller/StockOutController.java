@@ -58,10 +58,16 @@ public class StockOutController extends BaseController {
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
-
         ErpStockOut entry = stockOutService.getDetailAndItemById(id);
         return success(entry);
     }
+    @GetMapping(value = "/item/{id}")
+    public AjaxResult itemDetail(@PathVariable("id") Long id)
+    {
+        ErpStockOutItem entry = stockOutItemService.getDetailAndInventoryBatchById(id);
+        return success(entry);
+    }
+
     @PostMapping("/out")
     public AjaxResult out(@RequestBody StockOutItemRequest request)
     {

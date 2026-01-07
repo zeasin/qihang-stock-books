@@ -28,12 +28,30 @@ public class ErpStockOutItemDetail implements Serializable {
     /**
      * 库存ID
      */
-    private Long goodsInventoryId;
+    private Long inventoryId;
 
     /**
      * 库存详情ID
      */
-    private Long goodsInventoryDetailId;
+    private Long inventoryBatchId;
+    /**
+     * 商品id
+     */
+    private String goodsId;
+    private String goodsTitle;
+    private String goodsImg;
+    private String goodsNum;
+
+    /**
+     * 商品规格id
+     */
+    private String goodsSkuId;
+
+    /**
+     * 规格编码
+     */
+    private String skuCode;
+    private String skuName;
 
     /**
      * 出库数量
@@ -44,6 +62,7 @@ public class ErpStockOutItemDetail implements Serializable {
      * 出库仓位ID
      */
     private Long warehouseId;
+    private String warehouseName;
     private Long positionId;
     private String positionNum;
 
@@ -61,6 +80,7 @@ public class ErpStockOutItemDetail implements Serializable {
      * 出库时间
      */
     private Date outTime;
+    private String remark;
 
     private static final long serialVersionUID = 1L;
 }

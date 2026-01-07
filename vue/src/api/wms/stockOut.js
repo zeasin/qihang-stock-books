@@ -25,6 +25,14 @@ export function getStockOutItem(query) {
   })
 }
 
+export function getStockOutItemDetail(id) {
+  return request({
+    url: '/erp-api/stockOut/item/'+id,
+    method: 'get'
+  })
+}
+
+
 // 出库
 export function stockOut(data) {
   return request({

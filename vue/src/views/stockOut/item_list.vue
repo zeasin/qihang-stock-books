@@ -48,7 +48,7 @@
       <el-table-column label="出库单号" align="center" prop="entryNum" width="220"/>
       <el-table-column label="出库类型" align="center" prop="stockOutType" width="160" >
         <template slot-scope="scope">
-          <el-tag size="small" v-if="scope.row.stockOutType === 1">订单拣货出库</el-tag>
+          <el-tag size="small" v-if="scope.row.stockOutType === 1">订单发货出库</el-tag>
           <el-tag size="small" v-if="scope.row.stockOutType === 2">采购退货出库</el-tag>
           <el-tag size="small" v-if="scope.row.stockOutType === 3">盘点出库</el-tag>
           <el-tag size="small" v-if="scope.row.stockOutType === 4">报损出库</el-tag>
@@ -63,6 +63,7 @@
       <el-table-column label="SKU名" align="center" prop="skuName" />
       <el-table-column label="Sku编码" align="center" prop="skuCode" />
       <el-table-column label="SkuId" align="center" prop="goodsSkuId" />
+      <el-table-column label="数量" align="center" prop="quantity" />
       <el-table-column label="状态" align="center" prop="refundStatus" >
         <template slot-scope="scope">
            <el-tag v-if="scope.row.status === 0">待出库</el-tag>
@@ -73,7 +74,7 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button style="padding-left: 6px;padding-right: 6px;" plain
-                     size="mini"
+                     size="mini" v-if="scope.row.status!==2"
                      type="success"
                      icon="el-icon-d-arrow-right"
                      @click="handleStockOut(scope.row)"
@@ -83,7 +84,7 @@
                      size="mini"
                      type="text"
                      icon="el-icon-view"
-                     @click="handleStockOut(scope.row)"
+                     @click="handleStockOutDetail(scope.row)"
           >出库明细</el-button>
         </template>
       </el-table-column>
@@ -99,8 +100,24 @@
     <!-- 修改Erp Sku 对话框 -->
     <el-dialog title="修改ERP SKU ID" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-        <el-form-item label="ERP商品skuId" prop="erpSkuId">
-          <el-input type="number" v-model="form.erpSkuId" placeholder="请输入ERP商品skuId" />
+
+        <el-form-item label="出库批次" prop="inventoryBatchId">
+            <el-select v-model="form.inventoryBatchId" placeholder="请选择出库批次" style="width: 220px;">
+              <el-option v-for="item in inventoryBatchList" :key="item.id" :label="item.batchNum" :value="item.id">
+                <span style="float: left">{{ item.batchNum }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px"  >剩余库存：{{ item.usableQty }}</span>
+              </el-option>
+            </el-select>
+         </el-form-item>
+          <el-form-item label="出库数量" prop="outQty">
+            <el-input v-model.number="form.outQty" style="width: 220px;" placeholder="出库数量" />
+          </el-form-item>
+        <el-form-item label="操作人" prop="operator">
+          <el-input v-model="form.operator" style="width: 220px;" placeholder="请输入操作人" />
+        </el-form-item>
+
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark" type="textarea" style="width: 220px;" placeholder="备注" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -112,7 +129,7 @@
 </template>
 
 <script>
-import {getStockOutItem} from "@/api/wms/stockOut";
+import {getStockOutItem, getStockOutItemDetail, stockOut} from "@/api/wms/stockOut";
 
 export default {
   name: "Order",
@@ -135,7 +152,7 @@ export default {
       // 店铺订单表格数据
       orderList: [],
       // ${subTable.functionName}表格数据
-      sShopOrderItemList: [],
+      inventoryBatchList: [],
       shopList:[],
       // 弹出层标题
       open:false,
@@ -150,23 +167,30 @@ export default {
       },
       // 表单参数
       form: {
-        id:null,
-        erpSkuId:null
+        entryItemId:null,
+        entryId:null,
+        inventoryBatchId:null,
+        outQty:null,
+        remark:null,
+        operator:null,
       },
       // 表单校验
       rules: {
-        erpSkuId: [{ required: true, message: "请输入ERP系统商品SkuId", trigger: "change" }],
+        inventoryBatchId: [{ required: true, message: "不能为空", trigger: "change" }],
+
+        outQty: [{ required: true, message: "请输入出库数量", trigger: "change" }],
       }
     };
   },
   created() {
+  },
+  mounted() {
+    if (this.$route.query.stockOutId) {
+      this.queryParams.entryId = this.$route.query.stockOutId
+    }
     this.getList();
   },
   methods: {
-    amountFormatter(row, column, cellValue, index) {
-      return '￥' + cellValue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-    },
-    /** 查询店铺订单列表 */
     getList() {
       if(this.orderTime){
         this.queryParams.startTime = this.orderTime[0]
@@ -204,30 +228,41 @@ export default {
 
     },
     cancel(){
-      this.form.id = null
-      this.form.erpSkuId = null
+      this.form.entryItemId = null
+      this.form.entryId = null
+      this.form.skuId = null
+      this.form.outQty = null
+      this.form.inventoryBatchId = null
       this.open = false
     },
-    // handleEditErpSku(row){
-    //   this.form.id = row.id
-    //   if(this.form.erpSkuId && this.form.erpSkuId > 0) {
-    //     this.form.erpSkuId = row.erpSkuId
-    //   }
-    //   this.open = true
-    // },
-    // submitForm() {
-    //   this.$refs["form"].validate(valid => {
-    //     if (valid) {
-    //       console.log('====修改参数====',this.form)
-    //       updateErpSkuId(this.form).then(response => {
-    //         this.$modal.msgSuccess("修改成功");
-    //         this.open = false;
-    //         this.getList();
-    //       });
-    //
-    //     }
-    //   });
-    // }
+    handleStockOut(row){
+
+      if(this.form.erpSkuId && this.form.erpSkuId > 0) {
+        this.form.erpSkuId = row.erpSkuId
+      }
+      getStockOutItemDetail(row.id).then(resp=>{
+        this.form.entryItemId = row.id
+        this.form.entryId = row.entryId
+        this.form.skuId = row.goodsSkuId
+        this.form.outQty = row.quantity
+        this.inventoryBatchList = resp.data.inventoryBatchList
+        this.open = true
+      })
+
+    },
+    submitForm() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          console.log('====修改参数====',this.form)
+          stockOut(this.form).then(response => {
+            this.$modal.msgSuccess("出库成功");
+            this.open = false;
+
+          });
+
+        }
+      });
+    }
   }
 };
 </script>

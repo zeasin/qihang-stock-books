@@ -165,6 +165,7 @@ public class ErpStockOutServiceImpl extends ServiceImpl<ErpStockOutMapper, ErpSt
 
         ErpStockOutItem outItem = outItemService.getById(request.getEntryItemId());
         if(outItem == null) return ResultVo.error(1500,"出库数据错误");
+        if(outItem.getStatus()==2) return ResultVo.error("已出库了！不能重复操作！");
         // 判断库存够不够扣减的
         OGoodsInventoryBatch batch = goodsInventoryBatchService.getById(request.getInventoryBatchId());
         if(batch == null) return ResultVo.error(1500,"库存数据不存在");
@@ -174,7 +175,8 @@ public class ErpStockOutServiceImpl extends ServiceImpl<ErpStockOutMapper, ErpSt
         // 扣减库存
         // 1扣减批次库存
         OGoodsInventoryBatch updateBatch = new OGoodsInventoryBatch();
-        updateBatch.setCurrentQty(batch.getCurrentQty() - request.getOutQty());
+//        updateBatch.setCurrentQty(batch.getCurrentQty() - request.getOutQty());
+        updateBatch.setUsableQty(batch.getUsableQty() - request.getOutQty());
         updateBatch.setUpdateBy(userName);
         updateBatch.setUpdateTime(new Date());
         updateBatch.setRemark(batch.getRemark()+"出库扣减库存；");
@@ -195,15 +197,24 @@ public class ErpStockOutServiceImpl extends ServiceImpl<ErpStockOutMapper, ErpSt
 
         outItemPosition.setEntryId(outItem.getEntryId());
         outItemPosition.setEntryItemId(outItem.getId());
-        outItemPosition.setGoodsInventoryId(batch.getInventoryId());
-        outItemPosition.setGoodsInventoryDetailId(batch.getId());
+        outItemPosition.setInventoryId(batch.getInventoryId());
+        outItemPosition.setInventoryBatchId(batch.getId());
         outItemPosition.setQuantity(request.getOutQty());
         outItemPosition.setOperatorId(userId);
         outItemPosition.setOperatorName(userName);
         outItemPosition.setOutTime(new Date());
         outItemPosition.setWarehouseId(batch.getWarehouseId());
+        outItemPosition.setWarehouseName(batch.getWarehouseName());
         outItemPosition.setPositionId(batch.getPositionId());
-        outItemPosition.setPositionNum("");
+        outItemPosition.setPositionNum(batch.getPositionNum());
+        outItemPosition.setRemark(request.getRemark());
+        outItemPosition.setGoodsId(goodsInventory.getGoodsId());
+        outItemPosition.setGoodsTitle(goodsInventory.getGoodsName());
+        outItemPosition.setGoodsImg(goodsInventory.getGoodsImg());
+        outItemPosition.setGoodsNum(goodsInventory.getGoodsNum());
+        outItemPosition.setGoodsSkuId(goodsInventory.getSkuId());
+        outItemPosition.setSkuCode(goodsInventory.getSkuCode());
+        outItemPosition.setSkuName(goodsInventory.getSkuName());
         outItemPositionMapper.insert(outItemPosition);
 
 

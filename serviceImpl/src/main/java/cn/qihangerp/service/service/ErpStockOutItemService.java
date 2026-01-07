@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ErpStockOutItemService extends IService<ErpStockOutItem> {
     PageResult<ErpStockOutItem> queryPageList(ErpStockOutItem bo, PageQuery pageQuery);
+
+    ErpStockOutItem getDetailAndInventoryBatchById(Long id);
 }

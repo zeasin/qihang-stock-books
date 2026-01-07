@@ -9,6 +9,8 @@ public class StockOutItemRequest {
     private Long skuId;
     private Long inventoryBatchId;
     private Integer outQty;
+    private String operator;
+    private String remark;
 //    private Integer originalQuantity;
 //    private Integer outQuantity;
 
