@@ -1,50 +1,38 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="108px">
-      <el-form-item label="入库单ID" prop="stockInId">
+      <el-form-item label="出库单ID" prop="entryId">
         <el-input
-          v-model="queryParams.stockInId"
-          placeholder="请输入入库单ID"
+          v-model="queryParams.entryId"
+          placeholder="请输入出库单ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="入库单明细ID" prop="stockInItemId">
+      <el-form-item label="出库单明细ID" prop="entryItemId">
         <el-input
-          v-model="queryParams.stockInItemId"
-          placeholder="请输入入库单明细ID"
+          v-model="queryParams.entryItemId"
+          placeholder="请输入出库单明细ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="入库单号" prop="stockInNum">
+      <el-form-item label="商品SkuId" prop="goodsSkuId">
         <el-input
-          v-model="queryParams.stockInNum"
-          placeholder="请输入订单号"
+          v-model="queryParams.goodsSkuId"
+          placeholder="请输入商品SkuId"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="来源单号" prop="stockInSourceNo">
+      <el-form-item label="商品Sku编码" prop="skuCode">
         <el-input
-          v-model="queryParams.stockInSourceNo"
-          placeholder="请输入来源单号"
+          v-model="queryParams.skuCode"
+          placeholder="请输入商品Sku编码"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="仓库" prop="warehouseId">
-        <el-select v-model="queryParams.warehouseId" placeholder="请选择仓库" clearable @change="handleQuery">
-         <el-option
-            v-for="item in warehouseList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-
-          </el-option>
-        </el-select>
-      </el-form-item>
-
 
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -58,29 +46,29 @@
 
     <el-table v-loading="loading" :data="orderList" @selection-change="handleSelectionChange">
 <!--      <el-table-column type="selection" width="55" align="center" />-->
-      <el-table-column label="入库单明细ID" align="center" prop="stockInItemId" />
-      <el-table-column label="入库单ID" align="center" prop="stockInId" />
-      <el-table-column label="入库单号" align="center" prop="stockInNum" />
-      <el-table-column label="来源单号" align="center" prop="stockInSourceNo" />
-      <el-table-column label="入库仓库" align="center" prop="shopId" >
+      <el-table-column label="出库单明细ID" align="center" prop="entryItemId" width="100"/>
+      <el-table-column label="出库单ID" align="center" prop="entryId" width="100" />
+
+
+      <el-table-column label="图片"  prop="goodsImage" width="50px">
+        <template slot-scope="scope">
+          <el-image  style="width: 40px; height: 40px;" :src="scope.row.goodsImg" :preview-src-list="[scope.row.goodsImage]"></el-image>
+        </template>
+      </el-table-column>
+      <el-table-column label="商品名" align="center" prop="goodsTitle" width="250px"/>
+      <el-table-column label="规格" align="center" prop="skuName" />
+      <el-table-column label="Sku编码" align="center" prop="skuCode" />
+      <el-table-column label="SkuId" align="center" prop="goodsSkuId" />
+      <el-table-column label="数量" align="center" prop="quantity" />
+      <el-table-column label="出库仓库" align="center" prop="shopId" >
         <template slot-scope="scope">
           <el-tag type="info">{{ warehouseList.find(x=>x.id === scope.row.warehouseId) ? warehouseList.find(x=>x.id === scope.row.warehouseId).name : '' }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="入库仓位" align="center" prop="positionNum" />
-      <el-table-column label="图片"  prop="goodsImage" width="50px">
+      <el-table-column label="出库时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
-          <el-image  style="width: 40px; height: 40px;" :src="scope.row.goodsImage" :preview-src-list="[scope.row.goodsImage]"></el-image>
-        </template>
-      </el-table-column>
-      <el-table-column label="商品名" align="center" prop="goodsName" width="250px"/>
-      <el-table-column label="规格" align="center" prop="skuName" />
-      <el-table-column label="Sku编码" align="center" prop="skuCode" />
-      <el-table-column label="SkuId" align="center" prop="skuId" />
-      <el-table-column label="数量" align="center" prop="quantity" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.outTime) }}</span>
         </template>
       </el-table-column>
 <!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
@@ -141,11 +129,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        stockInSourceNo: null,
+        entryId: null,
+        entryItemId: null,
         warehouseId: null,
-        stockInItemId: null,
-        stockInId: null,
-        stockInNum: null,
+        goodsSkuId: null,
+        skuCode: null,
       },
       // 表单参数
       form: {
