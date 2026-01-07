@@ -5,8 +5,10 @@ import cn.qihangerp.common.PageQuery;
 import cn.qihangerp.common.ResultVo;
 import cn.qihangerp.common.TableDataInfo;
 import cn.qihangerp.model.entity.ErpStockOut;
+import cn.qihangerp.model.entity.ErpStockOutItem;
 import cn.qihangerp.model.request.StockOutCreateRequest;
 import cn.qihangerp.model.request.StockOutItemRequest;
+import cn.qihangerp.service.service.ErpStockOutItemService;
 import cn.qihangerp.service.service.ErpStockOutService;
 import cn.qihangerp.security.common.BaseController;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/erp-api/stockOut")
 public class StockOutController extends BaseController {
     private final ErpStockOutService stockOutService;
+    private final ErpStockOutItemService stockOutItemService;
 
     @GetMapping("/list")
     public TableDataInfo list(ErpStockOut bo, PageQuery pageQuery)
@@ -25,6 +28,12 @@ public class StockOutController extends BaseController {
         return getDataTable(pageList);
     }
 
+    @GetMapping("/item_list")
+    public TableDataInfo itemList(ErpStockOutItem bo, PageQuery pageQuery)
+    {
+        var pageList = stockOutItemService.queryPageList(bo,pageQuery);
+        return getDataTable(pageList);
+    }
 
 
     @PostMapping("/create")

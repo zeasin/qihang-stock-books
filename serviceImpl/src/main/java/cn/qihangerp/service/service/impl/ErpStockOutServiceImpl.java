@@ -107,6 +107,7 @@ public class ErpStockOutServiceImpl extends ServiceImpl<ErpStockOutMapper, ErpSt
             ErpStockOutItem outItem = new ErpStockOutItem();
 
             outItem.setEntryId(insert.getId());
+            outItem.setEntryNum(insert.getStockOutNum());
             outItem.setStockOutType(request.getType());
             outItem.setSourceOrderId("0");
             outItem.setSourceOrderItemId("0");

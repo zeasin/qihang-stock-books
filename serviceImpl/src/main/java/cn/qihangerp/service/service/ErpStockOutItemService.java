@@ -1,6 +1,9 @@
 package cn.qihangerp.service.service;
 
 
+import cn.qihangerp.common.PageQuery;
+import cn.qihangerp.common.PageResult;
+import cn.qihangerp.model.entity.ErpStockOut;
 import cn.qihangerp.model.entity.ErpStockOutItem;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,5 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2024-09-22 11:13:23
 */
 public interface ErpStockOutItemService extends IService<ErpStockOutItem> {
-
+    PageResult<ErpStockOutItem> queryPageList(ErpStockOutItem bo, PageQuery pageQuery);
 }

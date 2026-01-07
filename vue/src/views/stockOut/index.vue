@@ -195,10 +195,10 @@
 
           <el-table-column label="出库批次" prop="inventoryId" width="170">
             <template slot-scope="scope">
-              <el-select v-model="scope.row.inventoryDetailId" placeholder="请选择出库批次" v-if="scope.row.status < 2">
-                <el-option v-for="item in scope.row.inventoryBatchList" :key="item.id" :label="item.locationNum" :value="item.id">
-                  <span style="float: left">{{ item.locationNum }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px"  >剩余库存：{{ item.currentQty }}</span>
+              <el-select v-model="scope.row.inventoryBatchId" placeholder="请选择出库批次" v-if="scope.row.status < 2">
+                <el-option v-for="item in scope.row.inventoryBatchList" :key="item.id" :label="item.batchNum" :value="item.id">
+                  <span style="float: left">{{ item.batchNum }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px"  >剩余库存：{{ item.usableQty }}</span>
                 </el-option>
               </el-select>
             </template>
@@ -278,6 +278,7 @@ export default {
       },
       // 表单参数
       form: {
+        inventoryBatchId:null
       },
       // 表单校验
       rules: {
@@ -369,8 +370,8 @@ export default {
         this.$modal.msgError("请填写要出库的库存");
         return
       }
-      if(!row.inventoryDetailId){
-        this.$modal.msgError("请选择库存仓位");
+      if(!row.inventoryBatchId){
+        this.$modal.msgError("请选择库存批次");
         return
       }else{
         // 判断填写的数量是否小于等于当前仓位库存
@@ -389,8 +390,8 @@ export default {
           const subForm ={
             entryItemId:row.id,
             entryId:row.entryId,
-            specId:row.specId,
-            inventoryDetailId:row.inventoryDetailId,
+            skuId:row.skuId,
+            inventoryBatchId:row.inventoryBatchId,
             outQty:row.outQty
           }
           stockOut(subForm).then(response => {

@@ -1,37 +1,51 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="88px">
-      <el-form-item label="出库单号" prop="entryNum">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="108px">
+      <el-form-item label="入库单ID" prop="stockInId">
         <el-input
-          v-model="queryParams.entryNum"
-          placeholder="请输入出库单号"
+          v-model="queryParams.stockInId"
+          placeholder="请输入入库单ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="出库单ID" prop="entryId">
+      <el-form-item label="入库单明细ID" prop="stockInItemId">
         <el-input
-          v-model="queryParams.entryId"
-          placeholder="请输入出库单ID"
+          v-model="queryParams.stockInItemId"
+          placeholder="请输入入库单明细ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="入库单号" prop="stockInNum">
+        <el-input
+          v-model="queryParams.stockInNum"
+          placeholder="请输入订单号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="来源单号" prop="stockInSourceNo">
+        <el-input
+          v-model="queryParams.stockInSourceNo"
+          placeholder="请输入来源单号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="仓库" prop="warehouseId">
+        <el-select v-model="queryParams.warehouseId" placeholder="请选择仓库" clearable @change="handleQuery">
+         <el-option
+            v-for="item in warehouseList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
 
-
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable @change="handleQuery">
-          <el-option label="待出库" value="0" ></el-option>
-          <el-option label="部分出库" value="1" ></el-option>
-          <el-option label="完全出库" value="2"></el-option>
+          </el-option>
         </el-select>
       </el-form-item>
-<!--      <el-form-item label="是否关联" prop="hasLink">-->
-<!--        <el-select v-model="queryParams.hasLink" placeholder="是否关联" clearable @change="handleQuery">-->
-<!--          <el-option label="未关联" value="0"></el-option>-->
-<!--          <el-option label="已关联" value="1"></el-option>-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
+
+
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -44,43 +58,41 @@
 
     <el-table v-loading="loading" :data="orderList" @selection-change="handleSelectionChange">
 <!--      <el-table-column type="selection" width="55" align="center" />-->
-      <el-table-column label="ID" align="center" prop="id" width="65"/>
-      <el-table-column label="出库单号" align="center" prop="entryNum" width="220"/>
-      <el-table-column label="出库类型" align="center" prop="stockOutType" width="160" >
+      <el-table-column label="入库单明细ID" align="center" prop="stockInItemId" />
+      <el-table-column label="入库单ID" align="center" prop="stockInId" />
+      <el-table-column label="入库单号" align="center" prop="stockInNum" />
+      <el-table-column label="来源单号" align="center" prop="stockInSourceNo" />
+      <el-table-column label="入库仓库" align="center" prop="shopId" >
         <template slot-scope="scope">
-          <el-tag size="small" v-if="scope.row.stockOutType === 1">订单拣货出库</el-tag>
-          <el-tag size="small" v-if="scope.row.stockOutType === 2">采购退货出库</el-tag>
-          <el-tag size="small" v-if="scope.row.stockOutType === 3">盘点出库</el-tag>
-          <el-tag size="small" v-if="scope.row.stockOutType === 4">报损出库</el-tag>
+          <el-tag type="info">{{ warehouseList.find(x=>x.id === scope.row.warehouseId) ? warehouseList.find(x=>x.id === scope.row.warehouseId).name : '' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="图片"  prop="goodsImg" width="50px">
+      <el-table-column label="入库仓位" align="center" prop="positionNum" />
+      <el-table-column label="图片"  prop="goodsImage" width="50px">
         <template slot-scope="scope">
-          <el-image  style="width: 40px; height: 40px;" :src="scope.row.goodsImg" :preview-src-list="[scope.row.goodsImg]"></el-image>
+          <el-image  style="width: 40px; height: 40px;" :src="scope.row.goodsImage" :preview-src-list="[scope.row.goodsImage]"></el-image>
         </template>
       </el-table-column>
-      <el-table-column label="商品名" align="left" prop="goodsTitle" width="350px"/>
-      <el-table-column label="SKU名" align="center" prop="skuName" />
+      <el-table-column label="商品名" align="center" prop="goodsName" width="250px"/>
+      <el-table-column label="规格" align="center" prop="skuName" />
       <el-table-column label="Sku编码" align="center" prop="skuCode" />
-      <el-table-column label="SkuId" align="center" prop="goodsSkuId" />
-      <el-table-column label="状态" align="center" prop="refundStatus" >
+      <el-table-column label="SkuId" align="center" prop="skuId" />
+      <el-table-column label="数量" align="center" prop="quantity" />
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
-           <el-tag v-if="scope.row.status === 0">待出库</el-tag>
-           <el-tag v-if="scope.row.status === 1">部分出库</el-tag>
-           <el-tag v-if="scope.row.status === 2">完全出库</el-tag>
+          <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button style="padding-left: 6px;padding-right: 6px;" plain
-                     size="mini"
-                     type="primary"
-                     icon="el-icon-d-arrow-right"
-                     @click="handleStockOut(scope.row)"
-                     v-hasPermi="['wms:stockOutEntry:edit']"
-          >出库</el-button>
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
+<!--        <template slot-scope="scope">-->
+<!--          <el-button-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            icon="el-icon-edit"-->
+<!--            @click="handleEditErpSku(scope.row)"-->
+<!--          >补充ERP SKU</el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
 
     <pagination
@@ -90,23 +102,14 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <!-- 修改Erp Sku 对话框 -->
-    <el-dialog title="修改ERP SKU ID" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-        <el-form-item label="ERP商品skuId" prop="erpSkuId">
-          <el-input type="number" v-model="form.erpSkuId" placeholder="请输入ERP商品skuId" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import {getStockOutItem} from "@/api/wms/stockOut";
+import { listStockInDetail, getWmsStockInEntry, stockIn ,complete} from "@/api/wms/stockIn";
+import { listShop } from "@/api/shop/shop";
+import {listWarehouse} from "@/api/wms/warehouse";
 
 export default {
   name: "Order",
@@ -130,7 +133,7 @@ export default {
       orderList: [],
       // ${subTable.functionName}表格数据
       sShopOrderItemList: [],
-      shopList:[],
+      warehouseList:[],
       // 弹出层标题
       open:false,
       orderTime: null,
@@ -138,9 +141,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        entryNum: null,
-        entryId: null,
-        status: null
+        stockInSourceNo: null,
+        warehouseId: null,
+        stockInItemId: null,
+        stockInId: null,
+        stockInNum: null,
       },
       // 表单参数
       form: {
@@ -154,7 +159,11 @@ export default {
     };
   },
   created() {
-    this.getList();
+    listWarehouse({status:1}).then(resp=>{
+      this.warehouseList = resp.rows;
+      this.getList();
+    })
+
   },
   methods: {
     amountFormatter(row, column, cellValue, index) {
@@ -170,7 +179,7 @@ export default {
         this.queryParams.endTime = null
       }
       this.loading = true;
-      getStockOutItem(this.queryParams).then(response => {
+      listStockInDetail(this.queryParams).then(response => {
         this.orderList = response.rows;
         this.total = response.total;
         this.loading = false;

@@ -30,6 +30,7 @@ public class ErpStockOutItem implements Serializable {
      * 出库单id（外键）
      */
     private Long entryId;
+    private String entryNum;
 
     /**
      * 来源订单id

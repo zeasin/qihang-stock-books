@@ -17,17 +17,18 @@ export function getStockOutEntry(id) {
   })
 }
 
-export function getStockOutEntryItem(id) {
+export function getStockOutItem(query) {
   return request({
-    url: '/wms/stockOutEntry/item/' + id,
-    method: 'get'
+    url: '/erp-api/stockOut/item_list',
+    method: 'get',
+    params: query
   })
 }
 
 // 出库
 export function stockOut(data) {
   return request({
-    url: '/wms/stockOutEntry/stockOut',
+    url: '/erp-api/stockOut/out',
     method: 'post',
     data: data
   })

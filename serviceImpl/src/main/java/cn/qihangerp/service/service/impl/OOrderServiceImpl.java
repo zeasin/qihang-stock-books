@@ -554,6 +554,7 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
 
         itemList.forEach(oItem -> {
             oItem.setEntryId(insert.getId());
+            oItem.setEntryNum(insert.getStockOutNum());
             outItemMapper.insert(oItem);
         });
 
