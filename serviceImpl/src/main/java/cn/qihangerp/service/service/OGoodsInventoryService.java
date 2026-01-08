@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface OGoodsInventoryService extends IService<OGoodsInventory> {
     PageResult<OGoodsInventory> queryPageList(OGoodsInventory bo, PageQuery pageQuery);
     long getAllInventoryQuantity();
+    Long getGoodsSkuStockQty(Long goodsSkuId,Long warehouseId);
 }

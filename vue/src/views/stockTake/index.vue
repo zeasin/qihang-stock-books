@@ -2,14 +2,13 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="88px">
 
-      <el-form-item label="商户" prop="merchantId">
-        <el-select v-model="queryParams.merchantId" placeholder="请选择商户" clearable @change="handleQuery">
-          <el-option label="总部" value="0"></el-option>
+      <el-form-item label="仓库" prop="warehouseId">
+        <el-select v-model="queryParams.warehouseId" placeholder="请选择仓库" clearable @change="handleQuery">
           <el-option
-            v-for="item in merchantList"
-            :key="item.merchantId"
+            v-for="item in warehouseList"
+            :key="item.id"
             :label="item.name"
-            :value="item.merchantId">
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
@@ -72,8 +71,7 @@
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="商户" align="left" prop="merchantId" >
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.merchantId === 0">总部</el-tag>
-          <el-tag v-else>{{ merchantList.find(x=>x.id === scope.row.merchantId) ? merchantList.find(x=>x.id === scope.row.merchantId).name : '' }}</el-tag>
+          <el-tag>{{ warehouseList.find(x=>x.id === scope.row.warehouseId) ? warehouseList.find(x=>x.id === scope.row.warehouseId).name : '' }}</el-tag>
         </template>
       </el-table-column>
 <!--      <el-table-column label="主键ID" align="center" prop="id" />-->
@@ -151,11 +149,11 @@
     <!-- 添加或修改店铺对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="盘点商户" prop="merchantId">
-          <el-select v-model="form.merchantId" placeholder="请选择商户">
-            <el-option label="总部" value="0"></el-option>
+        <el-form-item label="盘点仓库" prop="warehouseId">
+          <el-select v-model="form.warehouseId" placeholder="请选择商户">
+
             <el-option
-              v-for="item in merchantList"
+              v-for="item in warehouseList"
               :key="item.id"
               :label="item.name"
               :value="item.id">
@@ -299,6 +297,7 @@
 
 // import {listMerchant} from "@/api/vms/merchant";
 import {getStockTakeEntry, listStockTake, stockTakeCreate, stockTakeComplete, stockTakeItem} from "@/api/wms/stockTake";
+import {listWarehouse} from "@/api/wms/warehouse";
 // import {searchSkuAndStock} from "@/api/vms/goods/goods";
 
 export default {
@@ -345,7 +344,7 @@ export default {
       },
       // 表单参数
       form: {
-        merchantId:null,
+        warehouseId:null,
         remark:null,
         itemList:[]
       },
@@ -356,14 +355,14 @@ export default {
       locationLoading:false,
       // 表单校验
       rules: {
-        merchantId: [{ required: true, message: "不能为空", trigger: "change" }],
+        warehouseId: [{ required: true, message: "不能为空", trigger: "change" }],
         remark: [{ required: true, message: "不能为空", trigger: "change" }],
       }
     };
   },
   created() {
-    listMerchant().then(resp=>{
-      this.merchantList = resp.rows
+    listWarehouse({status:1}).then(resp=>{
+      this.warehouseList = resp.rows;
       this.getList();
     })
   },

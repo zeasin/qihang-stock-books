@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 /**
 * @author qilip
 * @description 针对表【o_goods_inventory(商品库存表)】的数据库操作Service实现
@@ -39,6 +41,16 @@ public class OGoodsInventoryServiceImpl extends ServiceImpl<OGoodsInventoryMappe
     @Override
     public long getAllInventoryQuantity() {
         return mapper.getAllInventoryQuantity();
+    }
+
+    @Override
+    public Long getGoodsSkuStockQty(Long goodsSkuId,Long warehouseId) {
+        List<OGoodsInventory> erpWarehouseGoodsStocks = this.baseMapper.selectList(
+                new LambdaQueryWrapper<OGoodsInventory>()
+                        .eq(OGoodsInventory::getSkuId, goodsSkuId)
+                        .eq(OGoodsInventory::getWarehouseId, warehouseId));
+        if (erpWarehouseGoodsStocks.isEmpty()) return 0L;
+        return erpWarehouseGoodsStocks.stream().mapToLong(OGoodsInventory::getQuantity).sum();
     }
 }
 
