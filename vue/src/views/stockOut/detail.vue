@@ -47,7 +47,7 @@
     <el-table v-loading="loading" :data="orderList" @selection-change="handleSelectionChange">
 <!--      <el-table-column type="selection" width="55" align="center" />-->
       <el-table-column label="出库单明细ID" align="center" prop="entryItemId" width="100"/>
-      <el-table-column label="出库单ID" align="center" prop="entryId" width="100" />
+      <el-table-column label="出库单ID" align="center" prop="entryId" width="100"/>
 
 
       <el-table-column label="图片"  prop="goodsImage" width="50px">
@@ -65,7 +65,7 @@
           <el-tag type="info">{{ warehouseList.find(x=>x.id === scope.row.warehouseId) ? warehouseList.find(x=>x.id === scope.row.warehouseId).name : '' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="入库仓位" align="center" prop="positionNum" />
+      <el-table-column label="出库仓位" align="center" prop="positionNum" />
       <el-table-column label="出库时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.outTime) }}</span>

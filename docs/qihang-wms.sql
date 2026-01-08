@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 07/01/2026 19:34:18
+ Date: 08/01/2026 09:16:56
 */
 
 SET NAMES utf8mb4;
@@ -473,6 +473,70 @@ CREATE TABLE `erp_warehouse_position`  (
 -- Records of erp_warehouse_position
 -- ----------------------------
 INSERT INTO `erp_warehouse_position` VALUES (25, 6, 'aac', 'aa', 0, 1, 0, 0, NULL, NULL, 0, 'admin', '2026-01-05 16:20:34', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for erp_warehouse_stock_take
+-- ----------------------------
+DROP TABLE IF EXISTS `erp_warehouse_stock_take`;
+CREATE TABLE `erp_warehouse_stock_take`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `stock_take_date` date NOT NULL COMMENT '盘点日期',
+  `stock_take_man` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '盘点人',
+  `sku_unit` int NOT NULL COMMENT '商品sku数',
+  `panying_unit` int NULL DEFAULT 0 COMMENT '盘盈数量',
+  `pankui_unit` int NULL DEFAULT 0 COMMENT '盘亏数量',
+  `total_quantity` int NOT NULL COMMENT '总件数',
+  `result_quantity` int NOT NULL COMMENT '总结果件数',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `status` int NOT NULL DEFAULT 0 COMMENT '状态（0已创建1盘点中2盘点完成）',
+  `result` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处理结果',
+  `warehouse_id` bigint NOT NULL COMMENT '云仓ID',
+  `warehouse_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '云仓名',
+  `merchant_id` bigint NOT NULL COMMENT '商户ID',
+  `merchant_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商户名',
+  `create_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `first_take_time` datetime NULL DEFAULT NULL COMMENT '首次盘点时间',
+  `complete_time` datetime NULL DEFAULT NULL COMMENT '完成时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '仓库盘点表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of erp_warehouse_stock_take
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for erp_warehouse_stock_take_item
+-- ----------------------------
+DROP TABLE IF EXISTS `erp_warehouse_stock_take_item`;
+CREATE TABLE `erp_warehouse_stock_take_item`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `stock_take_id` bigint NOT NULL COMMENT '盘点id',
+  `goods_id` bigint NOT NULL COMMENT '商品id',
+  `goods_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品编码',
+  `goods_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品名称',
+  `goods_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品图片',
+  `sku_name` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '颜色',
+  `quantity` int NOT NULL COMMENT '原始数量',
+  `take_quantity` int NOT NULL DEFAULT 0 COMMENT '盘点数量',
+  `result` int NOT NULL COMMENT '盘点结果（0未出结果10盘平20盘盈30盘亏）',
+  `result_id` bigint NULL DEFAULT NULL COMMENT '盘点处理id（盘盈入库单id，盘亏出库单id）',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注',
+  `status` int NULL DEFAULT 0 COMMENT '状态（0待盘点2已盘点）',
+  `create_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `warehouse_id` bigint NULL DEFAULT NULL COMMENT '仓库id',
+  `merchant_id` bigint NOT NULL COMMENT '商户ID',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '盘点明细' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of erp_warehouse_stock_take_item
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for o_after_sale
@@ -2874,7 +2938,7 @@ INSERT INTO `sys_menu` VALUES (2136, '采购入库', 2, 30, 'p', NULL, NULL, 1, 
 INSERT INTO `sys_menu` VALUES (2137, '入库操作', 2, 12, 'in', 'stockIn/in', NULL, 1, 0, 'C', '1', '0', '', 'stockin', 'admin', '2026-01-05 08:27:23', 'admin', '2026-01-05 08:27:32', '');
 INSERT INTO `sys_menu` VALUES (2138, '入库记录', 2, 13, 'stock_in_detail', 'stockIn/detail', NULL, 1, 0, 'C', '0', '0', '', 'stockin', 'admin', '2026-01-05 13:47:02', 'admin', '2026-01-07 02:50:12', '');
 INSERT INTO `sys_menu` VALUES (2139, '库存管理', 0, 40, 'stock', NULL, NULL, 1, 0, 'M', '0', '0', NULL, 'stock', 'admin', '2026-01-06 10:06:51', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2140, '盘点管理', 2139, 20, 'pandian', NULL, NULL, 1, 0, 'C', '0', '0', NULL, 'stock_out1', 'admin', '2026-01-06 10:09:55', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2140, '盘点管理', 2139, 20, 'pandian', 'stockTake/index', NULL, 1, 0, 'C', '0', '0', '', 'stock_out1', 'admin', '2026-01-06 10:09:55', 'admin', '2026-01-07 13:24:04', '');
 INSERT INTO `sys_menu` VALUES (2141, '移库管理', 2139, 30, 'yiku', NULL, NULL, 1, 0, 'C', '0', '0', NULL, 'button', 'admin', '2026-01-06 10:10:41', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2142, '报损管理', 2139, 40, 'baosun', NULL, NULL, 1, 0, 'C', '0', '0', NULL, 'bug', 'admin', '2026-01-06 10:11:14', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2143, '出库记录', 6, 50, 'stock_out_detail', 'stockOut/detail', NULL, 1, 0, 'C', '0', '0', '', 'list', 'admin', '2026-01-07 02:52:13', 'admin', '2026-01-07 02:52:44', '');
@@ -3050,7 +3114,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-07 18:57:33', 'admin', '2023-08-07 19:31:37', '', '2026-01-07 10:57:33', '管理员');
+INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-07 21:21:21', 'admin', '2023-08-07 19:31:37', '', '2026-01-07 13:21:20', '管理员');
 INSERT INTO `sys_user` VALUES (2, NULL, 'openapi', 'openApi接口专用', '00', '2806456181@qq.com', '15818590000', '0', '', '$2a$10$fHkhoqbMiyracAsTzl38H.55bu.M.of1FXk2EK7RQBjfic3tLU0Ue', '0', '0', '127.0.0.1', '2024-06-24 10:23:35', 'admin', '2024-03-17 14:55:22', 'admin', '2024-06-24 10:23:35', NULL);
 INSERT INTO `sys_user` VALUES (101, 101, '15818590119', 'aaa123', '00', '', '', '0', '', '$2a$10$pXcT6cHaObMeKuYd9vZb5uEb8PyUdF2AcqqRN1cBqiA9rV4qYQW7G', '0', '2', '', NULL, 'admin', '2024-08-15 13:45:25', '', NULL, NULL);
 INSERT INTO `sys_user` VALUES (102, 101, '15818590119', '老齐', '00', '', '', '0', '', '$2a$10$ysk.zgJ8wh25c7vOjKyZ8uarM2hkG0S51j8GYdJSo2kZmc3f8HdKe', '0', '0', '', NULL, 'admin', '2024-08-15 13:49:59', 'admin', '2025-02-10 16:26:20', NULL);
