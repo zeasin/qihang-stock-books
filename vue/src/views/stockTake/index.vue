@@ -68,8 +68,8 @@
 
     <el-table v-loading="loading" :data="WmsStockInEntryList" @selection-change="handleSelectionChange">
 <!--      <el-table-column type="selection" width="55" align="center" />-->
-      <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="盘点仓库" align="left" prop="warehouseId" >
+      <el-table-column label="ID" align="center" prop="id" width="55"/>
+      <el-table-column label="盘点仓库" align="left" prop="warehouseId" width="88">
         <template slot-scope="scope">
           <el-tag>{{ warehouseList.find(x=>x.id === scope.row.warehouseId) ? warehouseList.find(x=>x.id === scope.row.warehouseId).name : '' }}</el-tag>
         </template>
@@ -77,9 +77,9 @@
 <!--      <el-table-column label="主键ID" align="center" prop="id" />-->
 <!--      <el-table-column label="日期" align="center" prop="stockTakeDate" width="100"/>-->
 
-      <el-table-column label="盘点SKU" align="center" prop="skuUnit" />
-      <el-table-column label="盘盈SKU" align="center" prop="panyingUnit" />
-      <el-table-column label="盘亏SKU" align="center" prop="pankuiUnit" />
+      <el-table-column label="盘点SKU数" align="center" prop="skuUnit"  width="88"/>
+      <el-table-column label="盘盈SKU数" align="center" prop="panyingUnit" width="88"/>
+      <el-table-column label="盘亏SKU数" align="center" prop="pankuiUnit" width="88"/>
 <!--      <el-table-column label="总件数" align="center" prop="totalQuantity" />-->
 <!--      <el-table-column label="结果总数" align="center" prop="resultQuantity" />-->
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -201,11 +201,11 @@
           <el-table-column label="商品" prop="skuId" width="350">
             <template slot-scope="scope">
                <el-input v-model="scope.row.goodsName" disabled v-if="scope.row.isOld" />
-              <el-select v-model="scope.row.skuId" filterable remote reserve-keyword placeholder="搜索商品SKU" style="width: 330px;" v-if="!scope.row.isOld"
+              <el-select v-model="scope.row.id" filterable remote reserve-keyword placeholder="搜索商品SKU" style="width: 330px;" v-if="!scope.row.isOld"
                          :remote-method="searchSku" :loading="skuListLoading" @change="skuChanage(scope.row)">
-                <el-option v-for="item in skuList" :key="item.skuId"
+                <el-option v-for="item in skuList" :key="item.id"
                            :label="item.goodsName + ' ' + item.skuName +' - ' + item.skuCode"
-                           :value="item.skuId">
+                           :value="item.id">
                 </el-option>
               </el-select>
             </template>
@@ -404,10 +404,10 @@ export default {
     },
     skuChanage(row) {
       console.log('=====0000====',row)
-      const spec = this.skuList.find(x => x.id === row.skuId);
+      const spec = this.skuList.find(x => x.id == row.id);
       if (spec) {
         console.log('===00001111111====',this.form.itemList)
-        const isExist = this.itemList.find(y=>y.skuId === row.skuId)
+        const isExist = this.form.itemList.find(y=>y.skuId == row.id)
         console.log('===00001111111222222====',isExist)
         if(isExist){
           row.skuId=null
