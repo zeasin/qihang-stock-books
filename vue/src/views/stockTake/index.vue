@@ -69,21 +69,24 @@
     <el-table v-loading="loading" :data="WmsStockInEntryList" @selection-change="handleSelectionChange">
 <!--      <el-table-column type="selection" width="55" align="center" />-->
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="商户" align="left" prop="merchantId" >
+      <el-table-column label="盘点仓库" align="left" prop="warehouseId" >
         <template slot-scope="scope">
           <el-tag>{{ warehouseList.find(x=>x.id === scope.row.warehouseId) ? warehouseList.find(x=>x.id === scope.row.warehouseId).name : '' }}</el-tag>
         </template>
       </el-table-column>
 <!--      <el-table-column label="主键ID" align="center" prop="id" />-->
 <!--      <el-table-column label="日期" align="center" prop="stockTakeDate" width="100"/>-->
+
+      <el-table-column label="盘点SKU" align="center" prop="skuUnit" />
+      <el-table-column label="盘盈SKU" align="center" prop="panyingUnit" />
+      <el-table-column label="盘亏SKU" align="center" prop="pankuiUnit" />
+<!--      <el-table-column label="总件数" align="center" prop="totalQuantity" />-->
+<!--      <el-table-column label="结果总数" align="center" prop="resultQuantity" />-->
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="商品SKU" align="center" prop="skuUnit" />
-      <el-table-column label="总件数" align="center" prop="totalQuantity" />
-      <el-table-column label="结果总数" align="center" prop="resultQuantity" />
       <el-table-column label="首次盘点时间" align="center" prop="firstTakeTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.firstTakeTime) }}</span>
@@ -198,11 +201,11 @@
           <el-table-column label="商品" prop="skuId" width="350">
             <template slot-scope="scope">
                <el-input v-model="scope.row.goodsName" disabled v-if="scope.row.isOld" />
-              <el-select v-model="scope.row.id" filterable remote reserve-keyword placeholder="搜索商品SKU" style="width: 330px;" v-if="!scope.row.isOld"
+              <el-select v-model="scope.row.skuId" filterable remote reserve-keyword placeholder="搜索商品SKU" style="width: 330px;" v-if="!scope.row.isOld"
                          :remote-method="searchSku" :loading="skuListLoading" @change="skuChanage(scope.row)">
-                <el-option v-for="item in skuList" :key="item.id"
+                <el-option v-for="item in skuList" :key="item.skuId"
                            :label="item.goodsName + ' ' + item.skuName +' - ' + item.skuCode"
-                           :value="item.id">
+                           :value="item.skuId">
                 </el-option>
               </el-select>
             </template>
@@ -376,6 +379,7 @@ export default {
     handleAddSShopOrderItem() {
       let obj = {};
       obj.id = "";
+      obj.skuId = "";
       obj.isOld = false;
       obj.goodsId = "";
       obj.skuCode = "";
@@ -400,19 +404,19 @@ export default {
     },
     skuChanage(row) {
       console.log('=====0000====',row)
-      const spec = this.skuList.find(x => x.id === row.id);
+      const spec = this.skuList.find(x => x.id === row.skuId);
       if (spec) {
         console.log('===00001111111====',this.form.itemList)
-        const isExist = this.itemList.find(y=>y.goodsId === row.id)
+        const isExist = this.itemList.find(y=>y.skuId === row.skuId)
         console.log('===00001111111222222====',isExist)
         if(isExist){
-          row.id=null
+          row.skuId=null
           this.$modal.msgError("已存在！")
           return
         }
         console.log('=======11111==', spec)
         row.quantity = null
-        row.id = spec.id
+        row.skuId = spec.id
         row.goodsName = spec.goodsName
         row.stock = spec.highQty
         row.isOld = false
@@ -502,13 +506,14 @@ export default {
               console.log('=======111112222222222222==', spec)
               const  sku ={
                 quantity : spec.takeQuantity,
-                id : spec.goodsId,
+                id : spec.id,
+                goodsId : spec.goodsId,
+                skuId : spec.skuId,
                 goodsName : spec.goodsName,
-                standard : spec.skuName,
                 isOld:true,
-                goodsNo : spec.goodsNo,
-                erpGoodsNo : spec.erpGoodsNo,
                 imageUrl : spec.goodsImage,
+                skuName: spec.skuName,
+                skuCode: spec.skuCode,
                 stock : spec.quantity
               }
 

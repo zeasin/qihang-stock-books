@@ -105,34 +105,47 @@ public class ErpWarehouseStockTakeServiceImpl extends ServiceImpl<ErpWarehouseSt
         if(request.getItemList()==null||request.getItemList().size()==0){
             return ResultVo.error("没有数据");
         }
+        int skuTotal = 0;
+        int panyingUnit = 0;//盘盈数量
+        int pankuiUnit = 0;//盘亏数量
         int totalStock = 0;
         int resultTotal = 0;
         for (var item : request.getItemList()) {
-            List<ErpWarehouseStockTakeItem> erpWarehouseStockTakeItems = stockTakeItemMapper.selectList(new LambdaQueryWrapper<ErpWarehouseStockTakeItem>()
-                    .eq(ErpWarehouseStockTakeItem::getStockTakeId, stockTake.getId())
-                    .eq(ErpWarehouseStockTakeItem::getWarehouseId, stockTake.getWarehouseId())
-                    .eq(ErpWarehouseStockTakeItem::getGoodsId, item.getId()));
-            if(erpWarehouseStockTakeItems!=null && erpWarehouseStockTakeItems.size()>0){
+            skuTotal++;
+            ErpWarehouseStockTakeItem oldItem = stockTakeItemMapper.selectById(item.getId());
+
+//            List<ErpWarehouseStockTakeItem> erpWarehouseStockTakeItems = stockTakeItemMapper.selectList(new LambdaQueryWrapper<ErpWarehouseStockTakeItem>()
+//                    .eq(ErpWarehouseStockTakeItem::getStockTakeId, stockTake.getId())
+//                    .eq(ErpWarehouseStockTakeItem::getWarehouseId, stockTake.getWarehouseId())
+//                    .eq(ErpWarehouseStockTakeItem::getGoodsId, item.getId()));
+//            if(erpWarehouseStockTakeItems!=null && erpWarehouseStockTakeItems.size()>0){
+            if(oldItem!=null){
                 // 查库存
-                Long goodsStockQty = goodsInventoryService.getGoodsSkuStockQty(item.getId(),stockTake.getWarehouseId());
+//                Long goodsStockQty = goodsInventoryService.getGoodsSkuStockQty(item.getSkuId(),stockTake.getWarehouseId());
+//                totalStock += goodsStockQty.intValue();
+                totalStock += oldItem.getQuantity();
+
+                resultTotal+=item.getQuantity().intValue();
                 //更新
                 ErpWarehouseStockTakeItem stockTakeItemUpdate = new ErpWarehouseStockTakeItem();
-                stockTakeItemUpdate.setId(erpWarehouseStockTakeItems.get(0).getId());
+                stockTakeItemUpdate.setId(oldItem.getId());
 
-                stockTakeItemUpdate.setQuantity(goodsStockQty.intValue());
+//                stockTakeItemUpdate.setQuantity(goodsStockQty.intValue());
                 stockTakeItemUpdate.setTakeQuantity(item.getQuantity());
                 //盘点结果（0未出结果10盘平20盘盈30盘亏）
                 int result = 0;
                 int resultQty = 0;
-                if (goodsStockQty.intValue() == item.getQuantity().intValue()) {
+                if (oldItem.getQuantity() == item.getQuantity().intValue()) {
                     result = 10;
                     resultQty=0;
-                } else if (goodsStockQty.intValue() < item.getQuantity().intValue()) {
+                } else if (oldItem.getQuantity() < item.getQuantity().intValue()) {
                     result = 20;
-                    resultQty = item.getQuantity()-goodsStockQty.intValue();
-                } else if (goodsStockQty.intValue() > item.getQuantity().intValue()) {
+                    panyingUnit++;
+                    resultQty = item.getQuantity()-oldItem.getQuantity();
+                } else if (oldItem.getQuantity() > item.getQuantity().intValue()) {
                     result = 30;
-                    resultQty = goodsStockQty.intValue() - item.getQuantity().intValue();
+                    resultQty = oldItem.getQuantity() - item.getQuantity().intValue();
+                    pankuiUnit++;
                 }
                 stockTakeItemUpdate.setResult(result);
                 stockTakeItemUpdate.setResultQty(resultQty);
@@ -150,6 +163,8 @@ public class ErpWarehouseStockTakeServiceImpl extends ServiceImpl<ErpWarehouseSt
                 if (item.getQuantity() == null) item.setQuantity(0);
                 // 查库存
                 Long goodsStockQty = goodsInventoryService.getGoodsSkuStockQty(item.getId(),stockTake.getWarehouseId());
+                totalStock += goodsStockQty.intValue();
+                resultTotal+=item.getQuantity().intValue();
 
                 ErpWarehouseStockTakeItem stockTakeItem = new ErpWarehouseStockTakeItem();
                 stockTakeItem.setStockTakeId(stockTake.getId());
@@ -172,9 +187,11 @@ public class ErpWarehouseStockTakeServiceImpl extends ServiceImpl<ErpWarehouseSt
                 } else if (goodsStockQty.intValue()< item.getQuantity().intValue()) {
                     result = 20;
                     resultQty = item.getQuantity()-goodsStockQty.intValue();
+                    panyingUnit++;
                 } else if (goodsStockQty.intValue() > item.getQuantity().intValue()) {
                     result = 30;
                     resultQty = goodsStockQty.intValue() - item.getQuantity().intValue();
+                    pankuiUnit++;
                 }
                 stockTakeItem.setResult(result);
                 stockTakeItem.setResultQty(resultQty);
@@ -188,6 +205,11 @@ public class ErpWarehouseStockTakeServiceImpl extends ServiceImpl<ErpWarehouseSt
         // 更新自己
         ErpWarehouseStockTake update = new ErpWarehouseStockTake();
         update.setId(stockTake.getId());
+        update.setSkuUnit(skuTotal);
+        update.setPanyingUnit(panyingUnit);
+        update.setPankuiUnit(pankuiUnit);
+        update.setTotalQuantity(totalStock);
+        update.setResultQuantity(resultTotal);
         update.setStatus(1);
         if(stockTake.getFirstTakeTime()==null){
             update.setFirstTakeTime(new Date());
