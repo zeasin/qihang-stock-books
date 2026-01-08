@@ -2,6 +2,9 @@ package cn.qihangerp.service.mapper;
 
 import cn.qihangerp.model.entity.OGoodsSku;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author TW
@@ -10,7 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity cn.qihangerp.model.entity.OGoodsSku
 */
 public interface OGoodsSkuMapper extends BaseMapper<OGoodsSku> {
-
+    List<OGoodsSku> getGoodsSpecAndStockByCode(@Param("warehouseId") Long warehouseId, @Param("code") String code);
 }
 
 

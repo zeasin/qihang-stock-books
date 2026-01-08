@@ -40,4 +40,24 @@
         status,low_qty,high_qty,
         volume
     </sql>
+
+    <select id="getGoodsSpecAndStockByCode" resultMap="BaseResultMap">
+        SELECT
+        sku.id,sku.goods_id,sku.outer_erp_goods_id,sku.outer_erp_sku_id,sku.goods_name,sku.goods_num,sku.sku_code,sku.sku_name,sku.color_image,
+        (SELECT IFNULL(SUM(quantity),0) FROM o_goods_inventory as inv WHERE inv.sku_id=sku.id and inv.warehouse_id = 6) as high_qty
+        FROM `o_goods_sku` as sku
+
+        <where>
+            <if test="code != null  and code != ''">
+                (sku.outer_erp_sku_id like concat('%', #{code}, '%')
+                OR sku.goods_num like concat('%', #{code}, '%')
+                OR sku.sku_code like concat('%', #{code}, '%')
+                OR sku.sku_name like concat('%', #{code}, '%')
+                OR sku.id = #{code}
+                OR sku.goods_id = #{code}
+
+                )
+            </if>
+        </where>
+    </select>
 </mapper>

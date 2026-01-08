@@ -32,6 +32,11 @@ public class OGoodsSkuServiceImpl extends ServiceImpl<OGoodsSkuMapper, OGoodsSku
         queryWrapper.last("LIMIT 10");
         return skuMapper.selectList(queryWrapper);
     }
+
+    @Override
+    public List<OGoodsSku> searchGoodsSpecAndStock(String keyword,Long warehouseId) {
+        return skuMapper.getGoodsSpecAndStockByCode(warehouseId,keyword);
+    }
 }
 
 

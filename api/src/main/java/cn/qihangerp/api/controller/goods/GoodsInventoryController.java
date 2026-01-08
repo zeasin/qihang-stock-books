@@ -6,10 +6,13 @@ import cn.qihangerp.common.PageResult;
 import cn.qihangerp.common.TableDataInfo;
 import cn.qihangerp.model.entity.OGoodsInventory;
 import cn.qihangerp.model.entity.OGoodsInventoryBatch;
+import cn.qihangerp.model.entity.OGoodsSku;
 import cn.qihangerp.service.service.OGoodsInventoryBatchService;
 import cn.qihangerp.service.service.OGoodsInventoryService;
 import cn.qihangerp.security.common.BaseController;
+import cn.qihangerp.service.service.OGoodsSkuService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +26,7 @@ import java.util.List;
 @RequestMapping("/goodsInventory")
 public class GoodsInventoryController extends BaseController {
     private final OGoodsInventoryService goodsInventoryService;
+    private final OGoodsSkuService goodsSkuService;
     private final OGoodsInventoryBatchService inventoryBatchService;
 
     @GetMapping("/list")
@@ -42,4 +46,12 @@ public class GoodsInventoryController extends BaseController {
         }
         return success();
     }
+
+    @GetMapping("/goods_sku_stock_search")
+    public TableDataInfo searchSkuStockBy(Long warehouseId,String keyword, HttpServletRequest request)
+    {
+        List<OGoodsSku> list = goodsSkuService.searchGoodsSpecAndStock(keyword,warehouseId);
+        return getDataTable(list);
+    }
+
 }

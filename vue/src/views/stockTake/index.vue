@@ -201,7 +201,7 @@
               <el-select v-model="scope.row.id" filterable remote reserve-keyword placeholder="搜索商品SKU" style="width: 330px;" v-if="!scope.row.isOld"
                          :remote-method="searchSku" :loading="skuListLoading" @change="skuChanage(scope.row)">
                 <el-option v-for="item in skuList" :key="item.id"
-                           :label="item.goodsName + ' ' + item.standard +' - ' + item.erpGoodsNo"
+                           :label="item.goodsName + ' ' + item.skuName +' - ' + item.skuCode"
                            :value="item.id">
                 </el-option>
               </el-select>
@@ -213,14 +213,14 @@
               <el-image style="width: 70px; height: 70px" :src="scope.row.imageUrl"></el-image>
             </template>
           </el-table-column>
-          <el-table-column label="规格" prop="standard" width="150">
+          <el-table-column label="规格" prop="skuName" width="150">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.standard" disabled placeholder="请输入商品规格" />
+              <el-input v-model="scope.row.skuName" disabled placeholder="请输入商品规格" />
             </template>
           </el-table-column>
-          <el-table-column label="Sku编码" prop="erpGoodsNo" width="150">
+          <el-table-column label="Sku编码" prop="skuCode" width="150">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.erpGoodsNo" disabled placeholder="请输入商品规格编码" />
+              <el-input v-model="scope.row.skuCode" disabled placeholder="请输入商品规格编码" />
             </template>
           </el-table-column>
           <el-table-column label="库存数量" prop="stock" width="150"></el-table-column>
@@ -298,7 +298,7 @@
 // import {listMerchant} from "@/api/vms/merchant";
 import {getStockTakeEntry, listStockTake, stockTakeCreate, stockTakeComplete, stockTakeItem} from "@/api/wms/stockTake";
 import {listWarehouse} from "@/api/wms/warehouse";
-// import {searchSkuAndStock} from "@/api/vms/goods/goods";
+import {searchSkuAndStock} from "@/api/goods/goodsInventory";
 
 export default {
   name: "WmsStockInEntry",
@@ -377,12 +377,13 @@ export default {
       let obj = {};
       obj.id = "";
       obj.isOld = false;
-      obj.goodsNo = "";
-      obj.erpGoodsNo = "";
+      obj.goodsId = "";
+      obj.skuCode = "";
       obj.goodsName = "";
       obj.imageUrl = "";
-      obj.standard = "";
+      obj.skuName = "";
       obj.quantity = "";
+      obj.stock = "";
       this.form.itemList.push(obj);
     },
     // 搜索SKU
@@ -390,7 +391,7 @@ export default {
       this.shopLoading = true;
       const qw = {
         keyword: query,
-        merchantId: this.form.merchantId
+        warehouseId: this.form.warehouseId
       }
       searchSkuAndStock(qw).then(res => {
         this.skuList = res.rows;
@@ -413,12 +414,12 @@ export default {
         row.quantity = null
         row.id = spec.id
         row.goodsName = spec.goodsName
-        row.standard = spec.standard
+        row.stock = spec.highQty
         row.isOld = false
-        row.goodsNo = spec.goodsNo
-        row.erpGoodsNo = spec.erpGoodsNo
-        row.imageUrl = spec.imageUrl
-        row.stock = spec.stock
+        row.goodsId = spec.goodsId
+        row.skuCode = spec.skuCode
+        row.imageUrl = spec.colorImage
+        row.skuName = spec.skuName
       }
     },
     handleDeleteSku(index, row) {
@@ -491,7 +492,7 @@ export default {
     handleStockTake(row) {
       this.reset();
       // this.takeOpen = true;
-      this.form.merchantId = row.merchantId
+      this.form.warehouseId = row.warehouseId
       this.form.id = row.id
       getStockTakeEntry(this.form.id).then(response => {
         if(response.data.itemList && response.data.itemList.length>0){

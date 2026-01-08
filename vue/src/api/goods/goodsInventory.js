@@ -16,3 +16,13 @@ export function getGoodsInventory(id) {
     method: 'get'
   })
 }
+
+
+// 查询商品规格列表
+export function searchSkuAndStock(query) {
+  return request({
+    url: '/goodsInventory/goods_sku_stock_search',
+    method: 'get',
+    params: query
+  })
+}

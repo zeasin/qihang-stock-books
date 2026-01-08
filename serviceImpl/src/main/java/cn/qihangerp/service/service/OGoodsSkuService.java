@@ -12,4 +12,5 @@ import java.util.List;
 */
 public interface OGoodsSkuService extends IService<OGoodsSku> {
     List<OGoodsSku> searchGoodsSpec(String keyword);
+    List<OGoodsSku> searchGoodsSpecAndStock(String keyword,Long warehouseId);
 }
