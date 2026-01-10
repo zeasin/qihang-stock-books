@@ -6,6 +6,7 @@ import cn.qihangerp.open.jd.response.JdOrderListResponse;
 import cn.qihangerp.open.pdd.model.Order;
 import cn.qihangerp.open.pdd.model.OrderItem;
 import cn.qihangerp.open.tao.response.TaoOrderListResponse;
+import com.alibaba.fastjson2.JSONObject;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -95,7 +96,7 @@ public class ShopOrderTransform {
         shopOrder.setPlatformDiscount(0.0);
         shopOrder.setPayment(Double.parseDouble(order.getPayment()));
         shopOrder.setServiceFee(0.0);
-        shopOrder.setAmount(shopOrder.getPayment() - shopOrder.getServiceFee());
+        shopOrder.setAmount(Double.parseDouble(order.getTotal_fee()));
         // 收货地址
         shopOrder.setReceiverName(order.getReceiver_name());
         shopOrder.setReceiverMobile(order.getReceiver_mobile());
@@ -176,7 +177,7 @@ public class ShopOrderTransform {
         shopOrder.setPlatformDiscount(0.0);
         shopOrder.setPayment(Double.parseDouble(order.getOrderPayment()));
         shopOrder.setServiceFee(0.0);
-        shopOrder.setAmount(shopOrder.getPayment() - shopOrder.getServiceFee());
+        shopOrder.setAmount(Double.parseDouble(order.getOrderTotalPrice()));
         // 收货地址
         shopOrder.setReceiverName(order.getConsigneeInfo().getFullname());
         shopOrder.setReceiverMobile(order.getConsigneeInfo().getMobile());
@@ -275,7 +276,7 @@ public class ShopOrderTransform {
         shopOrder.setPlatformDiscount(promotionPlatformAmount);
         shopOrder.setPayment(payAmount);
         shopOrder.setServiceFee(0.0);
-        shopOrder.setAmount(shopOrder.getPayment() - shopOrder.getServiceFee());
+        shopOrder.setAmount(orderAmount);
         // 收货地址
         shopOrder.setProvince(order.getMaskPostAddr().getProvince().getName());
         shopOrder.setCity(order.getMaskPostAddr().getCity().getName());
@@ -404,4 +405,110 @@ public class ShopOrderTransform {
         shopOrder.setItemList(itemList);
         return shopOrder;
     }
+
+    public static OOrder transformWeiOrder(cn.qihangerp.open.wei.model.Order order) {
+        OOrder shopOrder = new OOrder();
+        shopOrder.setOrderNum(order.getOrder_id());
+        shopOrder.setBuyerMemo("");
+        shopOrder.setSellerMemo("");
+        shopOrder.setPlatformOrderStatus(order.getStatus().toString());
+        //	状态
+        //	10	待付款；20	待发货；21	部分发货；30	待收货；100	完成；200	全部商品售后之后，订单取消；250	未付款用户主动取消或超时未付款订单自动取消；
+
+
+        //订单状态 0：新订单，1：待发货，2：已发货，3：已完成，11已取消；12已关闭；12退款中；21待付款；22锁定，29删除，101部分发货
+        if(order.getStatus().intValue()==10){
+            shopOrder.setOrderStatus(21);
+            shopOrder.setRefundStatus(1);
+            shopOrder.setPlatformOrderStatusText("待付款");
+        }else if (order.getStatus().intValue()==21){
+            shopOrder.setOrderStatus(101);
+            shopOrder.setRefundStatus(1);
+            shopOrder.setPlatformOrderStatusText("部分发货");
+        }else if (order.getStatus().intValue()==20){
+            shopOrder.setOrderStatus(1);
+            shopOrder.setRefundStatus(1);
+            shopOrder.setPlatformOrderStatusText("待发货");
+        }else if (order.getStatus().intValue()==30){
+            shopOrder.setOrderStatus(2);
+            shopOrder.setRefundStatus(1);
+            shopOrder.setPlatformOrderStatusText("待收货");
+        }else if (order.getStatus().intValue()==100){
+            shopOrder.setOrderStatus(3);
+            shopOrder.setRefundStatus(1);
+            shopOrder.setPlatformOrderStatusText("完成");
+        }else if (order.getStatus().intValue()==200){
+            shopOrder.setOrderStatus(12);
+            shopOrder.setRefundStatus(4);
+            shopOrder.setPlatformOrderStatusText("全部商品售后之后，订单取消");
+        }else if (order.getStatus().intValue()==250){
+            shopOrder.setOrderStatus(11);
+            shopOrder.setRefundStatus(4);
+            shopOrder.setPlatformOrderStatusText("未付款用户主动取消或超时未付款订单自动取消");
+        }
+
+        // 定义日期时间格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime createTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(order.getCreate_time()), ZoneId.of("UTC"));
+        LocalDateTime updateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(order.getUpdate_time()), ZoneId.of("UTC"));
+        LocalDateTime payTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(order.getOrder_detail().getPay_info().getLong("prepay_time")), ZoneId.of("UTC"));
+        LocalDateTime finishTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(order.getOrder_detail().getSettle_info().getLong("settle_time")), ZoneId.of("UTC"));
+        shopOrder.setOrderCreated(createTime.format(formatter));
+        shopOrder.setOrderUpdated(updateTime.format(formatter));
+        shopOrder.setOrderPayTime(payTime.format(formatter));
+        shopOrder.setOrderFinishTime(finishTime.format(formatter));
+
+        // 价格
+        Integer goodsAmount = order.getOrder_detail().getPrice_info().getInteger("product_price");
+        Integer orderAmount = order.getOrder_detail().getPrice_info().getInteger("order_price");
+        Integer freight = order.getOrder_detail().getPrice_info().getInteger("freight");
+        Integer discounted = order.getOrder_detail().getPrice_info().getInteger("discounted_price");
+
+        shopOrder.setGoodsAmount(goodsAmount.doubleValue()/100);
+        shopOrder.setChangeAmount(0.0);
+        shopOrder.setPostFee(freight.doubleValue()/100);
+        shopOrder.setSellerDiscount(discounted.doubleValue()/100);
+        shopOrder.setPlatformDiscount(0.0);
+        shopOrder.setPayment(orderAmount.doubleValue()/100);
+        shopOrder.setServiceFee(0.0);
+        shopOrder.setAmount(orderAmount.doubleValue()/100);
+        // 收货地址
+        var addressInfo = order.getOrder_detail().getDelivery_info().getAddress_info();
+        shopOrder.setReceiverName(addressInfo.getUser_name());
+        shopOrder.setReceiverMobile(addressInfo.getTel_number());
+        shopOrder.setAddress(addressInfo.getDetail_info());
+        shopOrder.setProvince(addressInfo.getProvince_name());
+        shopOrder.setCity(addressInfo.getCity_name());
+        shopOrder.setTown(addressInfo.getCounty_name());
+
+
+
+        // 订单明细
+        List<OOrderItem> itemList = new ArrayList<>();
+        if (order.getOrder_detail().getProduct_infos() != null) {
+            for (var line : order.getOrder_detail().getProduct_infos()) {
+                OOrderItem item = new OOrderItem();
+                item.setOrderNum(shopOrder.getOrderNum());
+                item.setSubOrderNum(shopOrder.getOrderNum()+"-"+line.getSku_id());
+                item.setSkuId(line.getSku_id());
+                item.setGoodsTitle(line.getTitle());
+                item.setGoodsImg(line.getThumb_img());
+                item.setGoodsNum(line.getOut_product_id());
+                item.setGoodsSpec(JSONObject.toJSONString(line.getSku_attrs()));
+                item.setGoodsPrice(line.getReal_price().doubleValue()/100);
+                item.setSkuNum(line.getOut_sku_id());
+                item.setItemAmount(line.getSale_price().doubleValue()/100);
+                item.setDiscountAmount(line.getChange_price().doubleValue()/100);
+                item.setPayment(item.getItemAmount());
+                item.setQuantity(line.getSku_cnt());
+                item.setRefundCount(0);
+                item.setRefundStatus(1);
+                item.setOrderStatus(shopOrder.getOrderStatus());
+                itemList.add(item);
+            }
+        }
+        shopOrder.setItemList(itemList);
+        return shopOrder;
+    }
+
 }

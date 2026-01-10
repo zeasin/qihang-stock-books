@@ -20,6 +20,7 @@ import cn.qihangerp.open.pdd.PddOrderApiHelper;
 import cn.qihangerp.open.pdd.model.OrderListResultVo;
 import cn.qihangerp.open.tao.TaoOrderApiHelper;
 import cn.qihangerp.open.tao.response.TaoOrderListResponse;
+import cn.qihangerp.open.wei.WeiOrderApiHelper;
 import cn.qihangerp.service.service.OOrderService;
 import cn.qihangerp.service.service.OShopPullLasttimeService;
 import cn.qihangerp.service.service.OShopPullLogsService;
@@ -242,6 +243,35 @@ public class ShopOrderApiController {
                         insertSuccess++;
                     } else {
                         log.info("===============主动更新TAO订单：开始更新数据库：" + gitem.getTid() + "报错:{}", result.getMsg());
+                        totalError++;
+                    }
+                }
+            }
+        }else if(shopType==EnumShopType.WEI.getIndex()) {
+            log.info("=============拉取WEI店铺订单。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
+            ApiResultVo<cn.qihangerp.open.wei.model.Order> orderApiResultVo = WeiOrderApiHelper.pullOrderList(startTime, endTime, accessToken, 1, 100);
+            apiResponseCode = orderApiResultVo.getCode();
+            apiResponseMsg = orderApiResultVo.getMsg();
+            if(apiResponseCode==0) {
+                for (var orderInfo : orderApiResultVo.getList()) {
+                    log.info("==========转换WEI订单");
+
+                    OOrder oOrder = ShopOrderTransform.transformWeiOrder(orderInfo);
+                    oOrder.setShopId(shopId);
+                    oOrder.setShopType(shopType);
+
+                    //插入订单数据
+                    var result = orderService.saveShopOrder(oOrder);
+                    if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
+                        //已经存在
+                        log.info("=============主动更新TAO订单：开始更新数据库：" + orderInfo.getOrder_id() + "存在、更新");
+                        hasExistOrder++;
+                    } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
+                        log.info("============主动更新TAO订单：开始更新数据库：" + orderInfo.getOrder_id() + "不存在、新增");
+
+                        insertSuccess++;
+                    } else {
+                        log.info("===============主动更新TAO订单：开始更新数据库：" + orderInfo.getOrder_id() + "报错:{}", result.getMsg());
                         totalError++;
                     }
                 }

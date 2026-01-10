@@ -5,7 +5,6 @@ import cn.qihangerp.common.PageResult;
 import cn.qihangerp.common.ResultVo;
 import cn.qihangerp.common.ResultVoEnum;
 import cn.qihangerp.model.entity.OmsWeiRefund;
-import cn.qihangerp.service.mapper.WeiOrderItemMapper;
 import cn.qihangerp.service.mapper.WeiRefundMapper;
 import cn.qihangerp.service.service.WeiRefundService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -30,8 +29,6 @@ import java.util.List;
 public class WeiRefundServiceImpl extends ServiceImpl<WeiRefundMapper, OmsWeiRefund>
     implements WeiRefundService {
     private final WeiRefundMapper mapper;
-    private final WeiOrderItemMapper orderItemMapper;
-//    private final MQClientService mqClientService;
 
     @Override
     public PageResult<OmsWeiRefund> queryPageList(OmsWeiRefund bo, PageQuery pageQuery) {
