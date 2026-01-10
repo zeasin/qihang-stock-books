@@ -43,6 +43,9 @@
         >API拉取订单</el-button>
       </el-col>
       <el-col :span="1.5">
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+      </el-col>
+      <el-col :span="1.5">
       <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -164,6 +167,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
+      this.pullLoading = false
       this.queryParams.pageNum = 1;
       this.getList();
     },

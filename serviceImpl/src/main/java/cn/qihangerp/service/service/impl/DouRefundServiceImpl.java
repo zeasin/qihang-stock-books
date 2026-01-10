@@ -4,10 +4,8 @@ import cn.qihangerp.common.PageQuery;
 import cn.qihangerp.common.PageResult;
 import cn.qihangerp.common.ResultVo;
 import cn.qihangerp.common.ResultVoEnum;
-import cn.qihangerp.model.entity.DouOrderItem;
 import cn.qihangerp.model.entity.DouRefund;
 import cn.qihangerp.model.bo.DouRefundBo;
-import cn.qihangerp.service.mapper.DouOrderItemMapper;
 import cn.qihangerp.service.mapper.DouRefundMapper;
 import cn.qihangerp.service.service.DouRefundService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -30,7 +28,6 @@ import java.util.List;
 public class DouRefundServiceImpl extends ServiceImpl<DouRefundMapper, DouRefund>
     implements DouRefundService {
     private final DouRefundMapper mapper;
-    private final DouOrderItemMapper orderItemMapper;
 
     @Override
     public PageResult<DouRefund> queryPageList(DouRefundBo bo, PageQuery pageQuery) {
@@ -52,12 +49,12 @@ public class DouRefundServiceImpl extends ServiceImpl<DouRefundMapper, DouRefund
             // 存在，修改
             DouRefund update = new DouRefund();
             update.setId(origin.get(0).getId());
-            List<DouOrderItem> douOrderItems = orderItemMapper.selectList(new LambdaQueryWrapper<DouOrderItem>().eq(DouOrderItem::getOrderId, refund.getOrderSkuOrderId()));
-            if(!douOrderItems.isEmpty()){
-                update.setSkuId(douOrderItems.get(0).getSkuId().toString());
-                update.setOGoodsId(douOrderItems.get(0).getOGoodsId());
-                update.setOGoodsSkuId(douOrderItems.get(0).getOGoodsSkuId());
-            }
+//            List<DouOrderItem> douOrderItems = orderItemMapper.selectList(new LambdaQueryWrapper<DouOrderItem>().eq(DouOrderItem::getOrderId, refund.getOrderSkuOrderId()));
+//            if(!douOrderItems.isEmpty()){
+//                update.setSkuId(douOrderItems.get(0).getSkuId().toString());
+//                update.setOGoodsId(douOrderItems.get(0).getOGoodsId());
+//                update.setOGoodsSkuId(douOrderItems.get(0).getOGoodsSkuId());
+//            }
 
 
             update.setAftersaleOrderType(refund.getAftersaleOrderType());
@@ -97,12 +94,12 @@ public class DouRefundServiceImpl extends ServiceImpl<DouRefundMapper, DouRefund
 
         }else{
             //查询子订单
-            List<DouOrderItem> douOrderItems = orderItemMapper.selectList(new LambdaQueryWrapper<DouOrderItem>().eq(DouOrderItem::getOrderId, refund.getOrderSkuOrderId()));
-            if(!douOrderItems.isEmpty()){
-                refund.setSkuId(douOrderItems.get(0).getSkuId().toString());
-                refund.setOGoodsId(douOrderItems.get(0).getOGoodsId());
-                refund.setOGoodsSkuId(douOrderItems.get(0).getOGoodsSkuId());
-            }
+//            List<DouOrderItem> douOrderItems = orderItemMapper.selectList(new LambdaQueryWrapper<DouOrderItem>().eq(DouOrderItem::getOrderId, refund.getOrderSkuOrderId()));
+//            if(!douOrderItems.isEmpty()){
+//                refund.setSkuId(douOrderItems.get(0).getSkuId().toString());
+//                refund.setOGoodsId(douOrderItems.get(0).getOGoodsId());
+//                refund.setOGoodsSkuId(douOrderItems.get(0).getOGoodsSkuId());
+//            }
             refund.setShopId(shopId);
             refund.setPullTime(new Date());
             mapper.insert(refund);
