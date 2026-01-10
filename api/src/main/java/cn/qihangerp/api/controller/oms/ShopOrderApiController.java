@@ -1,6 +1,5 @@
 package cn.qihangerp.api.controller.oms;
 
-import cn.qihangerp.api.common.OrderAssembleHelper;
 import cn.qihangerp.api.common.ShopApiCommon;
 import cn.qihangerp.api.common.ShopOrderTransform;
 import cn.qihangerp.api.request.PullRequest;
@@ -225,8 +224,7 @@ public class ShopOrderApiController {
             if(apiResponseCode==0) {
                 //循环插入订单数据到数据库
                 for (var gitem : upResult.getList()) {
-                    log.info("==========转换JD订单");
-                    TaoOrder taoOrder = OrderAssembleHelper.assembleOrder(order);
+                    log.info("==========转换TAO订单");
 
                     OOrder oOrder = ShopOrderTransform.transformTaoOrder(gitem);
                     oOrder.setShopId(shopId);
@@ -236,14 +234,14 @@ public class ShopOrderApiController {
                     var result = orderService.saveShopOrder(oOrder);
                     if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
                         //已经存在
-                        log.info("=============主动更新JD订单：开始更新数据库：" + gitem.getOrderId() + "存在、更新");
+                        log.info("=============主动更新TAO订单：开始更新数据库：" + gitem.getTid() + "存在、更新");
                         hasExistOrder++;
                     } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
-                        log.info("============主动更新JD订单：开始更新数据库：" + gitem.getOrderId() + "不存在、新增");
+                        log.info("============主动更新TAO订单：开始更新数据库：" + gitem.getTid() + "不存在、新增");
 
                         insertSuccess++;
                     } else {
-                        log.info("===============主动更新JD订单：开始更新数据库：" + gitem.getOrderId() + "报错:{}", result.getMsg());
+                        log.info("===============主动更新TAO订单：开始更新数据库：" + gitem.getTid() + "报错:{}", result.getMsg());
                         totalError++;
                     }
                 }

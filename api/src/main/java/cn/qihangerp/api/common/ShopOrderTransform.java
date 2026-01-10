@@ -6,6 +6,7 @@ import cn.qihangerp.open.jd.response.JdOrderListResponse;
 import cn.qihangerp.open.pdd.model.Order;
 import cn.qihangerp.open.pdd.model.OrderItem;
 import cn.qihangerp.open.tao.response.TaoOrderListResponse;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,74 +22,108 @@ public class ShopOrderTransform {
     public static OOrder transformTaoOrder(TaoOrderListResponse order) {
         OOrder shopOrder = new OOrder();
         shopOrder.setOrderNum(order.getTid());
-        shopOrder.setBuyerMemo(order.get());
-        shopOrder.setSellerMemo(order.getVenderRemark());
-        shopOrder.setPlatformOrderStatus(order.getOrderState());
-        //	1）WAIT_SELLER_STOCK_OUT 等待出库 2）WAIT_GOODS_RECEIVE_CONFIRM 等待确认收货 3）WAIT_SELLER_DELIVERY 等待发货（只适用于海外购商家，含义为'等待境内发货'标签下的订单,非海外购商家无需使用）
-        //	4) POP_ORDER_PAUSE POP暂停 5）FINISHED_L 完成 6）TRADE_CANCELED 取消 7）LOCKED 已锁定 8）WAIT_SEND_CODE 等待发码
-        shopOrder.setPlatformOrderStatusText(order.getOrderStateRemark());
-        //订单状态 0：新订单，1：待发货，2：已发货，3：已完成，11已取消；12退款中；21待付款；22锁定，29删除，101部分发货
+        String buyerMemo = "";
+        if(StringUtils.hasText(order.getBuyer_memo())){
+            buyerMemo += order.getBuyer_memo();
+        }
+        if(StringUtils.hasText(order.getBuyer_message())){
+            buyerMemo += order.getBuyer_message();
+        }
+        shopOrder.setBuyerMemo(buyerMemo);
+        shopOrder.setSellerMemo(order.getSeller_memo());
+        shopOrder.setPlatformOrderStatus(order.getStatus());
+        //	交易状态。可选值:
+        //	* TRADE_NO_CREATE_PAY(没有创建支付宝交易) * WAIT_BUYER_PAY(等待买家付款)
+        //	* SELLER_CONSIGNED_PART(卖家部分发货)
+        //	* WAIT_SELLER_SEND_GOODS(等待卖家发货,即:买家已付款) * WAIT_BUYER_CONFIRM_GOODS(等待买家确认收货,即:卖家已发货)
+        //	* TRADE_BUYER_SIGNED(买家已签收,货到付款专用) * TRADE_FINISHED(交易成功) * TRADE_CLOSED(付款以后用户退款成功，交易自动关闭)
+        //	* TRADE_CLOSED_BY_TAOBAO(付款以前，卖家或买家主动关闭交易)
+        //	* PAY_PENDING(国际信用卡支付付款确认中) * WAIT_PRE_AUTH_CONFIRM(0元购合约中)
+        //	* PAID_FORBID_CONSIGN(拼团中订单或者发货强管控的订单，已付款但禁止发货)
 
-        if(order.getOrderState().equals("WAIT_SELLER_STOCK_OUT")||order.getOrderState().equals("WAIT_SELLER_DELIVERY")){
+
+        //订单状态 0：新订单，1：待发货，2：已发货，3：已完成，11已取消；12已关闭；12退款中；21待付款；22锁定，29删除，101部分发货
+        if(order.getStatus().equals("TRADE_NO_CREATE_PAY")){
+            shopOrder.setOrderStatus(21);
+            shopOrder.setRefundStatus(1);
+            shopOrder.setPlatformOrderStatusText("没有创建支付宝交易");
+        }else if (order.getStatus().equals("WAIT_BUYER_PAY")){
+            shopOrder.setOrderStatus(21);
+            shopOrder.setRefundStatus(1);
+            shopOrder.setPlatformOrderStatusText("等待买家付款");
+        }else if (order.getStatus().equals("SELLER_CONSIGNED_PART")){
+            shopOrder.setOrderStatus(101);
+            shopOrder.setRefundStatus(1);
+            shopOrder.setPlatformOrderStatusText("卖家部分发货");
+        }else if (order.getStatus().equals("WAIT_SELLER_SEND_GOODS")){
             shopOrder.setOrderStatus(1);
             shopOrder.setRefundStatus(1);
-        }else if (order.getOrderState().equals("WAIT_GOODS_RECEIVE_CONFIRM")){
+            shopOrder.setPlatformOrderStatusText("等待卖家发货");
+        }else if (order.getStatus().equals("WAIT_BUYER_CONFIRM_GOODS")){
             shopOrder.setOrderStatus(2);
             shopOrder.setRefundStatus(1);
-        }else if (order.getOrderState().equals("POP_ORDER_PAUSE")||order.getOrderState().equals("LOCKED")||order.getOrderState().equals("WAIT_SEND_CODE")){
-            shopOrder.setOrderStatus(22);
-            shopOrder.setRefundStatus(1);
-        }else if (order.getOrderState().equals("FINISHED_L")){
+            shopOrder.setPlatformOrderStatusText("等待买家确认收货");
+        }else if (order.getStatus().equals("TRADE_BUYER_SIGNED")){
             shopOrder.setOrderStatus(3);
             shopOrder.setRefundStatus(1);
-        }else if (order.getOrderState().equals("TRADE_CANCELED")){
+            shopOrder.setPlatformOrderStatusText("买家已签收");
+        }else if (order.getStatus().equals("TRADE_FINISHED")){
+            shopOrder.setOrderStatus(3);
+            shopOrder.setRefundStatus(1);
+            shopOrder.setPlatformOrderStatusText("交易成功");
+        }else if (order.getStatus().equals("TRADE_CLOSED")){
+            shopOrder.setOrderStatus(12);
+            shopOrder.setRefundStatus(4);
+            shopOrder.setPlatformOrderStatusText("付款以后用户退款成功，交易自动关闭");
+        }else if (order.getStatus().equals("TRADE_CLOSED_BY_TAOBAO")){
             shopOrder.setOrderStatus(11);
             shopOrder.setRefundStatus(4);
+            shopOrder.setPlatformOrderStatusText("付款以前，卖家或买家主动关闭交易");
         }
 
         // 时间
-        shopOrder.setOrderCreated(order.getOrderStartTime());
+        shopOrder.setOrderCreated(order.getCreated());
         shopOrder.setOrderUpdated(order.getModified());
-        shopOrder.setOrderPayTime(order.getPaymentConfirmTime());
-        shopOrder.setOrderFinishTime(order.getOrderEndTime());
+        shopOrder.setOrderPayTime(order.getPay_time());
+        shopOrder.setOrderFinishTime(order.getEnd_time());
 
         // 价格
-        shopOrder.setGoodsAmount(Double.parseDouble(order.getOrderTotalPrice()));
-        shopOrder.setChangeAmount(0.0);
-        shopOrder.setPostFee(Double.parseDouble(order.getFreightPrice()));
-        shopOrder.setSellerDiscount(Double.parseDouble(order.getSellerDiscount()));
+        shopOrder.setGoodsAmount(Double.parseDouble(order.getTotal_fee()));
+        shopOrder.setChangeAmount(Double.parseDouble(order.getAdjust_fee()));
+        shopOrder.setPostFee(Double.parseDouble(order.getPost_fee()));
+        shopOrder.setSellerDiscount(Double.parseDouble(order.getDiscount_fee()));
         shopOrder.setPlatformDiscount(0.0);
-        shopOrder.setPayment(Double.parseDouble(order.getOrderPayment()));
+        shopOrder.setPayment(Double.parseDouble(order.getPayment()));
         shopOrder.setServiceFee(0.0);
         shopOrder.setAmount(shopOrder.getPayment() - shopOrder.getServiceFee());
         // 收货地址
-        shopOrder.setReceiverName(order.getConsigneeInfo().getFullname());
-        shopOrder.setReceiverMobile(order.getConsigneeInfo().getMobile());
-        shopOrder.setAddress(order.getConsigneeInfo().getFullAddress());
-        shopOrder.setProvince(order.getConsigneeInfo().getProvince());
-        shopOrder.setCity(order.getConsigneeInfo().getCity());
-        shopOrder.setTown(order.getConsigneeInfo().getTown());
+        shopOrder.setReceiverName(order.getReceiver_name());
+        shopOrder.setReceiverMobile(order.getReceiver_mobile());
+        shopOrder.setAddress(order.getReceiver_address());
+        shopOrder.setProvince(order.getReceiver_state());
+        shopOrder.setCity(order.getReceiver_city());
+        shopOrder.setTown(order.getReceiver_district());
 
 
 
         // 订单明细
         List<OOrderItem> itemList = new ArrayList<>();
-        if (order.getItemInfoList() != null) {
-            for (var line : order.getItemInfoList()) {
+        if (order.getOrders() != null) {
+            for (var line : order.getOrders()) {
                 OOrderItem item = new OOrderItem();
                 item.setOrderNum(shopOrder.getOrderNum());
-                item.setSubOrderNum(shopOrder.getOrderNum()+"-"+line.getSkuId());
-                item.setSkuId(line.getSkuId());
-                item.setGoodsTitle(line.getSkuName());
-                item.setGoodsImg("");
+                item.setSubOrderNum(line.getOid());
+                item.setSkuId(line.getSku_id());
+                item.setGoodsTitle(line.getTitle());
+                item.setGoodsImg(line.getPic_path());
                 item.setGoodsNum("");
-                item.setGoodsSpec("");
-                item.setGoodsPrice(Double.parseDouble(line.getJdPrice()));
-                item.setSkuNum(line.getOuterSkuId());
-                item.setItemAmount(item.getGoodsPrice()* Double.parseDouble(line.getItemTotal()));
+                item.setGoodsSpec(line.getSku_properties_name());
+                item.setGoodsPrice(Double.parseDouble(line.getPrice()));
+                item.setSkuNum(line.getOuter_sku_id());
+                item.setItemAmount(Double.parseDouble(line.getTotal_fee()));
                 item.setDiscountAmount(0.0);
                 item.setPayment(item.getItemAmount());
-                item.setQuantity(Integer.parseInt(line.getItemTotal()));
+                item.setQuantity(line.getNum());
                 item.setRefundCount(0);
                 item.setRefundStatus(1);
                 item.setOrderStatus(shopOrder.getOrderStatus());
