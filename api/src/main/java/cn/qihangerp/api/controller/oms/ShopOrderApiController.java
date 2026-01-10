@@ -1,5 +1,6 @@
 package cn.qihangerp.api.controller.oms;
 
+import cn.qihangerp.api.common.OrderAssembleHelper;
 import cn.qihangerp.api.common.ShopApiCommon;
 import cn.qihangerp.api.common.ShopOrderTransform;
 import cn.qihangerp.api.request.PullRequest;
@@ -18,6 +19,8 @@ import cn.qihangerp.open.jd.JdOrderApiHelper;
 import cn.qihangerp.open.jd.response.JdOrderListResponse;
 import cn.qihangerp.open.pdd.PddOrderApiHelper;
 import cn.qihangerp.open.pdd.model.OrderListResultVo;
+import cn.qihangerp.open.tao.TaoOrderApiHelper;
+import cn.qihangerp.open.tao.response.TaoOrderListResponse;
 import cn.qihangerp.service.service.OOrderService;
 import cn.qihangerp.service.service.OShopPullLasttimeService;
 import cn.qihangerp.service.service.OShopPullLogsService;
@@ -195,6 +198,37 @@ public class ShopOrderApiController {
                 for (var gitem : upResult.getList()) {
                     log.info("==========转换JD订单");
                     OOrder oOrder = ShopOrderTransform.transformJdOrder(gitem);
+                    oOrder.setShopId(shopId);
+                    oOrder.setShopType(shopType);
+
+                    //插入订单数据
+                    var result = orderService.saveShopOrder(oOrder);
+                    if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
+                        //已经存在
+                        log.info("=============主动更新JD订单：开始更新数据库：" + gitem.getOrderId() + "存在、更新");
+                        hasExistOrder++;
+                    } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
+                        log.info("============主动更新JD订单：开始更新数据库：" + gitem.getOrderId() + "不存在、新增");
+
+                        insertSuccess++;
+                    } else {
+                        log.info("===============主动更新JD订单：开始更新数据库：" + gitem.getOrderId() + "报错:{}", result.getMsg());
+                        totalError++;
+                    }
+                }
+            }
+        }else if(shopType==EnumShopType.TAO.getIndex()) {
+            log.info("=============拉取TAO店铺订单。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
+            ApiResultVo<TaoOrderListResponse> upResult = TaoOrderApiHelper.pullTradeList(startTime,endTime,appKey, appSecret, accessToken);
+            apiResponseCode = upResult.getCode();
+            apiResponseMsg = upResult.getMsg();
+            if(apiResponseCode==0) {
+                //循环插入订单数据到数据库
+                for (var gitem : upResult.getList()) {
+                    log.info("==========转换JD订单");
+                    TaoOrder taoOrder = OrderAssembleHelper.assembleOrder(order);
+
+                    OOrder oOrder = ShopOrderTransform.transformTaoOrder(gitem);
                     oOrder.setShopId(shopId);
                     oOrder.setShopType(shopType);
 
