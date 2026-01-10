@@ -6,8 +6,6 @@ import cn.qihangerp.common.ResultVo;
 import cn.qihangerp.common.ResultVoEnum;
 import cn.qihangerp.model.bo.JdAfterBo;
 import cn.qihangerp.model.entity.JdRefund;
-import cn.qihangerp.service.mapper.JdOrderItemMapper;
-import cn.qihangerp.service.mapper.JdOrderMapper;
 import cn.qihangerp.service.mapper.JdRefundMapper;
 import cn.qihangerp.service.service.JdRefundService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -32,8 +30,6 @@ import java.util.List;
 public class JdRefundServiceImpl extends ServiceImpl<JdRefundMapper, JdRefund>
     implements JdRefundService {
     private final JdRefundMapper mapper;
-    private final JdOrderMapper orderMapper;
-    private final JdOrderItemMapper orderItemMapper;
 
     @Override
     public PageResult<JdRefund> queryPageList(JdAfterBo bo, PageQuery pageQuery) {

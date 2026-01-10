@@ -12,7 +12,6 @@ import cn.qihangerp.common.mq.MqUtils;
 import cn.qihangerp.model.entity.JdRefund;
 import cn.qihangerp.model.bo.JdAfterBo;
 import cn.qihangerp.model.bo.JdOrderPushBo;
-import cn.qihangerp.service.service.JdOrderService;
 import cn.qihangerp.service.service.JdRefundService;
 import cn.qihangerp.security.common.BaseController;
 import lombok.AllArgsConstructor;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/jd/after")
 public class JdOrderAfterSaleController extends BaseController {
-    private final JdOrderService orderService;
+
 //    private final JdRefundService refundService;
 //    private final JdOrderAfterService afterService;
     private final JdRefundService afterSaleService;
