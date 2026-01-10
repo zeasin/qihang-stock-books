@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 09/01/2026 10:39:15
+ Date: 10/01/2026 15:33:57
 */
 
 SET NAMES utf8mb4;
@@ -830,7 +830,7 @@ CREATE TABLE `o_goods_inventory_operation`  (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '仓库库存操作记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '仓库库存操作记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_goods_inventory_operation
@@ -2412,7 +2412,7 @@ CREATE TABLE `oms_tao_order`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `index_tid`(`tid` ASC) USING BTREE,
   INDEX `shop_id_index`(`shop_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '淘宝订单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '淘宝订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of oms_tao_order
@@ -2467,7 +2467,7 @@ CREATE TABLE `oms_tao_order_item`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `tid_index`(`tid` ASC) USING BTREE,
   INDEX `oid_index`(`oid` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '淘宝订单明细表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '淘宝订单明细表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of oms_tao_order_item
@@ -2548,7 +2548,7 @@ CREATE TABLE `oms_tao_refund`  (
   `o_goods_sku_id` bigint NULL DEFAULT NULL COMMENT '商品skuid(o_goods_sku外键)',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `refund_id_index`(`refund_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '淘宝退款表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '淘宝退款表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of oms_tao_refund
@@ -2966,7 +2966,7 @@ INSERT INTO `sys_menu` VALUES (2100, '私域售后管理', 2, 3, 'offline_afters
 INSERT INTO `sys_menu` VALUES (2103, '手动创建订单', 1, 49, 'order_create', 'order/create', NULL, 1, 0, 'C', '1', '0', '', 'date', 'admin', '2024-07-27 20:30:07', 'admin', '2026-01-03 02:48:11', '');
 INSERT INTO `sys_menu` VALUES (2106, '入库管理', 2, 10, 'stock_in_list', 'stockIn/index.vue', NULL, 1, 0, 'C', '0', '0', '', 'stock-in', 'admin', '2024-08-25 15:56:04', 'admin', '2026-01-05 07:16:07', '');
 INSERT INTO `sys_menu` VALUES (2114, '仓库管理', 7, 90, 'warehouse', 'warehouse/index.vue', NULL, 1, 0, 'C', '0', '0', '', 'warehouse', 'admin', '2024-09-21 20:07:26', 'admin', '2026-01-05 08:23:58', '');
-INSERT INTO `sys_menu` VALUES (2115, '商品库存', 2139, 10, 'goods_inventory', 'stock/goodsInventory/index', NULL, 1, 0, 'C', '0', '0', '', 'chart', 'admin', '2024-09-21 20:43:00', 'admin', '2026-01-06 10:07:14', '');
+INSERT INTO `sys_menu` VALUES (2115, '商品库存', 2139, 10, 'goods_stock', 'stock/goodsInventory/index', NULL, 1, 0, 'C', '0', '0', '', 'chart', 'admin', '2024-09-21 20:43:00', 'admin', '2026-01-10 07:33:28', '');
 INSERT INTO `sys_menu` VALUES (2116, '出库管理', 6, 20, 'out_list', 'stockOut/index', NULL, 1, 0, 'C', '0', '0', '', 'stock_out1', 'admin', '2024-09-21 20:44:46', 'admin', '2026-01-05 07:18:55', '');
 INSERT INTO `sys_menu` VALUES (2117, '仓位货架', 7, 91, 'position', 'warehouse/position', NULL, 1, 0, 'C', '0', '0', '', 'shinshop', 'admin', '2024-09-22 11:52:18', 'admin', '2026-01-05 08:25:26', '');
 INSERT INTO `sys_menu` VALUES (2118, '新建入库单', 2, 11, 'create', 'stockIn/create.vue', NULL, 1, 0, 'C', '1', '0', '', '404', 'admin', '2024-09-22 14:49:40', 'admin', '2026-01-05 06:59:51', '');
@@ -2976,7 +2976,7 @@ INSERT INTO `sys_menu` VALUES (2137, '入库操作', 2, 12, 'in', 'stockIn/in', 
 INSERT INTO `sys_menu` VALUES (2138, '入库记录', 2, 13, 'stock_in_detail', 'stockIn/detail', NULL, 1, 0, 'C', '0', '0', '', 'stockin', 'admin', '2026-01-05 13:47:02', 'admin', '2026-01-07 02:50:12', '');
 INSERT INTO `sys_menu` VALUES (2139, '库存管理', 0, 40, 'stock', NULL, NULL, 1, 0, 'M', '0', '0', NULL, 'stock', 'admin', '2026-01-06 10:06:51', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2140, '盘点管理', 2139, 20, 'pandian', 'stockTake/index', NULL, 1, 0, 'C', '0', '0', '', 'stock_out1', 'admin', '2026-01-06 10:09:55', 'admin', '2026-01-07 13:24:04', '');
-INSERT INTO `sys_menu` VALUES (2141, '库内调拨', 2139, 50, 'diaobo', NULL, NULL, 1, 0, 'C', '0', '0', '', 'button', 'admin', '2026-01-06 10:10:41', 'admin', '2026-01-09 02:38:53', '');
+INSERT INTO `sys_menu` VALUES (2141, '库内调拨', 2139, 50, 'diaobo', 'stockTransfer/index', NULL, 1, 0, 'C', '0', '0', '', 'button', 'admin', '2026-01-06 10:10:41', 'admin', '2026-01-10 07:32:21', '');
 INSERT INTO `sys_menu` VALUES (2142, '报损管理', 2139, 40, 'baosun', 'stockBad/index', NULL, 1, 0, 'C', '0', '0', '', 'bug', 'admin', '2026-01-06 10:11:14', 'admin', '2026-01-08 09:28:58', '');
 INSERT INTO `sys_menu` VALUES (2143, '出库记录', 6, 50, 'stock_out_detail', 'stockOut/detail', NULL, 1, 0, 'C', '0', '0', '', 'list', 'admin', '2026-01-07 02:52:13', 'admin', '2026-01-07 02:52:44', '');
 
@@ -3151,7 +3151,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-09 10:38:22', 'admin', '2023-08-07 19:31:37', '', '2026-01-09 02:38:21', '管理员');
+INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-10 15:29:41', 'admin', '2023-08-07 19:31:37', '', '2026-01-10 07:29:40', '管理员');
 INSERT INTO `sys_user` VALUES (2, NULL, 'openapi', 'openApi接口专用', '00', '2806456181@qq.com', '15818590000', '0', '', '$2a$10$fHkhoqbMiyracAsTzl38H.55bu.M.of1FXk2EK7RQBjfic3tLU0Ue', '0', '0', '127.0.0.1', '2024-06-24 10:23:35', 'admin', '2024-03-17 14:55:22', 'admin', '2024-06-24 10:23:35', NULL);
 INSERT INTO `sys_user` VALUES (101, 101, '15818590119', 'aaa123', '00', '', '', '0', '', '$2a$10$pXcT6cHaObMeKuYd9vZb5uEb8PyUdF2AcqqRN1cBqiA9rV4qYQW7G', '0', '2', '', NULL, 'admin', '2024-08-15 13:45:25', '', NULL, NULL);
 INSERT INTO `sys_user` VALUES (102, 101, '15818590119', '老齐', '00', '', '', '0', '', '$2a$10$ysk.zgJ8wh25c7vOjKyZ8uarM2hkG0S51j8GYdJSo2kZmc3f8HdKe', '0', '0', '', NULL, 'admin', '2024-08-15 13:49:59', 'admin', '2025-02-10 16:26:20', NULL);
