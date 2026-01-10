@@ -2,6 +2,8 @@ package cn.qihangerp.api.controller.oms;
 
 
 
+import cn.qihangerp.api.request.OrderItemUpdateSkuRequest;
+import cn.qihangerp.common.AjaxResult;
 import cn.qihangerp.common.PageQuery;
 import cn.qihangerp.common.TableDataInfo;
 import cn.qihangerp.model.bo.OrderItemListBo;
@@ -9,9 +11,8 @@ import cn.qihangerp.service.service.OOrderItemService;
 import cn.qihangerp.service.service.OOrderService;
 import cn.qihangerp.security.common.BaseController;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 店铺订单Controller
@@ -37,18 +38,21 @@ public class OrderItemController extends BaseController
         return getDataTable(pageList);
     }
 
-//    /**
-//     * 更新erp sku id
-//     * @param orderItem
-//     * @return
-//     */
-//    @PostMapping("/updateErpSkuId")
-//    public AjaxResult ship(@RequestBody OOrderItem orderItem)
-//    {
-//        if(StringUtils.isEmpty(orderItem.getId()) || orderItem.getGoodsSkuId()==null){
-//            return AjaxResult.error("确少必要参数");
-//        }
-//        itemService.updateErpSkuId(orderItem.getId(), orderItem.getGoodsSkuId());
-//        return AjaxResult.success();
-//    }
+    /**
+     * 更新erp sku id
+     * @param request
+     * @return
+     */
+    @PostMapping("/updateErpSkuId")
+    public AjaxResult ship(@RequestBody OrderItemUpdateSkuRequest request)
+    {
+        if(request.getId()==null||request.getId()==0) return AjaxResult.error("缺少参数：id");
+        if(StringUtils.isEmpty(request.getErpSkuId()) || request.getErpSkuId().equals("0")){
+            return AjaxResult.error("确少参数:ErpSkuId");
+        }
+        var result = itemService.updateErpSkuId(request.getId(), request.getErpSkuId());
+        if(result.getCode()==0)
+            return AjaxResult.success();
+        else return AjaxResult.error(result.getMsg());
+    }
 }

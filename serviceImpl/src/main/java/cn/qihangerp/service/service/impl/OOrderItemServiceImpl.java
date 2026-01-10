@@ -1,10 +1,12 @@
 package cn.qihangerp.service.service.impl;
 
 
+import cn.qihangerp.model.entity.OGoodsSku;
 import cn.qihangerp.model.entity.OOrderItem;
 import cn.qihangerp.model.bo.OrderItemListBo;
 import cn.qihangerp.model.vo.OrderItemListVo;
 import cn.qihangerp.model.vo.SalesTopSkuVo;
+import cn.qihangerp.service.mapper.OGoodsSkuMapper;
 import cn.qihangerp.service.mapper.OOrderItemMapper;
 import cn.qihangerp.service.service.OOrderItemService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -33,6 +35,7 @@ import java.util.regex.Pattern;
 public class OOrderItemServiceImpl extends ServiceImpl<OOrderItemMapper, OOrderItem>
     implements OOrderItemService {
     private final OOrderItemMapper mapper;
+    private final OGoodsSkuMapper goodsSkuMapper;
     private final String DATE_PATTERN =
             "^(?:(?:(?:\\d{4}-(?:0?[1-9]|1[0-2])-(?:0?[1-9]|1\\d|2[0-8]))|(?:(?:(?:\\d{2}(?:0[48]|[2468][048]|[13579][26])|(?:(?:0[48]|[2468][048]|[13579][26])00))-0?2-29))$)|(?:(?:(?:\\d{4}-(?:0?[13578]|1[02]))-(?:0?[1-9]|[12]\\d|30))$)|(?:(?:(?:\\d{4}-0?[13-9]|1[0-2])-(?:0?[1-9]|[1-2]\\d|30))$)|(?:(?:(?:\\d{2}(?:0[48]|[13579][26]|[2468][048])|(?:(?:0[48]|[13579][26]|[2468][048])00))-0?2-29))$)$";
     private final Pattern DATE_FORMAT = Pattern.compile(DATE_PATTERN);
@@ -73,10 +76,32 @@ public class OOrderItemServiceImpl extends ServiceImpl<OOrderItemMapper, OOrderI
     }
 
     @Override
-    public ResultVo<Integer> updateErpSkuId(String id, Long erpSkuId) {
+    public ResultVo<Integer> updateErpSkuId(Long id, String erpSkuId) {
+        OOrderItem oOrderItem = mapper.selectById(id);
+        if(oOrderItem == null) return ResultVo.error("订单item不存在");
+        else if(oOrderItem.getShipStatus()!=0) return ResultVo.error("已出库的订单item不允许修改");
+        Long goodsId = 0L;
+        Long goodsSkuId = 0L;
+        OGoodsSku oGoodsSku = goodsSkuMapper.selectById(erpSkuId);
+        if(oGoodsSku!=null){
+            goodsId = Long.parseLong(oGoodsSku.getGoodsId());
+            goodsSkuId = Long.parseLong(oGoodsSku.getId());
+        }else{
+            List<OGoodsSku> oGoodsSkus = goodsSkuMapper.selectList(new LambdaQueryWrapper<OGoodsSku>().eq(OGoodsSku::getSkuCode, erpSkuId));
+            if(oGoodsSkus!=null && oGoodsSkus.size()>0){
+                goodsId = Long.parseLong(oGoodsSkus.get(0).getGoodsId());
+                goodsSkuId = Long.parseLong(oGoodsSkus.get(0).getId());
+            }
+        }
+
+        if(goodsSkuId==0L){
+            return ResultVo.error("找不到系统商品Sku");
+        }
+
         OOrderItem update = new OOrderItem();
-        update.setId(id);
-        update.setGoodsSkuId(erpSkuId);
+        update.setId(id.toString());
+        update.setGoodsId(goodsId);
+        update.setGoodsSkuId(goodsSkuId);
         update.setUpdateBy("手动修改ERP SKU ID");
         update.setUpdateTime(new Date());
         mapper.updateById(update);

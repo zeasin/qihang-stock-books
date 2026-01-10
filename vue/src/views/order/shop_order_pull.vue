@@ -19,7 +19,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="下单时间" prop="orderTime">
-        <el-date-picker clearable
+        <el-date-picker clearable @change="dateChange"
                         v-model="orderTime" value-format="yyyy-MM-dd"
                         type="daterange"
                         range-separator="至"
@@ -165,6 +165,9 @@ export default {
         this.loading = false;
       });
     },
+    dateChange(){
+      this.pullLoading = false
+    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.pullLoading = false
@@ -178,6 +181,14 @@ export default {
       this.handleQuery();
     },
     handlePull() {
+      if (!this.queryParams.shopId) {
+        this.$modal.msgError("请选择店铺")
+        return;
+      }
+      if(!this.orderTime){
+        this.$modal.msgError("请选择下单时间")
+        return;
+      }
       if (this.queryParams.shopId) {
         this.pullLoading = true
         pullOrder({shopId:this.queryParams.shopId,orderTime:this.orderTime}).then(response => {

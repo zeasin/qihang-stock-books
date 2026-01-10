@@ -22,7 +22,7 @@ public interface OOrderItemService extends IService<OOrderItem> {
     PageResult<OrderItemListVo> selectPageVo(PageQuery pageQuery, OrderItemListBo bo);
     PageResult<OOrderItem> queryPageList(OOrderItem bo, PageQuery pageQuery);
 
-    ResultVo<Integer>  updateErpSkuId(String id,Long erpSkuId);
+    ResultVo<Integer>  updateErpSkuId(Long id,String erpSkuId);
 
     List<OOrderItem> getOrderItemListByOrderId(Long orderId);
     List<SalesTopSkuVo> selectTopSku(String startDate, String endDate);

@@ -86,7 +86,7 @@
       </el-table-column>
       <el-table-column label="商品名" align="center" prop="goodsTitle" width="250px"/>
       <el-table-column label="SKU名" align="center" prop="goodsSpec" />
-      <el-table-column label="Sku编码" align="center" prop="skuNum" />
+<!--      <el-table-column label="Sku编码" align="center" prop="skuNum" />-->
       <el-table-column label="平台SkuId" align="center" prop="skuId" />
       <el-table-column label="系统 SkuId" align="center" prop="goodsSkuId" />
 <!--      <el-table-column label="外部ERP SkuId" align="center" prop="outerErpSkuId" />-->
@@ -101,16 +101,16 @@
            <el-tag v-if="scope.row.refundStatus === 4">退款成功</el-tag>
         </template>
       </el-table-column>
-<!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
-<!--        <template slot-scope="scope">-->
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-edit"-->
-<!--            @click="handleEditErpSku(scope.row)"-->
-<!--          >补充ERP SKU</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleEditErpSku(scope.row)"
+          >修改SKUID</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -239,26 +239,26 @@ export default {
       this.form.erpSkuId = null
       this.open = false
     },
-    // handleEditErpSku(row){
-    //   this.form.id = row.id
-    //   if(this.form.erpSkuId && this.form.erpSkuId > 0) {
-    //     this.form.erpSkuId = row.erpSkuId
-    //   }
-    //   this.open = true
-    // },
-    // submitForm() {
-    //   this.$refs["form"].validate(valid => {
-    //     if (valid) {
-    //       console.log('====修改参数====',this.form)
-    //       updateErpSkuId(this.form).then(response => {
-    //         this.$modal.msgSuccess("修改成功");
-    //         this.open = false;
-    //         this.getList();
-    //       });
-    //
-    //     }
-    //   });
-    // }
+    handleEditErpSku(row){
+      this.form.id = row.id
+      if(this.form.erpSkuId && this.form.erpSkuId > 0) {
+        this.form.erpSkuId = row.erpSkuId
+      }
+      this.open = true
+    },
+    submitForm() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          console.log('====修改参数====',this.form)
+          updateErpSkuId(this.form).then(response => {
+            this.$modal.msgSuccess("修改成功");
+            this.open = false;
+            this.getList();
+          });
+
+        }
+      });
+    }
   }
 };
 </script>
