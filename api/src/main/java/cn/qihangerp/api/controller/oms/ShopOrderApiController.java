@@ -69,28 +69,28 @@ public class ShopOrderApiController {
         if (req.getShopId() == null || req.getShopId() <= 0) {
             return AjaxResult.error( "缺少参数：shopId");
         }
-        if(req.getOrderTime() == null) return AjaxResult.error("缺少参数：下单时间");
-        String startTimeStr = req.getOrderTime()[0];
-        String endTimeStr = req.getOrderTime()[1];
+        if(req.getCreateTime() == null) return AjaxResult.error("缺少参数：订单创建时间");
+//        String startTimeStr = req.getOrderTime()[0];
+//        String endTimeStr = req.getOrderTime()[1];
 
-        if(StringUtils.hasText(startTimeStr)) {
+        if(StringUtils.hasText(req.getCreateTime())) {
             // 判断时间格式
-            Matcher matcher = DATE_FORMAT.matcher(startTimeStr);
+            Matcher matcher = DATE_FORMAT.matcher(req.getCreateTime());
             boolean b = matcher.find();
             if (!b) {
-                return AjaxResult.error("开始时间格式错误");
+                return AjaxResult.error("订单创建时间格式错误");
             }
-            if (StringUtils.hasText(endTimeStr)) {
-                Matcher matcher1 = DATE_FORMAT.matcher(endTimeStr);
-                boolean b1 = matcher1.find();
-                if (!b1) {
-                    return AjaxResult.error("结束时间格式错误");
-                }
-            }
-            // 判断开始时间，结束时间 是不是一天
-            if(!startTimeStr.equals(endTimeStr)){
-                return AjaxResult.error("开始时间-结束时间不能超过1天");
-            }
+//            if (StringUtils.hasText(endTimeStr)) {
+//                Matcher matcher1 = DATE_FORMAT.matcher(endTimeStr);
+//                boolean b1 = matcher1.find();
+//                if (!b1) {
+//                    return AjaxResult.error("结束时间格式错误");
+//                }
+//            }
+//            // 判断开始时间，结束时间 是不是一天
+//            if(!startTimeStr.equals(endTimeStr)){
+//                return AjaxResult.error("开始时间-结束时间不能超过1天");
+//            }
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Date currDateTime = new Date();
@@ -106,8 +106,8 @@ public class ShopOrderApiController {
         Long shopId = checkResult.getData().getShopId();
         int shopType = checkResult.getData().getShopType();
         // 获取最后更新时间
-        LocalDateTime startTime = LocalDateTime.parse(startTimeStr + " 00:00:01", formatter);
-        LocalDateTime  endTime = LocalDateTime.parse(startTimeStr + " 23:59:59", formatter);
+        LocalDateTime startTime = LocalDateTime.parse(req.getCreateTime() + " 00:00:01", formatter);
+        LocalDateTime  endTime = LocalDateTime.parse(req.getCreateTime() + " 23:59:59", formatter);
 
         String pullParams = "{startTime:"+startTime.format(formatter)+",endTime:"+endTime.format(formatter)+"}";
 

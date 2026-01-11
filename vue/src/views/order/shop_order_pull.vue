@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" v-show="showSearch" label-width="100px">
+    <el-form :model="form" ref="form" size="small"  :rules="rules" label-width="120px">
       <el-form-item label="店铺" prop="shopId">
-        <el-select v-model="queryParams.shopId" placeholder="请选择店铺" clearable @change="handleQuery">
+        <el-select v-model="form.shopId" placeholder="请选择店铺" clearable @change="handleQuery">
          <el-option
             v-for="item in shopList"
             :key="item.id"
@@ -18,10 +18,10 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="下单时间" prop="orderTime">
+      <el-form-item label="订单创建时间" prop="createTime">
         <el-date-picker clearable @change="dateChange"
-                        v-model="orderTime" value-format="yyyy-MM-dd"
-                        type="daterange"
+                        v-model="form.createTime" value-format="yyyy-MM-dd"
+                        type="date"
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
@@ -131,14 +131,14 @@ export default {
       },
       // 表单参数
       form: {
-        erpGoodsSkuId:null,
-        id:null
+        createTime:null,
+        shopId:null
       },
       rules: {
-        id: [
+        shopId: [
           { required: true, message: "不能为空", trigger: "blur" }
         ],
-        erpGoodsSkuId: [
+        createTime: [
           { required: true, message: "不能为空", trigger: "blur" }
         ],
       }
@@ -171,6 +171,7 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.pullLoading = false
+      this.queryParams.shopId = this.form.shopId
       this.queryParams.pageNum = 1;
       this.getList();
     },
@@ -181,17 +182,17 @@ export default {
       this.handleQuery();
     },
     handlePull() {
-      if (!this.queryParams.shopId) {
+      if (!this.form.shopId) {
         this.$modal.msgError("请选择店铺")
         return;
       }
-      if(!this.orderTime){
-        this.$modal.msgError("请选择下单时间")
+      if(!this.form.createTime){
+        this.$modal.msgError("请选择订单创建时间")
         return;
       }
       if (this.queryParams.shopId) {
         this.pullLoading = true
-        pullOrder({shopId:this.queryParams.shopId,orderTime:this.orderTime}).then(response => {
+        pullOrder({shopId:this.queryParams.shopId,createTime:this.form.createTime}).then(response => {
           console.log('拉取店铺订单接口返回=====',response)
           if(response.code === 1401) {
             MessageBox.confirm('Token已过期，需要重新授权！请前往店铺列表重新获取授权！', '系统提示', { confirmButtonText: '前往授权', cancelButtonText: '取消', type: 'warning' }).then(() => {

@@ -142,6 +142,8 @@ public class ShopRefundApiController {
                 }
             }
 
+        }else{
+            return AjaxResult.error("暂时不支持！");
         }
 
         if (apiResponseCode != 0) {
