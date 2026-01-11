@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 10/01/2026 21:06:18
+ Date: 11/01/2026 16:23:25
 */
 
 SET NAMES utf8mb4;
@@ -1436,7 +1436,7 @@ CREATE TABLE `o_shop_pull_logs`  (
   `pull_time` datetime NULL DEFAULT NULL COMMENT '拉取时间',
   `duration` bigint NULL DEFAULT NULL COMMENT '耗时（毫秒）',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2009913752577007618 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '店铺更新日志表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2010266195034882050 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '店铺更新日志表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_shop_pull_logs
@@ -1471,6 +1471,11 @@ INSERT INTO `o_shop_pull_logs` VALUES (2009901871078502401, 1007, 300, 'ORDER', 
 INSERT INTO `o_shop_pull_logs` VALUES (2009910634514636802, 1011, 300, 'ORDER', '主动拉取订单', '{startTime:2026-01-10 00:00:01,endTime:2026-01-10 23:59:59}', 'access_token已过期', '2026-01-10 16:50:12', 442);
 INSERT INTO `o_shop_pull_logs` VALUES (2009911128167440386, 1007, 300, 'ORDER', '主动拉取订单', '{startTime:2026-01-10 00:00:01,endTime:2026-01-10 23:59:59}', '{insert:20,update:0,fail:0}', '2026-01-10 16:52:07', 2776);
 INSERT INTO `o_shop_pull_logs` VALUES (2009913752577007617, 1011, 400, 'REFUND', '主动拉取退款', '{startTime:2026-01-10T16:32:35.464937100,endTime:2026-01-10T17:02:35.464937100}', 'access_token已过期', '2026-01-10 17:02:35', 205);
+INSERT INTO `o_shop_pull_logs` VALUES (2010260827449835522, 1007, 400, 'REFUND', '主动拉取退款', '{startTime:2026-01-11T15:31:44.398163600,endTime:2026-01-11T16:01:44.398163600}', 'client下线或者clientId不正确', '2026-01-11 16:01:44', 381);
+INSERT INTO `o_shop_pull_logs` VALUES (2010260991505842178, 1011, 400, 'REFUND', '主动拉取退款', '{startTime:2026-01-11T15:32:23.833770,endTime:2026-01-11T16:02:23.833770}', 'access_token已过期', '2026-01-11 16:02:24', 53);
+INSERT INTO `o_shop_pull_logs` VALUES (2010261581912850433, 1011, 400, 'REFUND', '主动拉取退款', '{startTime:2026-01-11T15:34:44.393857900,endTime:2026-01-11T16:04:44.393857900}', 'access_token已过期', '2026-01-11 16:04:44', 251);
+INSERT INTO `o_shop_pull_logs` VALUES (2010265533236625410, 1011, 400, 'REFUND', '主动拉取退款', '{startTime:2026-01-11T15:50:26.490873,endTime:2026-01-11T16:20:26.490873}', 'access_token已过期', '2026-01-11 16:20:26', 223);
+INSERT INTO `o_shop_pull_logs` VALUES (2010266195034882049, 1011, 400, 'REFUND', '主动拉取退款', '{startTime:2026-01-11T15:53:04.274583900,endTime:2026-01-11T16:23:04.274583900}', 'access_token已过期', '2026-01-11 16:23:04', 226);
 
 -- ----------------------------
 -- Table structure for o_shop_region
@@ -2370,7 +2375,7 @@ INSERT INTO `sys_menu` VALUES (6, '出库管理', 0, 20, 'stock_out', 'Layout', 
 INSERT INTO `sys_menu` VALUES (7, '仓库设置', 0, 50, 'warehouse', 'Layout', NULL, 1, 0, 'M', '0', '0', '', 'lock', 'admin', '2024-08-25 15:54:14', 'admin', '2026-01-06 10:06:24', '');
 INSERT INTO `sys_menu` VALUES (100, '店铺订单库', 1, 1, 'order_list', 'order/index', '', 1, 0, 'C', '0', '0', '', 'shopping', 'admin', '2023-12-27 15:00:27', 'admin', '2026-01-04 14:16:30', '用户管理菜单');
 INSERT INTO `sys_menu` VALUES (101, '店铺订单下载', 1, 10, 'shop_order_pull', 'order/shop_order_pull', '', 1, 0, 'C', '0', '0', '', 'download', 'admin', '2023-12-27 15:00:27', 'admin', '2026-01-04 14:19:23', '角色管理菜单');
-INSERT INTO `sys_menu` VALUES (106, '店铺售后管理', 1, 20, 'shop_refund_list', 'refund/shopRefund/index', '', 1, 0, 'C', '0', '0', '', 'edit', 'admin', '2023-12-27 15:00:27', 'admin', '2026-01-01 07:08:01', '参数设置菜单');
+INSERT INTO `sys_menu` VALUES (106, '店铺售后管理', 1, 20, 'shop_refund_list', 'refund/index', '', 1, 0, 'C', '0', '0', '', 'edit', 'admin', '2023-12-27 15:00:27', 'admin', '2026-01-11 07:58:48', '参数设置菜单');
 INSERT INTO `sys_menu` VALUES (108, '店铺管理', 1, 86, 'shop_list', 'shop/index', '', 1, 0, 'C', '0', '0', '', 'shop', 'admin', '2023-12-29 09:14:02', 'admin', '2026-01-01 07:07:02', '');
 INSERT INTO `sys_menu` VALUES (110, '平台参数设置', 1, 88, 'platform/setting', 'shop/platform/index', '', 1, 0, 'C', '0', '0', '', 'system', 'admin', '2023-12-29 13:32:41', 'admin', '2025-07-11 13:59:36', '');
 INSERT INTO `sys_menu` VALUES (116, '用户管理', 5, 1, 'user', 'system/user/index', '', 1, 0, 'C', '0', '0', '', 'user', 'admin', '2023-12-27 15:00:27', '', '', '用户管理菜单');
@@ -2579,7 +2584,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-10 16:09:07', 'admin', '2023-08-07 19:31:37', '', '2026-01-10 08:09:07', '管理员');
+INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-11 15:58:08', 'admin', '2023-08-07 19:31:37', '', '2026-01-11 07:58:07', '管理员');
 INSERT INTO `sys_user` VALUES (2, NULL, 'openapi', 'openApi接口专用', '00', '2806456181@qq.com', '15818590000', '0', '', '$2a$10$fHkhoqbMiyracAsTzl38H.55bu.M.of1FXk2EK7RQBjfic3tLU0Ue', '0', '0', '127.0.0.1', '2024-06-24 10:23:35', 'admin', '2024-03-17 14:55:22', 'admin', '2024-06-24 10:23:35', NULL);
 INSERT INTO `sys_user` VALUES (101, 101, '15818590119', 'aaa123', '00', '', '', '0', '', '$2a$10$pXcT6cHaObMeKuYd9vZb5uEb8PyUdF2AcqqRN1cBqiA9rV4qYQW7G', '0', '2', '', NULL, 'admin', '2024-08-15 13:45:25', '', NULL, NULL);
 INSERT INTO `sys_user` VALUES (102, 101, '15818590119', '老齐', '00', '', '', '0', '', '$2a$10$ysk.zgJ8wh25c7vOjKyZ8uarM2hkG0S51j8GYdJSo2kZmc3f8HdKe', '0', '0', '', NULL, 'admin', '2024-08-15 13:49:59', 'admin', '2025-02-10 16:26:20', NULL);

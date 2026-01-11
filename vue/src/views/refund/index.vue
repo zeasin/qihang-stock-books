@@ -66,6 +66,16 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          :loading="pullLoading"
+          type="success"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          @click="handlePullOpen"
+        >API下载店铺售后</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
           type="primary"
           plain
           icon="el-icon-refresh"
@@ -231,6 +241,41 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="下载店铺售后" :visible.sync="pullOpen" width="500px" append-to-body :close-on-click-modal="false">
+      <el-form ref="pullForm" :model="pullForm" :rules="pullRules" label-width="120px">
+        <el-form-item label="店铺" prop="shopId">
+          <el-select v-model="pullForm.shopId" placeholder="请选择店铺" clearable @change="handleQuery">
+            <el-option
+              v-for="item in shopList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+              <span style="float: left">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 500">微信小店</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 200">京东POP</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 280">京东自营</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 100">淘宝天猫</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 300">拼多多</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 400">抖店</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="申请日期" prop="createTime">
+          <el-date-picker clearable
+                          v-model="pullForm.createTime" value-format="yyyy-MM-dd"
+                          type="date"
+                          range-separator="至"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handlePull">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -241,6 +286,9 @@ import {
   refundProcessing
 } from "@/api/refund/refund";
 import {listShop} from "@/api/shop/shop";
+import {pullRefund} from "@/api/pdd/refund";
+import {MessageBox} from "element-ui";
+import {isRelogin} from "@/utils/request";
 
 export default {
   name: "Returned",
@@ -253,6 +301,8 @@ export default {
       shopList:[],
       // 非单个禁用
       single: true,
+      pullLoading: false,
+      pullOpen: false,
       // 非多个禁用
       multiple: true,
       // 显示搜索条件
@@ -277,6 +327,13 @@ export default {
         hasProcessing: '0',
         status: null,
       },
+      pullForm:{
+
+      },
+      pullRules: {
+        shopId: [{ required: true, message: "请选择店铺", trigger: "blur" }],
+        createTime: [{ required: true, message: "请选择售后创建日期", trigger: "blur" }],
+      },
       // 表单参数
       form: {
         refundId:undefined,
@@ -296,7 +353,8 @@ export default {
         hasGoodsSend: [{ required: true, message: "请选择是否发货", trigger: "blur" }],
         type: [{ required: true, message: "请选择处理方式", trigger: "blur" }],
         orderNum: [{ required: true, message: "源订单号不能为空", trigger: "blur" }],
-      }
+      },
+
     };
   },
   created() {
@@ -322,6 +380,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false;
+      this.pullOpen = false;
       this.reset();
     },
     // 表单重置
@@ -340,6 +399,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
+      this.pullLoading = false
       this.queryParams.pageNum = 1;
       this.getList();
     },
@@ -353,6 +413,40 @@ export default {
       this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
+    },
+    handlePullOpen() {
+      this.pullOpen = true
+    },
+    handlePull() {
+      this.$refs["pullForm"].validate(valid => {
+        if (valid) {
+          this.pullLoading = true
+          pullRefund({shopId: this.pullForm.shopId, updType: 0}).then(response => {
+            console.log('拉取淘宝订单接口返回=====', response)
+            if (response.code === 1401) {
+              MessageBox.confirm('Token已过期，需要重新授权！请前往店铺列表重新获取授权！', '系统提示', {
+                confirmButtonText: '前往授权',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$router.push({path: "/shop/shop_list", query: {type: 4}})
+                // isRelogin.show = false;
+                // store.dispatch('LogOut').then(() => {
+                // location.href = response.data.tokenRequestUrl+'?shopId='+this.queryParams.shopId
+                // })
+              }).catch(() => {
+                isRelogin.show = false;
+              });
+
+              // return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+            } else {
+              this.$modal.msgSuccess(JSON.stringify(response));
+              this.getList()
+            }
+            this.pullLoading = false
+          })
+        }
+      })
     },
     /** 处理方式选择*/
     handleTypeChange(){
