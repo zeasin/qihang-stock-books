@@ -106,8 +106,8 @@ public class ShopOrderApiController {
         Long shopId = checkResult.getData().getShopId();
         int shopType = checkResult.getData().getShopType();
         // 获取最后更新时间
-        LocalDateTime startTime = LocalDateTime.parse(startTimeStr + " 00:00:01", formatter);;
-        LocalDateTime  endTime = LocalDateTime.parse(startTimeStr + " 23:59:59", formatter);;
+        LocalDateTime startTime = LocalDateTime.parse(startTimeStr + " 00:00:01", formatter);
+        LocalDateTime  endTime = LocalDateTime.parse(startTimeStr + " 23:59:59", formatter);
 
         String pullParams = "{startTime:"+startTime.format(formatter)+",endTime:"+endTime.format(formatter)+"}";
 

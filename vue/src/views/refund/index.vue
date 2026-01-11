@@ -66,7 +66,6 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          :loading="pullLoading"
           type="success"
           plain
           icon="el-icon-download"
@@ -272,7 +271,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handlePull">确 定</el-button>
+        <el-button type="primary" @click="handlePull">下载店铺售后</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -286,7 +285,7 @@ import {
   refundProcessing
 } from "@/api/refund/refund";
 import {listShop} from "@/api/shop/shop";
-import {pullRefund} from "@/api/pdd/refund";
+import {pullRefund} from "@/api/shop/refund";
 import {MessageBox} from "element-ui";
 import {isRelogin} from "@/utils/request";
 
@@ -421,7 +420,7 @@ export default {
       this.$refs["pullForm"].validate(valid => {
         if (valid) {
           this.pullLoading = true
-          pullRefund({shopId: this.pullForm.shopId, updType: 0}).then(response => {
+          pullRefund(this.pullForm).then(response => {
             console.log('拉取淘宝订单接口返回=====', response)
             if (response.code === 1401) {
               MessageBox.confirm('Token已过期，需要重新授权！请前往店铺列表重新获取授权！', '系统提示', {

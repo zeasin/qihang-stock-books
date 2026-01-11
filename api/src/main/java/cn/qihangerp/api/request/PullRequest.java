@@ -9,4 +9,5 @@ public class PullRequest {
     private String orderId;
     private Long refundId;
     private String[] orderTime;
+    private String createTime;
 }
