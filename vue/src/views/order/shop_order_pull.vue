@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="form" ref="form" size="small"  :rules="rules" label-width="120px">
+    <el-form :model="form" ref="form" size="small" label-width="120px">
       <el-form-item label="店铺" prop="shopId">
         <el-select v-model="form.shopId" placeholder="请选择店铺" clearable @change="handleQuery">
          <el-option
