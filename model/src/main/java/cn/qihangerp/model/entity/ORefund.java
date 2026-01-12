@@ -62,7 +62,9 @@ public class ORefund implements Serializable {
     /**
      * erp sku id
      */
-    private String goodsSkuId;
+    private Long goodsSkuId;
+    private Long orderId;
+    private Long orderItemId;
 
     private String userShippingStatus;
     private Integer hasGoodReturn;

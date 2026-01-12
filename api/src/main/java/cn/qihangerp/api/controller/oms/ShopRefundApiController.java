@@ -112,12 +112,14 @@ public class ShopRefundApiController {
                 pullParams = "{startTime:" + start.format(formatter) + ",endTime:" + end.format(formatter) + "}";
 
                 ApiResultVo<AfterSale> upResult = PddRefundApiHelper.pullRefundList(appKey, appSecret, accessToken, startTimestamp.intValue(), endTimestamp.intValue(), 1, 100);
-
-                log.info("======循环拉取PDD一天的退款：{} result:{},{}", pullParams,upResult.getCode(),upResult.getList().size());
-
                 apiResponseCode = upResult.getCode();
                 apiResponseMsg = upResult.getMsg();
+                if(apiResponseCode!=0) {
+                    log.info("======循环拉取PDD一天的退款：{} result:{}-{}", pullParams, upResult.getCode(), upResult.getMsg());
+                    break;
+                }
                 if(apiResponseCode==0) {
+                    log.info("======循环拉取PDD一天的退款：{} result:{}-{}", pullParams, upResult.getCode(), upResult.getList().size());
                     //循环插入订单数据到数据库
                     for (var refund : upResult.getList()) {
                         ORefund oRefund = ShopRefundTransform.transformPddRefund(refund);
@@ -141,8 +143,6 @@ public class ShopRefundApiController {
                         }
                     }
                     startTimestamp = endTimestamp;
-                }else{
-                    break;
                 }
             }
 

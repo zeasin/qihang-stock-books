@@ -111,7 +111,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
 
 
             insert.setGoodsId(refundDetail.getLong("ogoodsId"));
-            insert.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
+            insert.setGoodsSkuId(refundDetail.getLong("ogoodsSkuId"));
 //            insert.setSkuNum(orderItem.getSkuNum());
             insert.setGoodsName(refundDetail.getString("wareName"));
 //            insert.setGoodsSku(orderItem.getGoodsSpec());
@@ -325,7 +325,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
             insert.setOrderItemNum(refundDetail.getString("oid"));
             insert.setSkuId(refundDetail.getString("skuId"));
             insert.setGoodsId(refundDetail.getLong("ogoodsId"));
-            insert.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
+            insert.setGoodsSkuId(refundDetail.getLong("ogoodsSkuId"));
             insert.setSkuNum(refundDetail.getString("outerId"));
             insert.setGoodsName(refundDetail.getString("title"));
             insert.setSkuName(refundDetail.getString("sku"));
@@ -372,7 +372,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
 //            }
             update.setSkuId(refundDetail.getString("skuId"));
             update.setGoodsId(refundDetail.getLong("ogoodsId"));
-            update.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
+            update.setGoodsSkuId(refundDetail.getLong("ogoodsSkuId"));
             update.setSkuNum(refundDetail.getString("outerId"));
             update.setRefundAmount(refundDetail.getDouble("refundFee"));
             update.setOrderAmount(refundDetail.getDouble("totalFee"));
@@ -501,7 +501,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
             insert.setOrderItemNum(refundDetail.getString("orderSkuOrderId"));
             insert.setSkuId(refundDetail.getString("skuId"));
             insert.setGoodsId(refundDetail.getLong("ogoodsId"));
-            insert.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
+            insert.setGoodsSkuId(refundDetail.getLong("ogoodsSkuId"));
             insert.setSkuNum(refundDetail.getString("outSkuId"));
             insert.setGoodsName(refundDetail.getString("orderProductName"));
             insert.setSkuName(refundDetail.getString("orderSkuSpec"));
@@ -526,7 +526,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
             update.setRefundType(refundType);
             update.setHasGoodReturn(hasGoodReturn);
             update.setGoodsId(refundDetail.getLong("ogoodsId"));
-            update.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
+            update.setGoodsSkuId(refundDetail.getLong("ogoodsSkuId"));
             update.setStatus(status);
             update.setUpdateTime(new Date());
             update.setUpdateBy("REFUND_MESSAGE");
@@ -651,7 +651,46 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
 
     @Override
     public ResultVo<Long> saveAndUpdateRefund(ORefund refund) {
-        return null;
+        //查是否存在
+        List<ORefund> oRefunds = mapper.selectList(new LambdaQueryWrapper<ORefund>()
+                .eq(ORefund::getRefundNum, refund.getRefundNum())
+                .eq(ORefund::getShopId, refund.getShopId()));
+        if(oRefunds.isEmpty()) {
+            // 新增
+            // 查订单item
+            List<OOrderItem> oOrderItems = orderItemMapper.selectList(new LambdaQueryWrapper<OOrderItem>()
+                    .eq(OOrderItem::getOrderNum, refund.getOrderNum())
+                    .eq(OOrderItem::getSkuId, refund.getSkuId()));
+            if (oOrderItems.size() > 0) {
+                refund.setOrderId(Long.parseLong(oOrderItems.get(0).getOrderId()));
+                refund.setOrderItemId(Long.parseLong(oOrderItems.get(0).getId()));
+                refund.setGoodsId(oOrderItems.get(0).getGoodsId());
+                refund.setGoodsSkuId(oOrderItems.get(0).getGoodsSkuId());
+                //has_good_return
+                refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);
+            } else {
+                refund.setOrderId(0L);
+                refund.setOrderItemId(0L);
+                refund.setGoodsId(0L);
+                refund.setGoodsSkuId(0L);
+                refund.setHasGoodReturn(0);
+            }
+            refund.setCreateTime(new Date());
+            mapper.insert(refund);
+        } else {
+            //修改
+            refund.setId(oRefunds.get(0).getId());
+            refund.setUpdateTime(new Date());
+            refund.setCreateTime(null);
+            refund.setShopId(null);
+            refund.setShopType(null);
+            refund.setStatus(null);
+            refund.setHasGoodReturn(null);
+            refund.setHasProcessing(null);
+            refund.setAfterSaleId(null);
+            mapper.updateById(refund);
+        }
+        return ResultVo.success();
     }
 }
 

@@ -244,7 +244,7 @@
     <el-dialog title="下载店铺售后" :visible.sync="pullOpen" width="500px" append-to-body :close-on-click-modal="false">
       <el-form ref="pullForm" :model="pullForm" :rules="pullRules" label-width="120px">
         <el-form-item label="店铺" prop="shopId">
-          <el-select v-model="pullForm.shopId" placeholder="请选择店铺" clearable @change="handleQuery">
+          <el-select v-model="pullForm.shopId" placeholder="请选择店铺" clearable >
             <el-option
               v-for="item in shopList"
               :key="item.id"
@@ -439,6 +439,7 @@ export default {
 
               // return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
             } else {
+              this.pullOpen = false
               this.$modal.msgSuccess(JSON.stringify(response));
               this.getList()
             }
