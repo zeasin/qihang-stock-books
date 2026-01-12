@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 12/01/2026 16:04:02
+ Date: 12/01/2026 17:14:28
 */
 
 SET NAMES utf8mb4;
@@ -1459,7 +1459,7 @@ CREATE TABLE `o_shop_pull_logs`  (
   `pull_time` datetime NULL DEFAULT NULL COMMENT '拉取时间',
   `duration` bigint NULL DEFAULT NULL COMMENT '耗时（毫秒）',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2010623661145059330 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '店铺更新日志表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2010624872233537539 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '店铺更新日志表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_shop_pull_logs
@@ -1537,6 +1537,10 @@ INSERT INTO `o_shop_pull_logs` VALUES (2010618880892588034, 1011, 300, 'REFUND',
 INSERT INTO `o_shop_pull_logs` VALUES (2010621440244314113, 1011, 300, 'REFUND', '更新退款', '18148057136940', 'SUCCESS', '2026-01-12 15:54:41', 513);
 INSERT INTO `o_shop_pull_logs` VALUES (2010623618224746497, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-02 23:30:01,endTime:2026-01-03 00:00:01}', '{insert:0,update:0,fail:0}', '2026-01-12 16:03:16', 4357);
 INSERT INTO `o_shop_pull_logs` VALUES (2010623661145059329, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-03 23:30:01,endTime:2026-01-04 00:00:01}', '{insert:1,update:0,fail:0}', '2026-01-12 16:03:27', 3952);
+INSERT INTO `o_shop_pull_logs` VALUES (2010624734295461889, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-04 23:30:01,endTime:2026-01-05 00:00:01}', '{insert:0,update:0,fail:0}', '2026-01-12 16:07:42', 5059);
+INSERT INTO `o_shop_pull_logs` VALUES (2010624778486648833, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-05 23:30:01,endTime:2026-01-06 00:00:01}', '{insert:0,update:0,fail:0}', '2026-01-12 16:07:53', 4171);
+INSERT INTO `o_shop_pull_logs` VALUES (2010624829141258242, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-06 23:30:01,endTime:2026-01-07 00:00:01}', '{insert:0,update:0,fail:0}', '2026-01-12 16:08:06', 4000);
+INSERT INTO `o_shop_pull_logs` VALUES (2010624872233537538, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-07 23:30:01,endTime:2026-01-08 00:00:01}', '{insert:0,update:0,fail:0}', '2026-01-12 16:08:16', 4047);
 
 -- ----------------------------
 -- Table structure for o_shop_region
@@ -1624,125 +1628,6 @@ CREATE TABLE `oms_dou_refund`  (
 -- ----------------------------
 -- Records of oms_dou_refund
 -- ----------------------------
-
--- ----------------------------
--- Table structure for oms_jd_refund
--- ----------------------------
-DROP TABLE IF EXISTS `oms_jd_refund`;
-CREATE TABLE `oms_jd_refund`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `shop_id` int NULL DEFAULT NULL COMMENT '店铺id',
-  `apply_id` bigint NULL DEFAULT NULL COMMENT '申请单号',
-  `service_id` bigint NULL DEFAULT NULL COMMENT '服务单号（退款单id）',
-  `refund_id` bigint NULL DEFAULT NULL COMMENT '退款单id',
-  `order_id` bigint NULL DEFAULT NULL COMMENT '订单号',
-  `apply_time` datetime NULL DEFAULT NULL COMMENT '申请时间',
-  `apply_refund_sum` double NULL DEFAULT NULL COMMENT '退款金额(单位分)',
-  `customer_expect` int NOT NULL COMMENT '客户期望(1-售前退款 10-退货 20-换货 30-维修 40-大家电安装 50-大家电移机 60-大家电增值服务 70-上门维修 90-优鲜赔 80-补发商品 100-试用收回 11-仅退款)',
-  `customer_expect_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户期望名称',
-  `service_status` int NULL DEFAULT NULL COMMENT '服务单状态（10000-待审核领取 10001-待审核 10002-待客户反馈 10004-审核关闭 10005-待收货 10006-待处理领取 10007-待处理 10009-待用户确认 10010-完成 10011-取消 10012-客户已反馈 10013-待审核和待客户反馈 10041-提交退款申请 1100-待下发维修中心接单 12000-上门维修中 14000-上门检测中 13000-商家催收待处理 13000-未收货，待收款 13000-已收货，待收款）',
-  `service_status_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务单状态名称',
-  `customer_pin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户账号',
-  `customer_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户姓名',
-  `customer_tel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户电话',
-  `pickware_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '取件地址',
-  `pickware_type` int NULL DEFAULT NULL COMMENT '取件方式(4-上门取件 5-上门换新取件 7-客户送货 8-大家电上门取件 9-大家电换新取件 40-客户发货 70-送货至门店 71-快递至门店 72-门店上门取件 80-京东快运上门取件 85-德邦取件)',
-  `order_type` int NULL DEFAULT NULL COMMENT '订单类型(0-一般订单 2-拍卖订单 11-售后调货 15-返修发货 16-直接赔偿 21-POPFBP 22-POPSOP 23-POPLBP 24-POPLBV 25-POPSOPL 18-厂商直送 19-客服补件 42-通用合约 61-EPT订单 69-京东服务产品订单 19-客服补件 75-LOC订单 77-LSP订单 42-虚拟订单 88-总代订单 96-sop虚拟订单 100-提货卡订单 33-电子礼品卡 49-礼品卡 108-京东维修服务产品订单 131-X无人超市订单 142-企业店铺IBS订单 151-品牌门店线下订单 112-自营采购，以销定结 159-领货码订单 89-移动仓库订单 170-实体领货码订单 140-商家采购订单 193-scf订单 54-线下礼品卡订单 202-月卡订单 4-虚拟商品)',
-  `order_type_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单类型名称',
-  `actual_pay_price` decimal(10, 2) NULL DEFAULT NULL COMMENT '实付金额',
-  `sku_id` bigint NULL DEFAULT NULL COMMENT '商品编号',
-  `ware_id` bigint NULL DEFAULT NULL COMMENT '商品id',
-  `ware_type` int NULL DEFAULT NULL COMMENT '售后商品类型(10-申请主商品 20-申请的赠品 30-附件 40-发票 50-发票复印件 60-出检报告 70-包装 80-防损吊牌 90-贺卡 100-礼品购包装 110-loc订单验证码 120-服务产品标识)',
-  `ware_type_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品类型名称',
-  `ware_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品名称',
-  `sku_type` int NULL DEFAULT NULL COMMENT '商品类型(1-单品 2-赠品套装中的主商品 3-赠品套装中的赠品 4-套装中的单品 5-套装中的赠品 6-加价购赠品 7-延保通 8-延保通赠品)',
-  `sku_type_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'skuType对应名称',
-  `approve_pin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '审核人账号',
-  `approve_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '审核人姓名',
-  `approve_time` datetime NULL DEFAULT NULL COMMENT '审核时间',
-  `approve_result` int NULL DEFAULT NULL COMMENT '审核结果(11-直赔积分 12-直赔余额 13-直赔优惠卷 14-直赔京豆 21-直赔商品 22-上门换新 31-自营取件 32-客户送货 33-客户发货 34-闪电退款 35-虚拟退款 36-上门检测 37-客户送货至门店 38-保外维修 39-快递至门店 40-门店上门取件 80-大家电检测 81-大家电安装 82-大家电移机 83-大家电维修 84-大家电其它 85-闪电催收 86-上门维修 87-补发商品 91-退款不退货 92-预授权冻结 93-ACS换新 95-(超级体验店)门店换新 96-(超级体验店)主站换新 97-厂商维修-寄修 98-厂商维修-上门维修 99-厂商维修-送修 101-厂商大家电检测鉴定 102-厂商大家电安装 103-厂商大家电移机拆机 104-厂商大家电维修(上门维修) 105-厂商大家电拆机鉴定 106-换货 100-客户退货至团长 107-3c上门维修 108-增值服务 109-退货(筋斗云使用) 110-直赔(筋斗云使用) 111-上门检测取件)',
-  `approve_result_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '审核结果名称',
-  `approve_notes` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `process_pin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处理人账号',
-  `process_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处理人姓名',
-  `process_time` datetime NULL DEFAULT NULL COMMENT '处理时间',
-  `process_result` int NULL DEFAULT NULL COMMENT '处理结果(0-初始化 1-安装完成 2-维修完成 3-检测完成 4-拆机完成 5-咨询解释 6-取消 70-原返 80-换货 100-赔付)',
-  `process_result_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处理结果名称',
-  `platform_src` int NULL DEFAULT NULL COMMENT '平台来源',
-  `platform_src_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '平台来源名称',
-  `service_count` int NULL DEFAULT NULL COMMENT '服务单售后数量',
-  `desen_customer_tel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户电话',
-  `buyer_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户帐号',
-  `buyer_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户姓名',
-  `refund_check_time` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '审核日期',
-  `refund_status` int NULL DEFAULT NULL COMMENT '退款审核状态: 0代表未审核， 1代表审核通过 2代表审核不通过 3代表京东财务审核通过；4代表京东财务审核不通过',
-  `refund_complete_time` datetime NULL DEFAULT NULL COMMENT '退款完成时间',
-  `refund_check_username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '审核人',
-  `refund_check_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '审核备注',
-  `refund_reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款原因',
-  `refund_system_id` int NULL DEFAULT NULL COMMENT ' 退款来源(10:客服; 11:网站; 12:配送拒收; 28:APP; 87:分拣中心,逆向物流; 98:微信手Q;)',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '订单创建时间',
-  `create_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
-  `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `o_goods_id` bigint NULL DEFAULT NULL COMMENT '商品id(o_goods外键)',
-  `o_goods_sku_id` bigint NULL DEFAULT NULL COMMENT '商品skuid(o_goods_sku外键)',
-  `sku_list` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '商品明细列表JSON',
-  `sku_count` int NULL DEFAULT NULL COMMENT '退款数量',
-  `question_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `service_id_index`(`service_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '京东退款与售后表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of oms_jd_refund
--- ----------------------------
-
--- ----------------------------
--- Table structure for oms_pdd_refund
--- ----------------------------
-DROP TABLE IF EXISTS `oms_pdd_refund`;
-CREATE TABLE `oms_pdd_refund`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '售后编号',
-  `shop_id` int NOT NULL COMMENT '内部店铺ID',
-  `order_sn` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '订单编号',
-  `after_sales_type` int NOT NULL COMMENT '售后类型 1：全部 2：仅退款 3：退货退款 4：换货 5：缺货补寄 6：维修',
-  `after_sales_status` int NOT NULL COMMENT '售后状态 0：无售后 2：买家申请退款，待商家处理 3：退货退款，待商家处理 4：商家同意退款，退款中 5：平台同意退款，退款中 6：驳回退款，待买家处理 7：已同意退货退款,待用户发货 8：平台处理中 9：平台拒绝退款，退款关闭 10：退款成功 11：买家撤销 12：买家逾期未处理，退款失败 13：买家逾期，超过有效期 14：换货补寄待商家处理 15：换货补寄待用户处理 16：换货补寄成功 17：换货补寄失败 18：换货补寄待用户确认完成 21：待商家同意维修 22：待用户确认发货 24：维修关闭 25：维修成功 27：待用户确认收货 31：已同意拒收退款，待用户拒收 32：补寄待商家发货 33：待商家召回',
-  `after_sale_reason` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '售后原因',
-  `confirm_time` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '订单成团时间',
-  `created_time` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建时间',
-  `discount_amount` double NOT NULL COMMENT '订单折扣金额（元）',
-  `dispute_refund_status` double NULL DEFAULT NULL COMMENT '1纠纷退款 0非纠纷退款',
-  `goods_image` varchar(245) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品图片',
-  `goods_id` bigint NULL DEFAULT NULL COMMENT '拼多多商品id',
-  `goods_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品名称',
-  `goods_price` double NOT NULL COMMENT '商品价格，单位：元',
-  `order_amount` double NOT NULL COMMENT '订单金额（元）',
-  `refund_amount` double NOT NULL COMMENT '退款金额（元）',
-  `refund_operator_role` int NULL DEFAULT NULL COMMENT '同意退款操作人角色0:\"默认\",1:\"用户\",2:\"商家\",3:\"平台\",4:\"系统\",5:\"团长\",6:\"司机\",7:\"代理人\"',
-  `sku_id` bigint NULL DEFAULT NULL COMMENT '拼多多商品skuid',
-  `outer_goods_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商家外部编码（商品）',
-  `outer_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '商家外部编码（sku）',
-  `goods_spec` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '商品规格',
-  `goods_number` int NOT NULL COMMENT '数量',
-  `shipping_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退货物流公司名称',
-  `speed_refund_flag` int NULL DEFAULT NULL COMMENT '极速退款标志位 1：极速退款，0：非极速退款',
-  `speed_refund_status` int NULL DEFAULT NULL COMMENT '极速退款状态，\"1\"：有极速退款资格，\"2\"：极速退款失败, \"3\" 表示极速退款成功，其他表示非极速退款',
-  `user_shipping_status` int NULL DEFAULT NULL COMMENT '0-未勾选 1-消费者选择的收货状态为未收到货 2-消费者选择的收货状态为已收到货',
-  `tracking_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快递单号',
-  `updated_time` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新时间',
-  `create_time` datetime NULL DEFAULT NULL,
-  `update_time` datetime NULL DEFAULT NULL COMMENT '系统更新时间',
-  `o_goods_id` bigint NULL DEFAULT NULL COMMENT '商品id(o_goods外键)',
-  `o_goods_sku_id` bigint NULL DEFAULT NULL COMMENT '商品skuid(o_goods_sku外键)',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17958668300088 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '拼多多订单退款表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of oms_pdd_refund
--- ----------------------------
-INSERT INTO `oms_pdd_refund` VALUES (17894479236915, 1011, '260101-602941713932531', 2, 10, '其他原因', '2026-01-01 14:48:36', '2026-01-01 14:53:14', 10, 0, NULL, 754380133868, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 39.32, 29.32, 29.32, 4, 1742164849117, '', 'LEDDX00103', '', 1, NULL, 1, NULL, 1, '', '2026-01-01 14:53:19', '2026-01-11 18:16:31', '2026-01-11 18:17:47', NULL, NULL);
-INSERT INTO `oms_pdd_refund` VALUES (17958668300087, 1011, '260101-343073113703028', 2, 10, '其他原因', '2026-01-01 20:47:51', '2026-01-01 20:52:10', 0, 0, NULL, 754380133868, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 29.35, 29.35, 29.35, 4, 1742164849115, '', 'LEDDX00101', '', 1, NULL, 1, NULL, 1, '', '2026-01-01 20:52:17', '2026-01-11 18:16:32', '2026-01-11 18:17:49', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for oms_shop_goods_sku
