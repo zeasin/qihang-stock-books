@@ -655,12 +655,13 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
         List<ORefund> oRefunds = mapper.selectList(new LambdaQueryWrapper<ORefund>()
                 .eq(ORefund::getRefundNum, refund.getRefundNum())
                 .eq(ORefund::getShopId, refund.getShopId()));
+        // 查订单item
+        List<OOrderItem> oOrderItems = orderItemMapper.selectList(new LambdaQueryWrapper<OOrderItem>()
+                .eq(OOrderItem::getOrderNum, refund.getOrderNum())
+                .eq(OOrderItem::getSkuId, refund.getSkuId()));
+
         if(oRefunds.isEmpty()) {
             // 新增
-            // 查订单item
-            List<OOrderItem> oOrderItems = orderItemMapper.selectList(new LambdaQueryWrapper<OOrderItem>()
-                    .eq(OOrderItem::getOrderNum, refund.getOrderNum())
-                    .eq(OOrderItem::getSkuId, refund.getSkuId()));
             if (oOrderItems.size() > 0) {
                 refund.setOrderId(Long.parseLong(oOrderItems.get(0).getOrderId()));
                 refund.setOrderItemId(Long.parseLong(oOrderItems.get(0).getId()));
@@ -668,6 +669,9 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
                 refund.setGoodsSkuId(oOrderItems.get(0).getGoodsSkuId());
                 //has_good_return
                 refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);
+                if(StringUtils.isEmpty(refund.getSkuName())){
+                    refund.setSkuName(oOrderItems.get(0).getGoodsSpec());
+                }
             } else {
                 refund.setOrderId(0L);
                 refund.setOrderItemId(0L);
@@ -675,9 +679,29 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
                 refund.setGoodsSkuId(0L);
                 refund.setHasGoodReturn(0);
             }
+
             refund.setCreateTime(new Date());
             mapper.insert(refund);
         } else {
+//            if(oRefunds.get(0).getOrderItemId()==null||oRefunds.get(0).getOrderItemId()==0) {
+                if (oOrderItems.size() > 0) {
+                    refund.setOrderId(Long.parseLong(oOrderItems.get(0).getOrderId()));
+                    refund.setOrderItemId(Long.parseLong(oOrderItems.get(0).getId()));
+                    refund.setGoodsId(oOrderItems.get(0).getGoodsId());
+                    refund.setGoodsSkuId(oOrderItems.get(0).getGoodsSkuId());
+                    if(StringUtils.isEmpty(refund.getSkuName())){
+                        refund.setSkuName(oOrderItems.get(0).getGoodsSpec());
+                    }
+                    //has_good_return
+                    refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);
+                } else {
+                    refund.setOrderId(0L);
+                    refund.setOrderItemId(0L);
+                    refund.setGoodsId(0L);
+                    refund.setGoodsSkuId(0L);
+                    refund.setHasGoodReturn(0);
+                }
+//            }
             //修改
             refund.setId(oRefunds.get(0).getId());
             refund.setUpdateTime(new Date());

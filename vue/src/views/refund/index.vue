@@ -73,18 +73,7 @@
           @click="handlePullOpen"
         >API下载店铺售后</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-refresh"
-          size="mini"
-          :disabled="single"
 
-          @click="handleRefundProcessing"
-        >处理选中售后</el-button>
-        <!--          :disabled="multiple"-->
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -104,7 +93,7 @@
       </el-table-column>
       <el-table-column label="订单号" align="center" prop="orderNum" width="200"/>
       <el-table-column label="订单ItemId" align="center" prop="orderItemId" width="120" />
-      <el-table-column label="类型" align="center" prop="refundType" width="60">
+      <el-table-column label="类型" align="center" prop="refundType" width="100">
         <template slot-scope="scope">
           <el-tag size="small" v-if="scope.row.refundType === 1">售前退款</el-tag>
           <el-tag size="small" v-if="scope.row.refundType === 11">仅退款</el-tag>
@@ -125,10 +114,10 @@
         </template>
       </el-table-column>
       <el-table-column label="商品名" align="left" prop="goodsName" width="280"/>
-      <el-table-column label="规格" align="left" prop="skuName" width="120"/>
+      <el-table-column label="规格" align="left" prop="skuName" width="150"/>
 
 
-      <el-table-column label="平台SkuId" align="center" prop="skuId" />
+      <el-table-column label="平台SkuId" align="center" prop="skuId" width="120"/>
       <el-table-column label="系统SkuId" align="center" prop="goodsSkuId" />
 
       <el-table-column label="数量" align="center" prop="quantity" />
@@ -143,11 +132,11 @@
       <el-table-column label="退款理由" align="center" prop="refundReason" />
       <el-table-column label="是否需要退货" align="center" prop="hasGoodReturn" >
         <template slot-scope="scope">
-
-          <el-tag style="margin-top: 5px" size="small" v-if="scope.row.hasGoodReturn === 1"> 买家需要退货</el-tag>
-          <el-tag style="margin-top: 5px" size="small" v-if="scope.row.hasGoodReturn === 0"> 买家不需要退货</el-tag>
-
+          <el-tag style="margin-top: 5px" size="small" v-if="scope.row.hasGoodReturn === 1">需要退回</el-tag>
+          <el-tag style="margin-top: 5px" size="small" v-if="scope.row.hasGoodReturn === 0">不需要退回</el-tag>
         </template>
+      </el-table-column>
+      <el-table-column label="售后更新时间" align="center" prop="refundUpdated" width="180">
       </el-table-column>
       <el-table-column label="状态" align="center" prop="status" >
         <template slot-scope="scope">
@@ -169,6 +158,13 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button style="padding-left: 10px;padding-right: 10px;"
+            type="primary"
+            plain
+            icon="el-icon-refresh"
+            size="mini"
+            @click="handleRefundProcessing(scope.row)"
+          >处理售后</el-button>
           <el-button
            v-if="(scope.row.refundType === 10 || scope.row.refundType === 20) && scope.row.status === 10005"
             size="mini"
@@ -267,7 +263,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="申请日期" prop="createTime">
+        <el-form-item label="售后更新时间" prop="createTime">
           <el-date-picker clearable
                           v-model="pullForm.createTime" value-format="yyyy-MM-dd"
                           type="date"
@@ -278,7 +274,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handlePull">下载店铺售后</el-button>
+        <el-button type="primary" @click="handlePull" :loading="pullLoading">下载店铺售后</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
