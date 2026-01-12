@@ -35,6 +35,7 @@
             <result property="platformStatusText" column="platform_status_text" jdbcType="VARCHAR"/>
             <result property="refundCreated" column="refund_created" jdbcType="VARCHAR"/>
             <result property="refundUpdated" column="refund_updated" jdbcType="VARCHAR"/>
+            <result property="orderTime" column="order_time" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -48,7 +49,7 @@
         shop_id,shop_type,order_num,user_shipping_status,
         order_item_num,sku_id,sku_name,sku_num,goods_name,goods_image,quantity,
           goods_id,goods_sku_id,order_id,order_item_id,has_good_return,platform_status,platform_status_text,
-        return_logistics_company,return_logistics_code,receive_time,refund_created,refund_updated,
+        return_logistics_company,return_logistics_code,receive_time,refund_created,refund_updated,order_time,
         remark,status,create_time,create_by,update_time,update_by,after_sale_id,has_processing
     </sql>
 </mapper>

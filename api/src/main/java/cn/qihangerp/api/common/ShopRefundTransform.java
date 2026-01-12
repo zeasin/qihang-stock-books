@@ -43,7 +43,9 @@ public class ShopRefundTransform {
         refund.setPlatformStatusText(PddRefundStatusEnum.getName(pddRefund.getAfterSalesStatus()));
         refund.setRefundCreated(pddRefund.getCreatedTime());
         refund.setRefundUpdated(pddRefund.getUpdatedTime());
-
+        refund.setOrderTime(pddRefund.getConfirmTime());
+        refund.setReturnLogisticsCompany(pddRefund.getShippingName());
+        refund.setReturnLogisticsCode(pddRefund.getTrackingNumber());
         return refund;
     }
 }

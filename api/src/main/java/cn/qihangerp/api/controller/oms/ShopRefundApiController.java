@@ -14,6 +14,7 @@ import cn.qihangerp.open.pdd.PddRefundApiHelper;
 import cn.qihangerp.open.pdd.model.AfterSale;
 import cn.qihangerp.service.service.ORefundService;
 import cn.qihangerp.service.service.OShopPullLogsService;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -165,5 +166,66 @@ public class ShopRefundApiController {
         return AjaxResult.success();
     }
 
+    @PostMapping("/pull_detail")
+    @ResponseBody
+    public AjaxResult pullRefundDetail(@RequestBody PullRequest req) throws Exception {
+        log.info("==========拉取退款详情：{}", JSONObject.toJSONString(req));
+        if(req.getRefundId()==null) return AjaxResult.error("缺少参数：RefundId");
+        ORefund refund = oRefundService.getById(req.getRefundId());
+        if(refund==null) return AjaxResult.error("找不到售后单数据");
+        var checkResult = shopApiCommon.checkBefore(refund.getShopId());
+        if (checkResult.getCode() != HttpStatus.SUCCESS) {
+            return AjaxResult.error(checkResult.getCode(), checkResult.getMsg(), checkResult.getData());
+        }
+        String accessToken = checkResult.getData().getAccessToken();
+        String appKey = checkResult.getData().getAppKey();
+        String appSecret = checkResult.getData().getAppSecret();
+        //api返回
+        int apiResponseCode = 0;
+        String apiResponseMsg = "";
+        Date currDateTime = new Date();
+        long beginTime = System.currentTimeMillis();
 
+        if(refund.getShopType().intValue()==EnumShopType.PDD.getIndex()) {
+            ApiResultVo<AfterSale> apiResultVo = PddRefundApiHelper.pullRefundDetil(appKey, appSecret, accessToken, refund.getRefundNum(), refund.getOrderNum());
+            apiResponseCode = apiResultVo.getCode();
+            apiResponseMsg = apiResultVo.getMsg();
+            AfterSale afterSale = apiResultVo.getData();
+            afterSale.setAfterSalesType(afterSale.getAfterSalesStatus()+1);
+            afterSale.setTrackingNumber(afterSale.getExpressNo());
+            afterSale.setRefundAmount(afterSale.getRefundAmount()/100);
+            afterSale.setOrderAmount(afterSale.getOrderAmount()/100);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            LocalDateTime updateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(afterSale.getUpdatedTime())), ZoneId.of("UTC"));
+            LocalDateTime orderTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(afterSale.getConfirmTime())), ZoneId.of("UTC"));
+
+            afterSale.setUpdatedTime(updateTime.format(formatter));
+            afterSale.setConfirmTime(orderTime.format(formatter));
+            ORefund oRefund = ShopRefundTransform.transformPddRefund(afterSale);
+            oRefund.setShopId(refund.getShopId());
+            oRefund.setShopType(refund.getShopType());
+            oRefund.setId(refund.getId());
+            //插入订单数据
+            var result =  oRefundService.saveAndUpdateRefund(oRefund);
+            log.info("===========主动更新pdd退款:{}", JSONObject.toJSONString(result));
+
+
+        }else return AjaxResult.error("暂时不支持");
+
+        OShopPullLogs logs = new OShopPullLogs();
+        logs.setShopId(refund.getShopId());
+        logs.setShopType(refund.getShopType());
+        logs.setPullType("REFUND");
+        logs.setPullWay("更新退款");
+        logs.setPullParams(refund.getRefundNum());
+        logs.setPullResult(apiResponseMsg);
+        logs.setPullTime(currDateTime);
+        logs.setDuration(System.currentTimeMillis() - beginTime);
+        pullLogsService.save(logs);
+        if (apiResponseCode != 0) {
+            return AjaxResult.error(apiResponseMsg);
+        }
+        return AjaxResult.success();
+    }
 }

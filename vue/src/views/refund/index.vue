@@ -130,25 +130,26 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
       <el-table-column label="退款理由" align="center" prop="refundReason" />
-      <el-table-column label="是否需要退货" align="center" prop="hasGoodReturn" >
-        <template slot-scope="scope">
-          <el-tag style="margin-top: 5px" size="small" v-if="scope.row.hasGoodReturn === 1">需要退回</el-tag>
-          <el-tag style="margin-top: 5px" size="small" v-if="scope.row.hasGoodReturn === 0">不需要退回</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="售后更新时间" align="center" prop="refundUpdated" width="180">
-      </el-table-column>
+<!--      <el-table-column label="是否需要退货" align="center" prop="hasGoodReturn" >-->
+<!--        <template slot-scope="scope">-->
+<!--          <el-tag style="margin-top: 5px" size="small" v-if="scope.row.hasGoodReturn === 1">需要退回</el-tag>-->
+<!--          <el-tag style="margin-top: 5px" size="small" v-if="scope.row.hasGoodReturn === 0">不需要退回</el-tag>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+      <el-table-column label="售后更新时间" align="center" prop="refundUpdated" width="180"></el-table-column>
+      <el-table-column label="退回物流" align="center" prop="returnLogisticsCode" width="180"></el-table-column>
+<!--      <el-table-column label="售后状态" align="center" prop="platformStatusText" width="180"></el-table-column>-->
       <el-table-column label="状态" align="center" prop="status" >
         <template slot-scope="scope">
-          <el-tag size="small" v-if="scope.row.status === 10001"> 待审核</el-tag>
-          <el-tag size="small" v-if="scope.row.status === 10002"> 等待买家退货</el-tag>
-          <el-tag size="small" v-if="scope.row.status === 10005"> 等待卖家确认收货</el-tag>
-          <el-tag size="small" v-if="scope.row.status === 14000"> 拒绝退款</el-tag>
-          <el-tag size="small" v-if="scope.row.status === 10011"> 退款关闭</el-tag>
-          <el-tag size="small" v-if="scope.row.status === 10010"> 退款完成</el-tag>
-          <br />
-          <el-tag type="info" style="margin-top: 5px" size="small" v-if="scope.row.hasProcessing === 1"> 已处理</el-tag>
-          <el-tag type="danger" style="margin-top: 5px" size="small" v-if="scope.row.hasProcessing === 0"> 待处理</el-tag>
+
+          <el-tag size="small" type="info">{{scope.row.platformStatusText}}</el-tag>
+          <br/>
+          <el-tag size="small" type="danger" v-if="scope.row.status === 0"> 待处理</el-tag>
+          <el-tag size="small" v-if="scope.row.status === 1"> 处理中</el-tag>
+          <el-tag size="small" v-if="scope.row.status === 2"> 已处理</el-tag>
+
+<!--          <el-tag type="info" style="margin-top: 5px" size="small" v-if="scope.row.hasProcessing === 1"> 已处理</el-tag>-->
+<!--          <el-tag type="danger" style="margin-top: 5px" size="small" v-if="scope.row.hasProcessing === 0"> 待处理</el-tag>-->
 <!--          <br />-->
 <!--          <el-tag style="margin-bottom: 6px;" v-if="scope.row.erpPushStatus === 200">已推送到ERP</el-tag>-->
 <!--          <el-tag type="danger" style="margin-bottom: 6px;" v-if="!scope.row.erpPushStatus || scope.row.erpPushStatus === 0">待推送到ERP</el-tag>-->
@@ -158,6 +159,13 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button style="padding-right: 6px;padding-left: 6px"
+                     :loading="pullLoading"
+                     size="mini"
+                     type="text"
+                     icon="el-icon-refresh"
+                     @click="handlePullUpdate(scope.row)"
+          >更新状态</el-button>
           <el-button style="padding-left: 10px;padding-right: 10px;"
             type="primary"
             plain
@@ -288,7 +296,7 @@ import {
   refundProcessing
 } from "@/api/refund/refund";
 import {listShop} from "@/api/shop/shop";
-import {pullRefund} from "@/api/shop/refund";
+import {pullRefund, pullRefundUpdate} from "@/api/shop/refund";
 import {MessageBox} from "element-ui";
 import {isRelogin} from "@/utils/request";
 
@@ -418,6 +426,16 @@ export default {
     },
     handlePullOpen() {
       this.pullOpen = true
+    },
+    handlePullUpdate(row){
+      pullRefundUpdate({refundId:row.id}).then(resp=>{
+          if (resp.code === 200) {
+            this.getList()
+            this.$modal.msgSuccess("更新成功")
+          }else{
+            this.$modal.msgError(resp.msg)
+          }
+      })
     },
     handlePull() {
       this.$refs["pullForm"].validate(valid => {

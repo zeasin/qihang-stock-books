@@ -651,16 +651,29 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
 
     @Override
     public ResultVo<Long> saveAndUpdateRefund(ORefund refund) {
-        //查是否存在
-        List<ORefund> oRefunds = mapper.selectList(new LambdaQueryWrapper<ORefund>()
-                .eq(ORefund::getRefundNum, refund.getRefundNum())
-                .eq(ORefund::getShopId, refund.getShopId()));
+        Long refundId = null;
+        if(StringUtils.hasText(refund.getId())){
+            ORefund oRefund = mapper.selectById(refund.getId());
+            if(oRefund != null){
+                refundId = Long.parseLong(refund.getId());
+            }
+        }
+        if(refundId == null){
+            //查是否存在
+            List<ORefund> oRefunds = mapper.selectList(new LambdaQueryWrapper<ORefund>()
+                    .eq(ORefund::getRefundNum, refund.getRefundNum())
+                    .eq(ORefund::getShopId, refund.getShopId()));
+            if(oRefunds.size() > 0){
+                refundId = Long.parseLong(oRefunds.get(0).getId());
+            }
+        }
+
         // 查订单item
         List<OOrderItem> oOrderItems = orderItemMapper.selectList(new LambdaQueryWrapper<OOrderItem>()
                 .eq(OOrderItem::getOrderNum, refund.getOrderNum())
                 .eq(OOrderItem::getSkuId, refund.getSkuId()));
 
-        if(oRefunds.isEmpty()) {
+        if (refundId==null) {
             // 新增
             if (oOrderItems.size() > 0) {
                 refund.setOrderId(Long.parseLong(oOrderItems.get(0).getOrderId()));
@@ -669,7 +682,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
                 refund.setGoodsSkuId(oOrderItems.get(0).getGoodsSkuId());
                 //has_good_return
                 refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);
-                if(StringUtils.isEmpty(refund.getSkuName())){
+                if (StringUtils.isEmpty(refund.getSkuName())) {
                     refund.setSkuName(oOrderItems.get(0).getGoodsSpec());
                 }
             } else {
@@ -684,26 +697,29 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
             mapper.insert(refund);
         } else {
 //            if(oRefunds.get(0).getOrderItemId()==null||oRefunds.get(0).getOrderItemId()==0) {
-                if (oOrderItems.size() > 0) {
-                    refund.setOrderId(Long.parseLong(oOrderItems.get(0).getOrderId()));
-                    refund.setOrderItemId(Long.parseLong(oOrderItems.get(0).getId()));
-                    refund.setGoodsId(oOrderItems.get(0).getGoodsId());
-                    refund.setGoodsSkuId(oOrderItems.get(0).getGoodsSkuId());
-                    if(StringUtils.isEmpty(refund.getSkuName())){
-                        refund.setSkuName(oOrderItems.get(0).getGoodsSpec());
-                    }
-                    //has_good_return
-                    refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);
-                } else {
-                    refund.setOrderId(0L);
-                    refund.setOrderItemId(0L);
-                    refund.setGoodsId(0L);
-                    refund.setGoodsSkuId(0L);
-                    refund.setHasGoodReturn(0);
+            if (oOrderItems.size() > 0) {
+                refund.setOrderId(Long.parseLong(oOrderItems.get(0).getOrderId()));
+                refund.setOrderItemId(Long.parseLong(oOrderItems.get(0).getId()));
+                refund.setGoodsId(oOrderItems.get(0).getGoodsId());
+                refund.setGoodsSkuId(oOrderItems.get(0).getGoodsSkuId());
+                if (StringUtils.isEmpty(refund.getSkuName())) {
+                    refund.setSkuName(oOrderItems.get(0).getGoodsSpec());
                 }
+                //has_good_return
+                refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);
+            } else {
+                refund.setOrderId(0L);
+                refund.setOrderItemId(0L);
+                refund.setGoodsId(0L);
+                refund.setGoodsSkuId(0L);
+                refund.setHasGoodReturn(0);
+            }
 //            }
             //修改
-            refund.setId(oRefunds.get(0).getId());
+            refund.setId(refundId.toString());
+            if (StringUtils.isEmpty(refund.getRefundCreated())) {
+                refund.setRefundCreated(null);
+            }
             refund.setUpdateTime(new Date());
             refund.setCreateTime(null);
             refund.setShopId(null);

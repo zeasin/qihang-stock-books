@@ -1,5 +1,7 @@
 package cn.qihangerp.model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,6 +16,7 @@ public class ORefund implements Serializable {
     /**
      * 
      */
+    @TableId(type = IdType.AUTO)
     private String id;
 
     /**
@@ -124,6 +127,7 @@ public class ORefund implements Serializable {
     private String platformStatusText;
     private String refundCreated;
     private String refundUpdated;
+    private String orderTime;
 
     /**
      * 订单创建时间
