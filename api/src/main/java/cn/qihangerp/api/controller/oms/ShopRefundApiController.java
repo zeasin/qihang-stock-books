@@ -7,28 +7,16 @@ import cn.qihangerp.common.AjaxResult;
 import cn.qihangerp.common.ResultVoEnum;
 import cn.qihangerp.common.enums.EnumShopType;
 import cn.qihangerp.common.enums.HttpStatus;
-import cn.qihangerp.common.mq.MqMessage;
-import cn.qihangerp.common.mq.MqType;
-import cn.qihangerp.common.mq.MqUtils;
 import cn.qihangerp.model.entity.ORefund;
-import cn.qihangerp.model.entity.OShopPullLasttime;
 import cn.qihangerp.model.entity.OShopPullLogs;
-import cn.qihangerp.model.entity.PddRefund;
 import cn.qihangerp.open.common.ApiResultVo;
 import cn.qihangerp.open.pdd.PddRefundApiHelper;
 import cn.qihangerp.open.pdd.model.AfterSale;
 import cn.qihangerp.service.service.ORefundService;
-import cn.qihangerp.service.service.OShopPullLasttimeService;
 import cn.qihangerp.service.service.OShopPullLogsService;
-import cn.qihangerp.service.service.PddRefundService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -47,7 +35,6 @@ import java.util.regex.Pattern;
 @RequestMapping("/shop/refund")
 public class ShopRefundApiController {
     private final ORefundService oRefundService;
-    private final PddRefundService refundService;
     private final ShopApiCommon shopApiCommon;
     private final OShopPullLogsService pullLogsService;
     private final String DATE_PATTERN =

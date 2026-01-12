@@ -89,9 +89,9 @@
     </el-row>
 
     <el-table v-loading="loading" :data="returnedList" @selection-change="handleSelectionChange">
-       <el-table-column type="selection" width="55" align="center" />
+<!--       <el-table-column type="selection" width="55" align="center" />-->
 <!--      <el-table-column label="ID" align="center" prop="id" />-->
-      <el-table-column label="退货单号" align="left" prop="refundNum" >
+      <el-table-column label="退货单号" align="left" prop="refundNum" width="160">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -102,7 +102,9 @@
           <el-tag type="info">{{ shopList.find(x=>x.id === scope.row.shopId) ? shopList.find(x=>x.id === scope.row.shopId).name : '' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="类型" align="center" prop="refundType" >
+      <el-table-column label="订单号" align="center" prop="orderNum" width="200"/>
+      <el-table-column label="订单ItemId" align="center" prop="orderItemId" width="120" />
+      <el-table-column label="类型" align="center" prop="refundType" width="60">
         <template slot-scope="scope">
           <el-tag size="small" v-if="scope.row.refundType === 1">售前退款</el-tag>
           <el-tag size="small" v-if="scope.row.refundType === 11">仅退款</el-tag>
@@ -117,16 +119,21 @@
 <!--          <span>{{ shopList.find(x=>x.id === scope.row.shopId).name  }}</span>-->
 <!--        </template>-->
 <!--      </el-table-column>-->
-      <el-table-column label="源订单号" align="center" prop="orderNum" />
-      <el-table-column label="商品" align="center" prop="goodsName" />
-      <el-table-column label="SKU ID" align="center" prop="goodsSkuId" />
-<!--      <el-table-column label="商品图片" align="center" prop="goodsImage" width="100">-->
-<!--        <template slot-scope="scope">-->
-<!--          <image-preview :src="scope.row.goodsImage" :width="50" :height="50"/>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="图片" align="center" prop="goodsImage" width="60">
+        <template slot-scope="scope">
+          <image-preview :src="scope.row.goodsImage" :width="50" :height="50"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="商品名" align="left" prop="goodsName" width="280"/>
+      <el-table-column label="规格" align="left" prop="skuName" width="120"/>
+
+
+      <el-table-column label="平台SkuId" align="center" prop="skuId" />
+      <el-table-column label="系统SkuId" align="center" prop="goodsSkuId" />
+
       <el-table-column label="数量" align="center" prop="quantity" />
-      <el-table-column label="退款金额" align="center" prop="refundFee" :formatter="amountFormatter"/>
+      <el-table-column label="订单金额" align="center" prop="orderAmount" :formatter="amountFormatter"/>
+      <el-table-column label="退款金额" align="center" prop="refundAmount" :formatter="amountFormatter"/>
 <!--      <el-table-column label="物流单号" align="center" prop="logisticsCode" />-->
 <!--      <el-table-column label="收货时间" align="center" prop="receiveTime" width="180">-->
 <!--        <template slot-scope="scope">-->
@@ -160,26 +167,26 @@
 <!--          <div style="margin-bottom: 6px;color:red" v-if="scope.row.erpPushStatus > 200">{{scope.row.erpPushResult}}</div>-->
         </template>
       </el-table-column>
-<!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
-<!--        <template slot-scope="scope">-->
-<!--          <el-button-->
-<!--           v-if="(scope.row.refundType === 10 || scope.row.refundType === 20) && scope.row.status === 10005"-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-edit"-->
-<!--            @click="handleUpdate(scope.row)"-->
-<!--            v-hasPermi="['api:returned:edit']"-->
-<!--          >确认收货</el-button>-->
-<!--          <el-button-->
-<!--            v-if="(scope.row.refundType === 20 || scope.row.refundType === 80)"-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-edit"-->
-<!--            @click="handleUpdate(scope.row)"-->
-<!--            v-hasPermi="['api:returned:edit']"-->
-<!--          >补发商品</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+           v-if="(scope.row.refundType === 10 || scope.row.refundType === 20) && scope.row.status === 10005"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['api:returned:edit']"
+          >确认收货</el-button>
+          <el-button
+            v-if="(scope.row.refundType === 20 || scope.row.refundType === 80)"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['api:returned:edit']"
+          >补发商品</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination
