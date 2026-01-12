@@ -41,7 +41,7 @@ public class ORefund implements Serializable {
      */
     private String orderNum;
     private Double orderAmount;
-    private Double refundFee;
+    private Double refundAmount;
     private String refundReason;
 
     /**
@@ -52,7 +52,7 @@ public class ORefund implements Serializable {
     /**
      * 源skuId
      */
-    private Long skuId;
+    private String skuId;
 
     /**
      * erp商品id
@@ -64,6 +64,7 @@ public class ORefund implements Serializable {
      */
     private String goodsSkuId;
 
+    private String userShippingStatus;
     private Integer hasGoodReturn;
 
     /**
@@ -79,7 +80,7 @@ public class ORefund implements Serializable {
     /**
      * 商品sku
      */
-    private String goodsSku;
+    private String skuName;
 
     /**
      * 商品图片
@@ -89,7 +90,7 @@ public class ORefund implements Serializable {
     /**
      * 退货数量
      */
-    private Long quantity;
+    private Integer quantity;
 
     /**
      * 退货物流公司
@@ -117,6 +118,10 @@ public class ORefund implements Serializable {
      * 状态（0待发货1待收货2已收货3已完成）
      */
     private Integer status;
+    private String platformStatus;
+    private String platformStatusText;
+    private String refundCreated;
+    private String refundUpdated;
 
     /**
      * 订单创建时间
@@ -138,9 +143,6 @@ public class ORefund implements Serializable {
      */
     private String updateBy;
 
-    private Integer erpPushStatus;
-    private String erpPushResult;
-    private Date erpPushTime;
     private Integer hasProcessing;
     private String afterSaleId;
 

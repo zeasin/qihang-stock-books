@@ -1,6 +1,7 @@
 package cn.qihangerp.api.controller.oms;
 
 import cn.qihangerp.api.common.ShopApiCommon;
+import cn.qihangerp.api.common.ShopRefundTransform;
 import cn.qihangerp.api.request.PullRequest;
 import cn.qihangerp.common.AjaxResult;
 import cn.qihangerp.common.ResultVoEnum;
@@ -9,16 +10,19 @@ import cn.qihangerp.common.enums.HttpStatus;
 import cn.qihangerp.common.mq.MqMessage;
 import cn.qihangerp.common.mq.MqType;
 import cn.qihangerp.common.mq.MqUtils;
+import cn.qihangerp.model.entity.ORefund;
 import cn.qihangerp.model.entity.OShopPullLasttime;
 import cn.qihangerp.model.entity.OShopPullLogs;
 import cn.qihangerp.model.entity.PddRefund;
 import cn.qihangerp.open.common.ApiResultVo;
 import cn.qihangerp.open.pdd.PddRefundApiHelper;
 import cn.qihangerp.open.pdd.model.AfterSale;
+import cn.qihangerp.service.service.ORefundService;
 import cn.qihangerp.service.service.OShopPullLasttimeService;
 import cn.qihangerp.service.service.OShopPullLogsService;
 import cn.qihangerp.service.service.PddRefundService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -35,19 +39,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 更新
+ * 店铺退款
  */
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/shop/refund")
 public class ShopRefundApiController {
-    private static Logger log = LoggerFactory.getLogger(ShopRefundApiController.class);
-
+    private final ORefundService oRefundService;
     private final PddRefundService refundService;
     private final ShopApiCommon shopApiCommon;
-    private final MqUtils mqUtils;
     private final OShopPullLogsService pullLogsService;
-    private final OShopPullLasttimeService pullLasttimeService;
     private final String DATE_PATTERN =
             "^(?:(?:(?:\\d{4}-(?:0?[1-9]|1[0-2])-(?:0?[1-9]|1\\d|2[0-8]))|(?:(?:(?:\\d{2}(?:0[48]|[2468][048]|[13579][26])|(?:(?:0[48]|[2468][048]|[13579][26])00))-0?2-29))$)|(?:(?:(?:\\d{4}-(?:0?[13578]|1[02]))-(?:0?[1-9]|[12]\\d|30))$)|(?:(?:(?:\\d{4}-0?[13-9]|1[0-2])-(?:0?[1-9]|[1-2]\\d|30))$)|(?:(?:(?:\\d{2}(?:0[48]|[13579][26]|[2468][048])|(?:(?:0[48]|[13579][26]|[2468][048])00))-0?2-29))$)$";
     private final Pattern DATE_FORMAT = Pattern.compile(DATE_PATTERN);
@@ -118,18 +120,20 @@ public class ShopRefundApiController {
                 if(apiResponseCode==0) {
                     //循环插入订单数据到数据库
                     for (var refund : upResult.getList()) {
-                        PddRefund pddRefund = new PddRefund();
-                        BeanUtils.copyProperties(refund, pddRefund);
+                        ORefund oRefund = ShopRefundTransform.transformPddRefund(refund);
+                        oRefund.setShopId(shopId);
+                        oRefund.setShopType(shopType);
+
                         //插入订单数据
-                        var result = refundService.saveRefund(req.getShopId(), pddRefund);
+                        var result =  oRefundService.saveAndUpdateRefund(oRefund);
                         if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
                             //已经存在
-                            log.info("/**************主动更新pdd退款：开始更新数据库：" + refund.getId() + "存在、更新************开始通知****/");
-                            mqUtils.sendApiMessage(MqMessage.build(EnumShopType.PDD, MqType.REFUND_MESSAGE, refund.getId() + ""));
+                            log.info("/**************主动更新pdd退款：开始更新数据库：" + refund.getId() + "存在、更新****************/");
+
                             hasExistOrder++;
                         } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
-                            log.info("/**************主动更新pdd退款：开始更新数据库：" + refund.getId() + "不存在、新增************开始通知****/");
-                            mqUtils.sendApiMessage(MqMessage.build(EnumShopType.PDD, MqType.REFUND_MESSAGE, refund.getId() + ""));
+                            log.info("/**************主动更新pdd退款：开始更新数据库：" + refund.getId() + "不存在、新增****************/");
+
                             insertSuccess++;
                         } else {
                             log.info("/**************主动更新pdd退款：开始更新数据库：" + refund.getId() + "报错****************/");

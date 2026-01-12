@@ -21,11 +21,9 @@ import java.util.List;
 */
 public interface ORefundService extends IService<ORefund> {
     ResultVo<Integer> jdRefundMessage(String serviceId, JSONObject refundDetail);
-    ResultVo<Integer> jdvcRefundMessage(String returnId,JSONObject refundDetail);
     ResultVo<Integer> taoRefundMessage(String refundId,JSONObject refundDetail);
-    ResultVo<Integer> pddRefundMessage(String refundId,JSONObject refundDetail);
     ResultVo<Integer> douRefundMessage(String refundId,JSONObject refundDetail);
-    ResultVo<Integer> weiRefundMessage(String refundId,JSONObject refundDetail);
+
     List<ORefund> selectList(ORefund refund);
 
     PageResult<ORefund> queryPageList(RefundSearchBo bo, PageQuery pageQuery);
@@ -44,4 +42,6 @@ public interface ORefundService extends IService<ORefund> {
      * @return
      */
     ResultVo<Long> refundProcessing(RefundProcessingBo processingBo, String createBy);
+
+    ResultVo<Long> saveAndUpdateRefund(ORefund refund);
 }

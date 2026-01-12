@@ -99,7 +99,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
             insert.setShopId(refundDetail.getLong("shopId"));
             insert.setShopType(EnumShopType.JD.getIndex());
             insert.setOrderNum(refundDetail.getString("orderId"));
-            insert.setSkuId(refundDetail.getLong("skuId"));
+            insert.setSkuId(refundDetail.getString("skuId"));
             if(refundDetail.getInteger("customerExpect")==1) {
                 List<OOrderItem> oOrderItems = orderItemMapper.selectList(
                         new LambdaQueryWrapper<OOrderItem>()
@@ -116,11 +116,11 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
             insert.setGoodsName(refundDetail.getString("wareName"));
 //            insert.setGoodsSku(orderItem.getGoodsSpec());
 //            insert.setGoodsImage(orderItem.getGoodsImg());
-            insert.setQuantity(refundDetail.getLong("serviceCount"));
+            insert.setQuantity(refundDetail.getInteger("serviceCount"));
 //            insert.setContactperson(jdAfter.getCustomerName());
 //            insert.setMobile(jdAfter.getCustomerTel());
 //            insert.setAddress(jdAfter.getPickwareAddress());
-            insert.setRefundFee(refundDetail.getDouble("applyRefundSum")!=null?refundDetail.getDouble("applyRefundSum")/100:0.0);
+            insert.setRefundAmount(refundDetail.getDouble("applyRefundSum")!=null?refundDetail.getDouble("applyRefundSum")/100:0.0);
             // 类型不同处理
             if(refundDetail.getInteger("customerExpect") == 1){
                 // 售前退款，状态处理
@@ -183,7 +183,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
                 );
                 update.setOrderItemNum(oOrderItems.isEmpty() ? oRefunds.get(0).getOrderNum() : oOrderItems.get(0).getSubOrderNum());
             }
-            update.setRefundFee(refundDetail.getDouble("applyRefundSum")!=null?refundDetail.getDouble("applyRefundSum")/100:0.0);
+            update.setRefundAmount(refundDetail.getDouble("applyRefundSum")!=null?refundDetail.getDouble("applyRefundSum")/100:0.0);
             // 类型不同处理
             if(refundDetail.getInteger("customerExpect") == 1){
                 // 售前退款，状态处理
@@ -230,121 +230,6 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
         return ResultVo.success();
     }
 
-    @Transactional
-    @Override
-    public ResultVo<Integer> jdvcRefundMessage(String returnId,JSONObject refundDetail) {
-        log.info("京东VC退货消息处理" + returnId);
-//        log.info("=====jdvc refund message===消息处理" + returnId);
-//        JSONObject jsonObject = jdApiService.getRefundDetail(Long.parseLong(returnId),1);
-//        if(jsonObject.getInteger("code")!=200 || jsonObject.getJSONObject("data") ==null){
-//            log.info("=====jdvc refund message===没有找到退款单");
-//            return ResultVo.error(404,"没有找到退款单");
-//        }
-//
-//        JSONObject refundDetail = jsonObject.getJSONObject("data");
-        log.info("=====jdvc refund message===退款单:"+JSONObject.toJSONString(refundDetail));
-
-
-
-//        List<JdVcRefund> returnList = jdVcRefundMapper.selectList(new LambdaQueryWrapper<JdVcRefund>().eq(JdVcRefund::getId, returnId));
-//        if (returnList == null || returnList.size() == 0) {
-//            // 没有找到订单信息
-//            return ResultVo.error(ResultVoEnum.NotFound, "没有找到京东VC退货单：" + returnId);
-//        }
-//        JdVcRefund jdVcRefund = returnList.get(0);
-        // 对JSON做处理
-//        JSONArray jsonArray = JSONArray.parseArray(jdVcRefund.getOrderDetailList());
-
-        //类型(10-退货 20-换货 30-维修 40-大家电安装 50-大家电移机 60-大家电增值服务 70-上门维修 90-优鲜赔 80-补发商品 100-试用收回 11-仅退款)
-        Integer refundType=null;
-        Integer hasReturnGoods = null;
-        if(refundDetail.getInteger("orderState")==29 ) {
-            if (refundDetail.getInteger("operatorState") == 5 || refundDetail.getInteger("operatorState") == 10) {
-                refundType = 11;//这是没有发货的退货
-                hasReturnGoods = 0;
-            } else if (refundDetail.getInteger("operatorState") == 16) {
-                refundType = 10;//这是发货了的退款
-                hasReturnGoods = 1;
-            }
-        }
-        Integer status=10010;
-        //审核状态0未审核 1审核通过 2审核不通过
-        if(refundDetail.getInteger("approvalState")==0){
-            // 10001-待审核
-            status = 10001;
-        }else if(refundDetail.getInteger("approvalState")==1){
-            status = 10010;
-        }else if(refundDetail.getInteger("approvalState")==2){
-            status = 14000;
-        }
-
-
-        List<ORefund> oRefunds = mapper.selectList(new LambdaQueryWrapper<ORefund>().eq(ORefund::getRefundNum, returnId));
-
-        if (oRefunds == null || oRefunds.isEmpty()) {
-            // 新增
-            ORefund insert = new ORefund();
-            insert.setRefundNum(refundDetail.getString("id"));
-            insert.setRefundType(refundType);
-            insert.setHasGoodReturn(hasReturnGoods);
-            insert.setShopId(refundDetail.getLong("shopId"));
-            insert.setShopType(EnumShopType.JDVC.getIndex());
-
-            // 查询ERP订单
-//            OOrder order = null;
-//            OOrderItem orderItem = null;
-//            List<OOrder> oOrders = orderMapper.selectList(new LambdaQueryWrapper<OOrder>().eq(OOrder::getOrderNum, jdVcRefund.getCustomOrderId()).eq(OOrder::getShopId, jdVcRefund.getShopId()));
-//            if(oOrders!=null && oOrders.size()>0){
-//                order = oOrders.get(0);
-//                List<OOrderItem> oOrderItems = orderItemMapper.selectList(new LambdaQueryWrapper<OOrderItem>().eq(OOrderItem::getOrderId, oOrders.get(0).getId()).eq(OOrderItem::getSkuId, jdVcRefund.getSkuId()));
-//                if(oOrderItems!=null && oOrderItems.size()>0){
-//                    orderItem = oOrderItems.get(0);
-//                }else{
-//                    log.info("没有找到TAO子订单erp信息：");
-//                    return ResultVo.error(ResultVoEnum.NotFound,"没有找到TAO子订单erp信息：");
-//                }
-//            }else{
-//                log.info("没有找到TAO订单erp信息："+jdVcRefund.getCustomOrderId());
-//                return ResultVo.error(ResultVoEnum.NotFound,"没有找到TAO订单erp信息："+jdVcRefund.getCustomOrderId());
-//            }
-
-            insert.setOrderNum(refundDetail.getString("customOrderId"));
-            insert.setOrderItemNum(refundDetail.getString("customOrderId")+"-"+refundDetail.getString("skuId"));
-            insert.setSkuId(refundDetail.getLong("skuId"));
-            insert.setGoodsId(refundDetail.getLong("ogoodsId"));
-            insert.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
-            insert.setSkuNum(refundDetail.getString("skuId"));
-            insert.setGoodsName(refundDetail.getString("commodityName"));
-            insert.setGoodsSku("");
-            insert.setGoodsImage("");
-            insert.setQuantity(refundDetail.getLong("commodityNum"));
-
-            insert.setRefundReason(refundDetail.getString("roReason"));
-            insert.setStatus(status);
-            insert.setRefundFee(refundDetail.getDouble("roApplyFee"));
-            // todo:少了一個退款申請時間
-            insert.setCreateTime(new Date());
-            insert.setCreateBy("REFUND_MESSAGE");
-            mapper.insert(insert);
-        } else {
-            // 修改
-            ORefund update = new ORefund();
-            update.setId(oRefunds.get(0).getId());
-            update.setRefundType(refundType);
-            update.setHasGoodReturn(hasReturnGoods);
-            update.setGoodsId(refundDetail.getLong("ogoodsId"));
-            update.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
-            update.setRefundFee(refundDetail.getDouble("roApplyFee"));
-            update.setStatus(status);
-//                update.setStatus(jdAfter.getServiceStatus());
-            update.setUpdateTime(new Date());
-            update.setUpdateBy("REFUND_MESSAGE");
-            mapper.updateById(update);
-        }
-
-
-        return ResultVo.success();
-    }
 
     @Transactional
     @Override
@@ -438,16 +323,16 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
             insert.setShopType(EnumShopType.TAO.getIndex());
             insert.setOrderNum(refundDetail.getString("tid"));
             insert.setOrderItemNum(refundDetail.getString("oid"));
-            insert.setSkuId(refundDetail.getLong("skuId"));
+            insert.setSkuId(refundDetail.getString("skuId"));
             insert.setGoodsId(refundDetail.getLong("ogoodsId"));
             insert.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
             insert.setSkuNum(refundDetail.getString("outerId"));
             insert.setGoodsName(refundDetail.getString("title"));
-            insert.setGoodsSku(refundDetail.getString("sku"));
+            insert.setSkuName(refundDetail.getString("sku"));
 //            insert.setGoodsImage(refundDetail.getString("oGoodsSkuId"));
-            insert.setQuantity(refundDetail.getLong("num"));
+            insert.setQuantity(refundDetail.getInteger("num"));
             insert.setStatus(status);
-            insert.setRefundFee(refundDetail.getDouble("refundFee"));
+            insert.setRefundAmount(refundDetail.getDouble("refundFee"));
             insert.setOrderAmount(refundDetail.getDouble("totalFee"));
             insert.setRefundReason(refundDetail.getString("reason"));
             insert.setRemark(refundDetail.getString("desc1"));
@@ -485,11 +370,11 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
 //                // 10010-退款成功（完成）
 //                status = 10010;
 //            }
-            update.setSkuId(refundDetail.getLong("skuId"));
+            update.setSkuId(refundDetail.getString("skuId"));
             update.setGoodsId(refundDetail.getLong("ogoodsId"));
             update.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
             update.setSkuNum(refundDetail.getString("outerId"));
-            update.setRefundFee(refundDetail.getDouble("refundFee"));
+            update.setRefundAmount(refundDetail.getDouble("refundFee"));
             update.setOrderAmount(refundDetail.getDouble("totalFee"));
             update.setStatus(status);
             update.setUpdateTime(new Date());
@@ -499,199 +384,6 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
         return ResultVo.success();
     }
 
-    @Transactional
-    @Override
-    public ResultVo<Integer> pddRefundMessage(String refundId,JSONObject refundDetail) {
-        log.info("=====pdd refund message===消息处理" + refundId);
-//        JSONObject jsonObject = pddApiService.getRefundDetail(Long.parseLong(refundId));
-//        if(jsonObject.getInteger("code")!=200 || jsonObject.getJSONObject("data") ==null){
-//            log.info("=====pdd refund message===没有找到退款单");
-//            return ResultVo.error(404,"没有找到退款单");
-//        }
-//
-//        JSONObject refundDetail = jsonObject.getJSONObject("data");
-        log.info("=====pdd refund message===退款单:"+JSONObject.toJSONString(refundDetail));
-
-//        List<PddRefund> refundList = pddRefundMapper.selectList(new LambdaQueryWrapper<PddRefund>().eq(PddRefund::getId, refundId));
-//        if (refundList == null || refundList.size() == 0) {
-//            // 没有找到订单信息
-//            log.info("没有找到PDD售后单："+refundId);
-//            return ResultVo.error(ResultVoEnum.NotFound, "没有找到PDD售后单：" + refundId);
-//        }
-//        PddRefund originRefund = refundList.get(0);
-
-        // 查询ERP订单
-//        OOrder order = null;
-//        OOrderItem orderItem = null;
-//        List<OOrder> oOrders = orderMapper.selectList(
-//                new LambdaQueryWrapper<OOrder>()
-//                        .eq(OOrder::getOrderNum, originRefund.getOrderSn())
-//                        .eq(OOrder::getShopId, originRefund.getShopId())
-//        );
-//
-//        if(oOrders!=null && oOrders.size()>0){
-//            order = oOrders.get(0);
-//            List<OOrderItem> oOrderItems = orderItemMapper.selectList(
-//                    new LambdaQueryWrapper<OOrderItem>()
-//                            .eq(OOrderItem::getOrderNum, oOrders.get(0).getId())
-//                            .eq(OOrderItem::getSkuId, originRefund.getSkuId())
-//            );
-
-//            if(oOrderItems!=null && oOrderItems.size()>0){
-//                orderItem = oOrderItems.get(0);
-//            }else{
-//                log.info("没有找到PDD子订单erp信息："+originRefund.getOrderSn()+"===="+originRefund.getSkuId());
-//                return ResultVo.error(ResultVoEnum.NotFound,"没有找到PDD子订单erp信息："+originRefund.getOrderSn()+"===="+originRefund.getSkuId());
-//            }
-//        }else{
-//            log.info("没有找到PDD订单erp信息："+originRefund.getOrderSn());
-//            return ResultVo.error(ResultVoEnum.NotFound,"没有找到PDD订单erp信息："+originRefund.getOrderSn());
-//        }
-
-        Integer status= null;
-        //退款状态O_Refund
-        // 状态（10001待审核 10002等待买家退货 10003等待平台审核 10004待买家处理 10005等待卖家处理 10006等待卖家发货 14000拒绝退款 10011退款关闭 10010退款完成 10090退款中 10091换货成功 10092换货失败 10093维修关闭 10094维修成功 ）
-
-        // PDD 售后状态
-        // (10001) 2：买家申请退款，待商家处理 3：退货退款，待商家处理
-        // (10090) 4：商家同意退款，退款中 5：平台同意退款，退款中
-        // (10004) 6：驳回退款，待买家处理
-        // (10002) 7：已同意退货退款,待用户发货
-        // (10003) 8：平台处理中
-        // (10011) 9：平台拒绝退款，退款关闭
-        // (10010) 10：退款成功
-        // (10011) 11：买家撤销  12：买家逾期未处理，退款失败 13：买家逾期，超过有效期
-        // (10005) 14：换货补寄待商家处理  21：待商家同意维修 33：待商家召回
-        // (10004) 15：换货补寄待用户处理 18：换货补寄待用户确认完成  27：待用户确认收货 22：待用户确认发货  31：已同意拒收退款，待用户拒收
-        // (10091) 16：换货补寄成功
-        // (10092) 17：换货补寄失败
-        // (10093) 24：维修关闭
-        // (10094) 25：维修成功
-        // (10006) 32：补寄待商家发货
-        Integer afterSalesStatus = refundDetail.getInteger("afterSalesStatus");
-        if(afterSalesStatus== 2 ||afterSalesStatus== 3){
-            // 10001-待审核(待商家处理)
-            status = 10001;
-        }else if(afterSalesStatus==4 ||afterSalesStatus== 5){
-            // 10090退款中
-            status = 10090;
-        }else if(afterSalesStatus == 6 ){
-            // 10004 驳回退款，待买家处理
-            status = 10004;
-        }else if(afterSalesStatus == 7 ){
-            // 10002等待买家退货
-            status = 10002;
-        }else if(afterSalesStatus == 8 ){
-            // 10003等待平台审核
-            status = 10003;
-        }else if(afterSalesStatus == 9 ||afterSalesStatus == 11||afterSalesStatus == 12||afterSalesStatus == 13){
-            // 10011退款关闭
-            status = 10011;
-        }else if(afterSalesStatus == 10 ){
-            // 10010退款完成
-            status = 10010;
-        }else if(afterSalesStatus == 14 ||afterSalesStatus == 21||afterSalesStatus== 33){
-            // 10005等待卖家处理
-            status = 10005;
-        }else if(afterSalesStatus == 15 ||afterSalesStatus== 18||afterSalesStatus == 22||afterSalesStatus == 27||afterSalesStatus == 31){
-            // 10004待买家处理
-            status = 10004;
-        }else if(afterSalesStatus == 32 ){
-            // 10006等待卖家发货
-            status = 10006;
-        }else if(afterSalesStatus == 16 ){
-            // 10091换货成功
-            status = 10091;
-        }else if(afterSalesStatus == 17 ){
-            // 10092换货失败
-            status = 10092;
-        }else if(afterSalesStatus == 24 ){
-            // 10093维修关闭
-            status = 10093;
-        }else if(afterSalesStatus == 25 ){
-            // 10094维修成功
-            status = 10094;
-        }
-
-        List<ORefund> oRefunds = mapper.selectList(new LambdaQueryWrapper<ORefund>().eq(ORefund::getRefundNum, refundId));
-        if (oRefunds == null || oRefunds.isEmpty()) {
-            // 新增
-            ORefund insert = new ORefund();
-            insert.setRefundNum(refundId);
-            // O_Refund (类型(1-售前退款 10-退货 20-换货 30-维修 40-大家电安装 50-大家电移机 60-大家电增值服务 70-上门维修 90-优鲜赔 80-补发商品 100-试用收回 11-仅退款)
-            Integer hasGoodReturn = 0;
-            Integer refundType = null;
-            // PDD 售后类型 1：全部 2：仅退款 3：退货退款 4：换货 5：缺货补寄 6：维修
-            if (refundDetail.getInteger("afterSalesType")==2) {
-                refundType = 11;
-            } else if (refundDetail.getInteger("afterSalesType")==3) {
-                refundType = 10;
-                if(refundDetail.getInteger("afterSalesType")==2){
-                    hasGoodReturn = 1;
-                }
-            } else if (refundDetail.getInteger("afterSalesType")==4) {
-                refundType = 20;
-                hasGoodReturn = 1;
-            } else if (refundDetail.getInteger("afterSalesType")==6) {
-                refundType = 30;
-            } else if (refundDetail.getInteger("afterSalesType")==5) {
-                refundType = 80;
-            }
-            insert.setRefundType(refundType);
-            insert.setHasGoodReturn(hasGoodReturn);
-            insert.setShopId(refundDetail.getLong("shopId"));
-            insert.setShopType(EnumShopType.PDD.getIndex());
-            insert.setOrderNum(refundDetail.getString("orderSn"));
-            insert.setSkuId(refundDetail.getLong("skuId"));
-            List<OOrderItem> oOrderItems = orderItemMapper.selectList(
-                    new LambdaQueryWrapper<OOrderItem>()
-                            .eq(OOrderItem::getOrderNum, insert.getOrderNum())
-                            .eq(OOrderItem::getSkuId, insert.getSkuId())
-            );
-
-            insert.setOrderItemNum(oOrderItems.isEmpty()?insert.getOrderNum():oOrderItems.get(0).getSubOrderNum());
-
-            insert.setGoodsId(refundDetail.getLong("ogoodsId"));
-            insert.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
-            insert.setSkuNum(refundDetail.getString("outerId"));
-            insert.setGoodsName(refundDetail.getString("goodsName"));
-            insert.setGoodsSku(refundDetail.getString("goodsSpec"));
-            insert.setGoodsImage(refundDetail.getString("goodsImage"));
-            insert.setQuantity(refundDetail.getLong("goodsNumber"));
-            insert.setOrderAmount(refundDetail.getDouble("orderAmount"));
-            insert.setReturnLogisticsCode(refundDetail.getString("trackingNumber"));
-            insert.setStatus(status);
-            insert.setRefundFee(refundDetail.getDouble("refundAmount"));
-            insert.setRefundReason(refundDetail.getString("afterSaleReason"));
-            insert.setRemark("");
-//            insert.setContactperson(taoRefund.getCustomerName());
-//            insert.setMobile(taoRefund.getCustomerTel());
-//            insert.setAddress(taoRefund.getPickwareAddress());
-
-            insert.setCreateTime(new Date());
-            insert.setCreateBy("REFUND_MESSAGE");
-            mapper.insert(insert);
-        } else {
-            // 修改
-            ORefund update = new ORefund();
-            update.setId(oRefunds.get(0).getId());
-            List<OOrderItem> oOrderItems = orderItemMapper.selectList(
-                    new LambdaQueryWrapper<OOrderItem>()
-                            .eq(OOrderItem::getOrderNum, oRefunds.get(0).getOrderNum())
-                            .eq(OOrderItem::getSkuId, oRefunds.get(0).getSkuId())
-            );
-
-            update.setOrderItemNum(oOrderItems.isEmpty()?update.getOrderNum():oOrderItems.get(0).getSubOrderNum());
-
-            update.setGoodsId(refundDetail.getLong("ogoodsId"));
-            update.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
-            update.setStatus(status);
-            update.setUpdateTime(new Date());
-            update.setUpdateBy("REFUND_MESSAGE");
-            mapper.updateById(update);
-        }
-        return ResultVo.success();
-    }
 
     @Transactional
     @Override
@@ -807,17 +499,17 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
             insert.setShopType(EnumShopType.DOU.getIndex());
             insert.setOrderNum(refundDetail.getString("relatedId"));
             insert.setOrderItemNum(refundDetail.getString("orderSkuOrderId"));
-            insert.setSkuId(refundDetail.getLong("skuId"));
+            insert.setSkuId(refundDetail.getString("skuId"));
             insert.setGoodsId(refundDetail.getLong("ogoodsId"));
             insert.setGoodsSkuId(refundDetail.getString("ogoodsSkuId"));
             insert.setSkuNum(refundDetail.getString("outSkuId"));
             insert.setGoodsName(refundDetail.getString("orderProductName"));
-            insert.setGoodsSku(refundDetail.getString("orderSkuSpec"));
+            insert.setSkuName(refundDetail.getString("orderSkuSpec"));
             insert.setGoodsImage(refundDetail.getString("orderProductImage"));
-            insert.setQuantity(refundDetail.getLong("aftersaleNum"));
+            insert.setQuantity(refundDetail.getInteger("aftersaleNum"));
 
             insert.setStatus(status);
-            insert.setRefundFee(refundDetail.getDouble("refundAmount")/100);
+            insert.setRefundAmount(refundDetail.getDouble("refundAmount")/100);
             insert.setRefundReason("");
             insert.setRemark("");
 //            insert.setContactperson(taoRefund.getCustomerName());
@@ -843,20 +535,6 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
         return ResultVo.success();
     }
 
-    @Transactional
-    @Override
-    public ResultVo<Integer> weiRefundMessage(String refundId,JSONObject refundDetail) {
-        log.info("WEI退款消息处理" + refundId);
-//        JSONObject jsonObject = weiApiService.getRefundDetail(refundId);
-//        if (jsonObject.getInteger("code") != 200 || jsonObject.getJSONObject("data") == null) {
-//            log.info("=====wei refund message===没有找到退款单");
-//            return ResultVo.error(404, "没有找到退款单");
-//        }
-//
-//        JSONObject refundDetail = jsonObject.getJSONObject("data");
-        log.info("=====wei refund message===退款单:" + JSONObject.toJSONString(refundDetail));
-        return ResultVo.success();
-    }
 
         @Override
     public List<ORefund> selectList(ORefund refund) {
@@ -872,9 +550,6 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
                 .eq(bo.getRefundType()!=null,ORefund::getRefundType,bo.getRefundType())
                 .eq(bo.getShopId()!=null,ORefund::getShopId,bo.getShopId())
                 .eq(bo.getHasProcessing()!=null,ORefund::getHasProcessing,bo.getHasProcessing())
-                .eq(bo.getErpPushStatus()!=null && bo.getErpPushStatus() == 0,ORefund::getErpPushStatus,0)
-                .eq(bo.getErpPushStatus()!=null && bo.getErpPushStatus() == 200,ORefund::getErpPushStatus,200)
-                .gt(bo.getErpPushStatus()!=null && bo.getErpPushStatus() == 500,ORefund::getErpPushStatus,200)
                 ;
         if(bo.getRefundType()== null){
 //            LambdaQueryWrapper<ORefund> typeOr = new LambdaQueryWrapper<ORefund>();
@@ -943,7 +618,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
         afterSale.setQuantity(refund.getQuantity().intValue());
         afterSale.setTitle(refund.getGoodsName());
         afterSale.setImg(refund.getGoodsImage());
-        afterSale.setSkuInfo(refund.getGoodsSku());
+        afterSale.setSkuInfo(refund.getSkuId());
         afterSale.setSkuCode(refund.getSkuNum());
         afterSale.setOGoodsId(oGoodsSkus.isEmpty()?"0":oGoodsSkus.get(0).getGoodsId().toString());
         afterSale.setOGoodsSkuId(oGoodsSkus.isEmpty()?"0":oGoodsSkus.get(0).getId().toString());
@@ -972,6 +647,11 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
         mapper.updateById(update);
 
         return ResultVo.success();
+    }
+
+    @Override
+    public ResultVo<Long> saveAndUpdateRefund(ORefund refund) {
+        return null;
     }
 }
 

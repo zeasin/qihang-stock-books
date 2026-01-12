@@ -60,7 +60,7 @@ public class OAfterSale implements Serializable {
     /**
      * 平台商品skuid
      */
-    private Long skuId;
+    private String skuId;
 
     /**
      * 售后数量
