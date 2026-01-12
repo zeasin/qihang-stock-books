@@ -4,6 +4,32 @@ import cn.qihangerp.common.enums.PddRefundStatusEnum;
 import cn.qihangerp.model.entity.ORefund;
 
 public class ShopRefundTransform {
+    public static ORefund transformJdRefund(cn.qihangerp.open.jd.model.AfterSale jdRefund) {
+        ORefund refund = new ORefund();
+        refund.setRefundNum(jdRefund.getServiceId().toString());
+        refund.setRefundType(jdRefund.getCustomerExpect());
+//        refund.setOrderAmount(pddRefund.getOrderAmount());
+        refund.setOrderNum(jdRefund.getOrderId().toString());
+        refund.setOrderItemNum(jdRefund.getOrderId()+"-"+jdRefund.getSkuId());
+//        refund.setRefundAmount(jdRefund.getapply());
+//        refund.setRefundReason(jdRefund.get());
+        refund.setSkuId(jdRefund.getSkuId()+"");
+//        refund.setSkuNum(jdRefund.getOuterId());
+        refund.setSkuName("");
+        refund.setGoodsName(jdRefund.getWareName());
+//        refund.setGoodsImage(pddRefund.getGoodImage());
+        refund.setQuantity(jdRefund.getServiceCount());
+//        refund.setUserShippingStatus(pddRefund.getUserShippingStatus());
+        refund.setPlatformStatus(jdRefund.getServiceStatus()+"");
+        refund.setPlatformStatusText(jdRefund.getServiceStatusName());
+        refund.setRefundCreated(jdRefund.getApplyTime());
+        refund.setRefundUpdated(jdRefund.getUpdateDate());
+//        refund.setOrderTime(pddRefund.getConfirmTime());
+//        refund.setReturnLogisticsCompany(pddRefund.getShippingName());
+//        refund.setReturnLogisticsCode(pddRefund.getTrackingNumber());
+        refund.setRefundCreated(jdRefund.getApplyTime());
+        return refund;
+    }
     public static ORefund transformPddRefund(cn.qihangerp.open.pdd.model.AfterSale pddRefund) {
         ORefund refund = new ORefund();
         refund.setRefundNum(pddRefund.getId().toString());

@@ -10,6 +10,7 @@ import cn.qihangerp.common.enums.HttpStatus;
 import cn.qihangerp.model.entity.ORefund;
 import cn.qihangerp.model.entity.OShopPullLogs;
 import cn.qihangerp.open.common.ApiResultVo;
+import cn.qihangerp.open.jd.JdAfterSaleApiHelper;
 import cn.qihangerp.open.pdd.PddRefundApiHelper;
 import cn.qihangerp.open.pdd.model.AfterSale;
 import cn.qihangerp.service.service.ORefundService;
@@ -86,14 +87,14 @@ public class ShopRefundApiController {
         //api参数
         String pullParams = "{}";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if(shopType==EnumShopType.PDD.getIndex()) {
+        if (shopType == EnumShopType.PDD.getIndex()) {
             log.info("=============拉取PDD店铺订单。开始时间：{} ", req.getCreateTime());
             LocalDateTime startTime = LocalDateTime.parse(req.getCreateTime() + " 00:00:01", formatter);
 //            LocalDateTime  endTime = LocalDateTime.parse(req.getCreateTime() + " 23:59:59", formatter);
 
             Long startTimestamp = startTime.toEpochSecond(ZoneOffset.ofHours(8));
-            for(int i=0;i<48;i++){
-                Long endTimestamp = startTimestamp+30*60;
+            for (int i = 0; i < 48; i++) {
+                Long endTimestamp = startTimestamp + 30 * 60;
                 // 转换为 LocalDateTime
                 LocalDateTime start = Instant.ofEpochSecond(startTimestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
                 LocalDateTime end = Instant.ofEpochSecond(endTimestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -102,11 +103,11 @@ public class ShopRefundApiController {
                 ApiResultVo<AfterSale> upResult = PddRefundApiHelper.pullRefundList(appKey, appSecret, accessToken, startTimestamp.intValue(), endTimestamp.intValue(), 1, 100);
                 apiResponseCode = upResult.getCode();
                 apiResponseMsg = upResult.getMsg();
-                if(apiResponseCode!=0) {
+                if (apiResponseCode != 0) {
                     log.info("======循环拉取PDD一天的退款：{} result:{}-{}", pullParams, upResult.getCode(), upResult.getMsg());
                     break;
                 }
-                if(apiResponseCode==0) {
+                if (apiResponseCode == 0) {
                     log.info("======循环拉取PDD一天的退款：{} result:{}-{}", pullParams, upResult.getCode(), upResult.getList().size());
                     //循环插入订单数据到数据库
                     for (var refund : upResult.getList()) {
@@ -115,15 +116,13 @@ public class ShopRefundApiController {
                         oRefund.setShopType(shopType);
 
                         //插入订单数据
-                        var result =  oRefundService.saveAndUpdateRefund(oRefund);
+                        var result = oRefundService.saveAndUpdateRefund(oRefund);
                         if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
                             //已经存在
                             log.info("/**************主动更新pdd退款：开始更新数据库：" + refund.getId() + "存在、更新****************/");
-
                             hasExistOrder++;
                         } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
                             log.info("/**************主动更新pdd退款：开始更新数据库：" + refund.getId() + "不存在、新增****************/");
-
                             insertSuccess++;
                         } else {
                             log.info("/**************主动更新pdd退款：开始更新数据库：" + refund.getId() + "报错****************/");
@@ -134,7 +133,36 @@ public class ShopRefundApiController {
                 }
             }
 
-        }else{
+        } else if (shopType == EnumShopType.JD.getIndex()) {
+            LocalDateTime startTime = LocalDateTime.parse(req.getCreateTime() + " 00:00:01", formatter);
+            LocalDateTime  endTime = LocalDateTime.parse(req.getCreateTime() + " 23:59:59", formatter);
+            Long sellerId = checkResult.getData().getSellerId();
+            log.info("=============拉取JD店铺订单。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
+            //获取售后
+            ApiResultVo<cn.qihangerp.open.jd.model.AfterSale> afterSaleVo = JdAfterSaleApiHelper.pullAfterSaleList(sellerId, startTime, endTime, appKey, appSecret, accessToken);
+            apiResponseCode = afterSaleVo.getCode();
+            apiResponseMsg = afterSaleVo.getMsg();
+            if (apiResponseCode == 0) {
+                /*******处理售后list*****/
+                for (var after : afterSaleVo.getList()) {
+                    ORefund oRefund = ShopRefundTransform.transformJdRefund(after);
+                    oRefund.setShopId(shopId);
+                    oRefund.setShopType(shopType);
+
+                    //插入订单数据
+                    var result = oRefundService.saveAndUpdateRefund(oRefund);
+                    if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
+                        //已经存在
+                        hasExistOrder++;
+                    } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
+                        insertSuccess++;
+                    } else {
+                        totalError++;
+                    }
+                }
+            }
+
+        } else {
             return AjaxResult.error("暂时不支持！");
         }
 
@@ -150,7 +178,7 @@ public class ShopRefundApiController {
             logs.setDuration(System.currentTimeMillis() - beginTime);
             pullLogsService.save(logs);
             return AjaxResult.error(apiResponseMsg);
-        }else {
+        } else {
             OShopPullLogs logs = new OShopPullLogs();
             logs.setShopType(shopType);
             logs.setShopId(shopId);
