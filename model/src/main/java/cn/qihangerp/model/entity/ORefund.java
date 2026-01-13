@@ -95,7 +95,11 @@ public class ORefund implements Serializable {
     /**
      * 退货数量
      */
-    private Integer quantity;
+    private Integer afterNum;
+    /**
+     * 购买数量
+     */
+    private Integer buyNum;
 
     /**
      * 退货物流公司

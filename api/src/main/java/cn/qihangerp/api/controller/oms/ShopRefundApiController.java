@@ -7,12 +7,10 @@ import cn.qihangerp.common.AjaxResult;
 import cn.qihangerp.common.ResultVoEnum;
 import cn.qihangerp.common.enums.EnumShopType;
 import cn.qihangerp.common.enums.HttpStatus;
-import cn.qihangerp.common.mq.MqMessage;
-import cn.qihangerp.common.mq.MqType;
 import cn.qihangerp.model.entity.ORefund;
 import cn.qihangerp.model.entity.OShopPullLogs;
-import cn.qihangerp.model.entity.TaoRefund;
 import cn.qihangerp.open.common.ApiResultVo;
+import cn.qihangerp.open.dou.DouRefundApiHelper;
 import cn.qihangerp.open.jd.JdAfterSaleApiHelper;
 import cn.qihangerp.open.pdd.PddRefundApiHelper;
 import cn.qihangerp.open.pdd.model.AfterSale;
@@ -23,7 +21,6 @@ import cn.qihangerp.service.service.OShopPullLogsService;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -31,6 +28,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,7 +92,7 @@ public class ShopRefundApiController {
         String pullParams = "{}";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         if (shopType == EnumShopType.PDD.getIndex()) {
-            log.info("=============拉取PDD店铺订单。开始时间：{} ", req.getCreateTime());
+            log.info("=============拉取PDD店铺售后。开始时间：{} ", req.getCreateTime());
             LocalDateTime startTime = LocalDateTime.parse(req.getCreateTime() + " 00:00:01", formatter);
 //            LocalDateTime  endTime = LocalDateTime.parse(req.getCreateTime() + " 23:59:59", formatter);
 
@@ -145,7 +143,7 @@ public class ShopRefundApiController {
             LocalDateTime startTime = LocalDateTime.parse(req.getCreateTime() + " 00:00:01", formatter);
             LocalDateTime  endTime = LocalDateTime.parse(req.getCreateTime() + " 23:59:59", formatter);
             Long sellerId = checkResult.getData().getSellerId();
-            log.info("=============拉取JD店铺订单。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
+            log.info("=============拉取JD店铺售后。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
             //获取售后
             ApiResultVo<cn.qihangerp.open.jd.model.AfterSale> afterSaleVo = JdAfterSaleApiHelper.pullAfterSaleList(sellerId, startTime, endTime, appKey, appSecret, accessToken);
             apiResponseCode = afterSaleVo.getCode();
@@ -173,14 +171,13 @@ public class ShopRefundApiController {
         } else if(shopType == EnumShopType.TAO.getIndex()) {
             LocalDateTime startTime = LocalDateTime.parse(req.getCreateTime() + " 00:00:01", formatter);
             LocalDateTime  endTime = LocalDateTime.parse(req.getCreateTime() + " 23:59:59", formatter);
-            log.info("=============拉取TAO店铺订单。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
+            log.info("=============拉取TAO店铺售后。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
             ApiResultVo<TaoRefundResponse> upResult = TaoRefundApiHelper.pullRefund(startTime, endTime, appKey, appSecret, accessToken);
             apiResponseCode = upResult.getCode();
             apiResponseMsg = upResult.getMsg();
             if (apiResponseCode == 0) {
                 //循环插入订单数据到数据库
                 for (var refund : upResult.getList()) {
-                    // TODO：查询订单信息（发货信息、价格信息）
                     ORefund oRefund = ShopRefundTransform.transformTaoRefund(refund);
                     oRefund.setShopId(shopId);
                     oRefund.setShopType(shopType);
@@ -201,8 +198,43 @@ public class ShopRefundApiController {
                 }
             }
 
-        }
+        } else if(shopType == EnumShopType.DOU.getIndex()) {
+            LocalDateTime startTime = LocalDateTime.parse(req.getCreateTime() + " 00:00:01", formatter);
+            LocalDateTime endTime = LocalDateTime.parse(req.getCreateTime() + " 23:59:59", formatter);
+            log.info("=============拉取DOU店铺售后。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
+            Long startTimestamp = startTime.toEpochSecond(ZoneOffset.ofHours(8));
+            Long endTimestamp = endTime.toEpochSecond(ZoneOffset.ofHours(8));
 
+            //获取
+            ApiResultVo<cn.qihangerp.open.dou.model.after.AfterSale> resultVo = DouRefundApiHelper.pullAfterSaleList(startTimestamp, endTimestamp, 0, 50, appKey, appSecret, accessToken);
+            apiResponseCode = resultVo.getCode();
+            apiResponseMsg = resultVo.getMsg();
+            if (apiResponseCode == 0) {
+                //循环插入订单数据到数据库
+                for (var refund : resultVo.getList()) {
+                    List<ORefund> oRefunds = ShopRefundTransform.transformDouRefund(refund);
+                    for (var oRefund : oRefunds) {
+                        oRefund.setShopId(shopId);
+                        oRefund.setShopType(shopType);
+
+                        //插入订单数据
+                        var result = oRefundService.saveAndUpdateRefund(oRefund);
+                        if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
+                            //已经存在
+                            log.info("/**************主动更新tao退款：开始更新数据库：" + oRefund.getRefundNum() + "存在、更新****************/");
+                            hasExistOrder++;
+                        } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
+                            log.info("/**************主动更新tao退款：开始更新数据库：" + oRefund.getRefundNum() + "不存在、新增****************/");
+                            insertSuccess++;
+                        } else {
+                            log.info("/**************主动更新tao退款：开始更新数据库：" + oRefund.getRefundNum() + "报错****************/");
+                            totalError++;
+                        }
+                    }
+
+                }
+            }
+        }
         else {
             return AjaxResult.error("暂时不支持！");
         }

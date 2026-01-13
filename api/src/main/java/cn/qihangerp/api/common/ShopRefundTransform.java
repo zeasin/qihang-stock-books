@@ -3,6 +3,14 @@ package cn.qihangerp.api.common;
 import cn.qihangerp.common.enums.PddRefundStatusEnum;
 import cn.qihangerp.model.entity.ORefund;
 import cn.qihangerp.open.tao.response.TaoRefundResponse;
+import com.alibaba.fastjson2.JSONObject;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShopRefundTransform {
     public static ORefund transformTaoRefund(TaoRefundResponse taoRefund) {
@@ -36,7 +44,8 @@ public class ShopRefundTransform {
         refund.setSkuName(taoRefund.getSku());
         refund.setGoodsName(taoRefund.getTitle());
         refund.setGoodsImage(null);
-        refund.setQuantity(taoRefund.getNum());
+        refund.setAfterNum(taoRefund.getNum());
+        refund.setBuyNum(taoRefund.getNum());
         //货物状态。可选值BUYER_NOT_RECEIVED (买家未收到货) BUYER_RECEIVED (买家已收到货) BUYER_RETURNED_GOODS (买家已退货)
         if(taoRefund.getGoodStatus().equals("BUYER_NOT_RECEIVED")) {
             refund.setUserShippingStatus("1");
@@ -100,7 +109,7 @@ public class ShopRefundTransform {
         refund.setSkuName("");
         refund.setGoodsName(jdRefund.getWareName());
 //        refund.setGoodsImage(pddRefund.getGoodImage());
-        refund.setQuantity(jdRefund.getServiceCount());
+        refund.setAfterNum(jdRefund.getServiceCount());
 //        refund.setUserShippingStatus(pddRefund.getUserShippingStatus());
         refund.setPlatformStatus(jdRefund.getServiceStatus()+"");
         refund.setPlatformStatusText(jdRefund.getServiceStatusName());
@@ -112,6 +121,7 @@ public class ShopRefundTransform {
         refund.setRefundCreated(jdRefund.getApplyTime());
         return refund;
     }
+
     public static ORefund transformPddRefund(cn.qihangerp.open.pdd.model.AfterSale pddRefund) {
         ORefund refund = new ORefund();
         refund.setRefundNum(pddRefund.getId().toString());
@@ -140,7 +150,8 @@ public class ShopRefundTransform {
         refund.setSkuName("");
         refund.setGoodsName(pddRefund.getGoodsName());
         refund.setGoodsImage(pddRefund.getGoodImage());
-        refund.setQuantity(pddRefund.getGoodsNumber());
+        refund.setAfterNum(pddRefund.getGoodsNumber());
+        refund.setBuyNum(pddRefund.getGoodsNumber());
         refund.setUserShippingStatus(pddRefund.getUserShippingStatus());
         refund.setPlatformStatus(pddRefund.getAfterSalesStatus()+"");
         //售后状态 0：无售后 2：买家申请退款，待商家处理 3：退货退款，待商家处理 4：商家同意退款，退款中 5：平台同意退款，退款中
@@ -156,5 +167,90 @@ public class ShopRefundTransform {
         refund.setReturnLogisticsCompany(pddRefund.getShippingName());
         refund.setReturnLogisticsCode(pddRefund.getTrackingNumber());
         return refund;
+    }
+
+    public static List<ORefund> transformDouRefund(cn.qihangerp.open.dou.model.after.AfterSale douRefund) {
+        List<ORefund> refunds = new ArrayList<ORefund>();
+
+        ORefund refund = new ORefund();
+        refund.setRefundNum(douRefund.getAftersaleInfo().getAftersaleId());
+        // 类型(1-售前退款 10-退货 20-换货 30-维修 40-大家电安装 50-大家电移机 60-大家电增值服务 70-上门维修 90-优鲜赔 80-补发商品 100-试用收回 11-仅退款)
+
+        //售后类型；0-退货退款；1-已发货退款；2-未发货退款；3-换货；6-价保；7-补寄；8-维修
+        if(douRefund.getAftersaleInfo().getAftersaleType()==0){
+            refund.setRefundType(10);
+            refund.setShippingStatus(1);
+        }else if(douRefund.getAftersaleInfo().getAftersaleType()==1){
+            refund.setRefundType(11);
+            refund.setShippingStatus(1);
+        }else if(douRefund.getAftersaleInfo().getAftersaleType()==2){
+            refund.setRefundType(1);
+            refund.setShippingStatus(0);
+        }else if(douRefund.getAftersaleInfo().getAftersaleType()==3){
+            refund.setRefundType(20);
+            refund.setShippingStatus(1);
+        }else if(douRefund.getAftersaleInfo().getAftersaleType()==6){
+            refund.setRefundType(11);
+            refund.setShippingStatus(1);
+        }else if(douRefund.getAftersaleInfo().getAftersaleType()==7){
+            refund.setRefundType(80);
+            refund.setShippingStatus(1);
+        }else if(douRefund.getAftersaleInfo().getAftersaleType()==8){
+            refund.setRefundType(30);
+            refund.setShippingStatus(1);
+        }
+        refund.setRefundReason(douRefund.getAftersaleInfo().getRiskDecisionReason());
+        refund.setOrderNum(douRefund.getAftersaleInfo().getRelatedId());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        LocalDateTime createTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(douRefund.getAftersaleInfo().getCreateTime()), ZoneId.of("UTC"));
+        LocalDateTime updateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(douRefund.getAftersaleInfo().getUpdateTime()), ZoneId.of("UTC"));
+        refund.setRefundCreated(createTime.format(formatter));
+        refund.setRefundUpdated(updateTime.format(formatter));
+        refund.setUserShippingStatus(douRefund.getAftersaleInfo().getGotPkg()+"");
+        refund.setReturnLogisticsCompany(douRefund.getAftersaleInfo().getReturnLogisticsCompanyName());
+        refund.setReturnLogisticsCode(douRefund.getAftersaleInfo().getReturnLogisticsCode());
+
+        refund.setPlatformStatus(douRefund.getAftersaleInfo().getAftersaleStatus()+"");
+        //售后状态 3-换货待买家收货；6-待商家同意；7-待买家退货；8-待商家发货；11-待商家二次同意；12-售后成功；14-换货成功；27-商家一次拒绝；28-售后失败；29-商家二次拒绝；
+        if(douRefund.getAftersaleInfo().getAftersaleStatus()==3){
+            refund.setPlatformStatusText("换货待买家收货");
+        }else if(douRefund.getAftersaleInfo().getAftersaleStatus()==6){
+            refund.setPlatformStatusText("待商家同意");
+        }else if(douRefund.getAftersaleInfo().getAftersaleStatus()==7){
+            refund.setPlatformStatusText("待买家退货");
+        }else if(douRefund.getAftersaleInfo().getAftersaleStatus()==8){
+            refund.setPlatformStatusText("待商家发货");
+        }else if(douRefund.getAftersaleInfo().getAftersaleStatus()==11){
+            refund.setPlatformStatusText("待商家二次同意");
+        }else if(douRefund.getAftersaleInfo().getAftersaleStatus()==12){
+            refund.setPlatformStatusText("售后成功");
+        }else if(douRefund.getAftersaleInfo().getAftersaleStatus()==14){
+            refund.setPlatformStatusText("换货成功");
+        }else if(douRefund.getAftersaleInfo().getAftersaleStatus()==27){
+            refund.setPlatformStatusText("商家一次拒绝");
+        }else if(douRefund.getAftersaleInfo().getAftersaleStatus()==28){
+            refund.setPlatformStatusText("售后失败");
+        }else if(douRefund.getAftersaleInfo().getAftersaleStatus()==29){
+            refund.setPlatformStatusText("商家二次拒绝");
+        }
+
+        for(var item : douRefund.getOrderInfo().getRelatedOrderInfo()) {
+            refund.setOrderAmount(item.getPayAmount().doubleValue() / 100);
+            refund.setOrderItemNum(item.getSkuOrderId());
+            refund.setRefundAmount(item.getAftersalePayAmount().doubleValue() / 100);
+            refund.setSkuId(null);
+            refund.setSkuName(JSONObject.toJSONString(item.getSkuSpec()));
+            refund.setSkuNum(item.getShopSkuCode());
+            refund.setGoodsName(item.getProductName());
+            refund.setGoodsImage(item.getProductImage());
+            refund.setBuyNum(item.getItemNum());
+            refund.setAfterNum(item.getAftersaleItemNum());
+            LocalDateTime orderTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(item.getCreateTime()), ZoneId.of("UTC"));
+            refund.setOrderTime(orderTime.format(formatter));
+            refunds.add(refund);
+        }
+        return refunds;
     }
 }
