@@ -7,17 +7,23 @@ import cn.qihangerp.common.AjaxResult;
 import cn.qihangerp.common.ResultVoEnum;
 import cn.qihangerp.common.enums.EnumShopType;
 import cn.qihangerp.common.enums.HttpStatus;
+import cn.qihangerp.common.mq.MqMessage;
+import cn.qihangerp.common.mq.MqType;
 import cn.qihangerp.model.entity.ORefund;
 import cn.qihangerp.model.entity.OShopPullLogs;
+import cn.qihangerp.model.entity.TaoRefund;
 import cn.qihangerp.open.common.ApiResultVo;
 import cn.qihangerp.open.jd.JdAfterSaleApiHelper;
 import cn.qihangerp.open.pdd.PddRefundApiHelper;
 import cn.qihangerp.open.pdd.model.AfterSale;
+import cn.qihangerp.open.tao.TaoRefundApiHelper;
+import cn.qihangerp.open.tao.response.TaoRefundResponse;
 import cn.qihangerp.service.service.ORefundService;
 import cn.qihangerp.service.service.OShopPullLogsService;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -147,6 +153,7 @@ public class ShopRefundApiController {
             if (apiResponseCode == 0) {
                 /*******处理售后list*****/
                 for (var after : afterSaleVo.getList()) {
+                    // TODO：查询订单信息（发货信息、价格信息）
                     ORefund oRefund = ShopRefundTransform.transformJdRefund(after);
                     oRefund.setShopId(shopId);
                     oRefund.setShopType(shopType);
@@ -163,8 +170,40 @@ public class ShopRefundApiController {
                     }
                 }
             }
+        } else if(shopType == EnumShopType.TAO.getIndex()) {
+            LocalDateTime startTime = LocalDateTime.parse(req.getCreateTime() + " 00:00:01", formatter);
+            LocalDateTime  endTime = LocalDateTime.parse(req.getCreateTime() + " 23:59:59", formatter);
+            log.info("=============拉取TAO店铺订单。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
+            ApiResultVo<TaoRefundResponse> upResult = TaoRefundApiHelper.pullRefund(startTime, endTime, appKey, appSecret, accessToken);
+            apiResponseCode = upResult.getCode();
+            apiResponseMsg = upResult.getMsg();
+            if (apiResponseCode == 0) {
+                //循环插入订单数据到数据库
+                for (var refund : upResult.getList()) {
+                    // TODO：查询订单信息（发货信息、价格信息）
+                    ORefund oRefund = ShopRefundTransform.transformTaoRefund(refund);
+                    oRefund.setShopId(shopId);
+                    oRefund.setShopType(shopType);
 
-        } else {
+                    //插入订单数据
+                    var result = oRefundService.saveAndUpdateRefund(oRefund);
+                    if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
+                        //已经存在
+                        log.info("/**************主动更新tao退款：开始更新数据库：" + refund.getRefundId() + "存在、更新****************/");
+                        hasExistOrder++;
+                    } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
+                        log.info("/**************主动更新tao退款：开始更新数据库：" + refund.getRefundId() + "不存在、新增****************/");
+                        insertSuccess++;
+                    } else {
+                        log.info("/**************主动更新tao退款：开始更新数据库：" + refund.getRefundId() + "报错****************/");
+                        totalError++;
+                    }
+                }
+            }
+
+        }
+
+        else {
             return AjaxResult.error("暂时不支持！");
         }
 

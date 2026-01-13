@@ -2,8 +2,90 @@ package cn.qihangerp.api.common;
 
 import cn.qihangerp.common.enums.PddRefundStatusEnum;
 import cn.qihangerp.model.entity.ORefund;
+import cn.qihangerp.open.tao.response.TaoRefundResponse;
 
 public class ShopRefundTransform {
+    public static ORefund transformTaoRefund(TaoRefundResponse taoRefund) {
+        ORefund refund = new ORefund();
+        refund.setRefundNum(taoRefund.getRefundId());
+        // 类型(1-售前退款 10-退货 20-换货 30-维修 40-大家电安装 50-大家电移机 60-大家电增值服务 70-上门维修 90-优鲜赔 80-补发商品 100-试用收回 11-仅退款)
+        Integer refundType = null;
+        //退款类型，可选值REFUND(退款不退货),REFUND_AND_RETURN(退货退款),TMALL_EXCHANGE(天猫换货),TAOBAO_EXCHANGE(淘宝换货),REPAIR(维修),RESHIPPING(补寄),OTHERS(其他)
+        if(taoRefund.getDisputeType().equals("REFUND")){
+            refundType = 11;
+        }else if(taoRefund.getDisputeType().equals("REFUND_AND_RETURN")){
+            refundType = 10;
+        }else if(taoRefund.getDisputeType().equals("TMALL_EXCHANGE")||taoRefund.getDisputeType().equals("TAOBAO_EXCHANGE")){
+            refundType = 20;
+        }else if(taoRefund.getDisputeType().equals("RESHIPPING")){
+            refundType = 80;
+        }else if(taoRefund.getDisputeType().equals("REPAIR")){
+            refundType = 30;
+        }else if(taoRefund.getDisputeType().equals("OTHERS")){
+            refundType = -1;//其他
+        }
+        refund.setRefundType(refundType);
+//        refund.setOrderAmount(Double.parseDouble(taoRefund.getPayment()));
+        refund.setOrderAmount(Double.parseDouble(taoRefund.getTotalFee()));
+        refund.setOrderNum(taoRefund.getTid());
+        refund.setOrderItemNum(taoRefund.getOid());
+        refund.setRefundAmount(Double.parseDouble(taoRefund.getRefundFee()));
+        refund.setRefundReason(taoRefund.getReason()    );
+        refund.setSkuId(taoRefund.getNumIid().toString());
+        refund.setSkuNum(taoRefund.getOuterId());
+        refund.setSkuName(taoRefund.getSku());
+        refund.setGoodsName(taoRefund.getTitle());
+        refund.setGoodsImage(null);
+        refund.setQuantity(taoRefund.getNum());
+        //货物状态。可选值BUYER_NOT_RECEIVED (买家未收到货) BUYER_RECEIVED (买家已收到货) BUYER_RETURNED_GOODS (买家已退货)
+        if(taoRefund.getGoodStatus().equals("BUYER_NOT_RECEIVED")) {
+            refund.setUserShippingStatus("1");
+        } else if(taoRefund.getGoodStatus().equals("BUYER_RECEIVED")) {
+            refund.setUserShippingStatus("2");
+        }else if(taoRefund.getGoodStatus().equals("BUYER_RETURNED_GOODS")) {
+            refund.setUserShippingStatus("3");
+        }else{
+            refund.setUserShippingStatus("0");
+        }
+        refund.setPlatformStatus(taoRefund.getStatus());
+        //退款状态。可选值
+        // WAIT_SELLER_AGREE(买家已经申请退款，等待卖家同意) WAIT_BUYER_RETURN_GOODS(卖家已经同意退款，等待买家退货)
+        // WAIT_SELLER_CONFIRM_GOODS(买家已经退货，等待卖家确认收货) SELLER_REFUSE_BUYER(卖家拒绝退款) CLOSED(退款关闭) SUCCESS(退款成功)
+        if(taoRefund.getStatus().equals("WAIT_SELLER_AGREE")){
+            refund.setPlatformStatusText("买家已经申请退款，等待卖家同意");
+        }else if(taoRefund.getStatus().equals("WAIT_BUYER_RETURN_GOODS")){
+            refund.setPlatformStatusText("卖家已经同意退款，等待买家退货");
+        }else if(taoRefund.getStatus().equals("WAIT_SELLER_CONFIRM_GOODS")){
+            refund.setPlatformStatusText("买家已经退货，等待卖家确认收货");
+        }else if(taoRefund.getStatus().equals("SELLER_REFUSE_BUYER")){
+            refund.setPlatformStatusText("卖家拒绝退款");
+        }else if(taoRefund.getStatus().equals("CLOSED")){
+            refund.setPlatformStatusText("退款关闭");
+        }else if(taoRefund.getStatus().equals("SUCCESS")){
+            refund.setPlatformStatusText("退款成功");
+        }//退款对应的订单交易状态。可选值
+        // TRADE_NO_CREATE_PAY(没有创建支付宝交易) WAIT_BUYER_PAY(等待买家付款) WAIT_SELLER_SEND_GOODS(等待卖家发货,即:买家已付款)
+        // WAIT_BUYER_CONFIRM_GOODS(等待买家确认收货,即:卖家已发货) TRADE_BUYER_SIGNED(买家已签收,货到付款专用) TRADE_FINISHED(交易成功)
+        // TRADE_CLOSED(交易关闭) TRADE_CLOSED_BY_TAOBAO(交易被淘宝关闭)
+        // ALL_WAIT_PAY(包含：WAIT_BUYER_PAY、TRADE_NO_CREATE_PAY)
+        // ALL_CLOSED(包含：TRADE_CLOSED、TRADE_CLOSED_BY_TAOBAO)
+        if(taoRefund.getOrderStatus().equals("TRADE_NO_CREATE_PAY")||taoRefund.getOrderStatus().equals("WAIT_BUYER_PAY")||taoRefund.getOrderStatus().equals("WAIT_SELLER_SEND_GOODS")||taoRefund.getOrderStatus().equals("ALL_WAIT_PAY")) {
+            refund.setShippingStatus(0);
+        }else if(taoRefund.getOrderStatus().equals("WAIT_BUYER_CONFIRM_GOODS")||taoRefund.getOrderStatus().equals("TRADE_BUYER_SIGNED")||taoRefund.getOrderStatus().equals("TRADE_FINISHED")){
+            refund.setShippingStatus(1);
+        }else if(taoRefund.getOrderStatus().equals("TRADE_CLOSED")||taoRefund.getOrderStatus().equals("TRADE_CLOSED_BY_TAOBAO")||taoRefund.getOrderStatus().equals("ALL_CLOSED")){
+            refund.setShippingStatus(0);
+        }
+
+        refund.setRefundCreated(taoRefund.getCreated());
+        refund.setRefundUpdated(taoRefund.getModified());
+        refund.setOrderTime(null);
+
+        refund.setReturnLogisticsCompany(taoRefund.getCompanyName());
+        refund.setReturnLogisticsCode(taoRefund.getSid());
+        return refund;
+    }
+
     public static ORefund transformJdRefund(cn.qihangerp.open.jd.model.AfterSale jdRefund) {
         ORefund refund = new ORefund();
         refund.setRefundNum(jdRefund.getServiceId().toString());

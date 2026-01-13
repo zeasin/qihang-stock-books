@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 13/01/2026 10:44:47
+ Date: 13/01/2026 11:58:31
 */
 
 SET NAMES utf8mb4;
@@ -1053,7 +1053,7 @@ CREATE TABLE `o_order`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `order_sn_index`(`order_num` ASC) USING BTREE,
   INDEX `shopid_index`(`shop_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OMS订单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OMS订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_order
@@ -1087,6 +1087,7 @@ INSERT INTO `o_order` VALUES (26, '260103-124791079222466', 300, 1011, NULL, '',
 INSERT INTO `o_order` VALUES (27, '260103-554287808822466', 300, 1011, NULL, '', '', NULL, 1, 2, 29.35, 0, 0, 1.46, 8.36, 19.53, 19.53, 0, NULL, NULL, NULL, '', '', '', '2026-01-03 22:26:41', '2026-01-06 16:58:37', '2026-01-03 22:27:57', '', 0, 0, 0, '0', NULL, NULL, '2026-01-12 12:41:07', NULL, NULL, NULL, NULL, '已发货待签收', '2');
 INSERT INTO `o_order` VALUES (28, '260106-260403381772674', 300, 1011, NULL, '', '', NULL, 1, 2, 33.93, 0, 0, 0, 0, 33.93, 33.93, 0, NULL, NULL, NULL, '', '', '', '2026-01-06 17:14:59', '2026-01-09 18:30:47', '2026-01-06 17:15:00', '', 0, 0, 0, '0', NULL, NULL, '2026-01-12 12:55:42', NULL, NULL, NULL, NULL, '已发货待签收', '2');
 INSERT INTO `o_order` VALUES (29, '260106-505146273432079', 300, 1011, NULL, '', '', NULL, 2, 11, 78.64, 0, 0, 3.93, 0, 74.71, 74.71, 0, NULL, NULL, NULL, '', '', '', '2026-01-06 22:39:53', '2026-01-10 22:41:28', '2026-01-06 22:40:01', '', 0, 0, 0, '0', NULL, NULL, '2026-01-12 12:55:42', NULL, NULL, NULL, NULL, '已发货待签收', '2');
+INSERT INTO `o_order` VALUES (30, '260113-074742505040578', 300, 1011, NULL, '', '', NULL, 4, 11, 33.93, 0, 0, 0, 0, 33.93, 33.93, 0, '', '', '', '', '', '', '2026-01-13 08:17:17', '2026-01-13 08:19:30', '2026-01-13 08:17:19', '', 0, 0, 0, '0', NULL, NULL, '2026-01-13 10:53:58', NULL, NULL, NULL, NULL, '待发货', '1');
 
 -- ----------------------------
 -- Table structure for o_order_item
@@ -1129,7 +1130,7 @@ CREATE TABLE `o_order_item`  (
   INDEX `goodId_index`(`goods_id` ASC) USING BTREE,
   INDEX `order_id`(`order_id` ASC) USING BTREE,
   INDEX `order_num_index`(`order_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OMS订单明细表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OMS订单明细表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_order_item
@@ -1164,6 +1165,7 @@ INSERT INTO `o_order_item` VALUES (27, 1011, 300, 26, '260103-124791079222466', 
 INSERT INTO `o_order_item` VALUES (28, 1011, 300, 27, '260103-554287808822466', '260103-554287808822466-1742164849115', '1742164849115', 16, 45, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/a3e7e689-5c30-495c-b5e0-90e38bd352b5.jpeg.a.jpeg', 'LEDDX001', '12W白光-135mm', 'LEDDX00101', 29.35, 29.35, 0, 29.35, 1, NULL, 0, 1, 2, 0, 0, 0, '2026-01-12 12:41:07', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `o_order_item` VALUES (29, 1011, 300, 28, '260106-260403381772674', '260106-260403381772674-1742164849116', '1742164849116', 16, 46, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 'LEDDX001', '18W白光-175mm', 'LEDDX00102', 33.93, 33.93, 0, 33.93, 1, NULL, 0, 1, 2, 0, 0, 0, '2026-01-12 12:55:42', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `o_order_item` VALUES (30, 1011, 300, 29, '260106-505146273432079', '260106-505146273432079-1742164849117', '1742164849117', 16, 47, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 'LEDDX001', '24W白光-215mm', 'LEDDX00103', 39.32, 78.64, 0, 78.64, 2, NULL, 0, 2, 2, 0, 0, 0, '2026-01-12 12:55:42', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `o_order_item` VALUES (31, 1011, 300, 30, '260113-074742505040578', '260113-074742505040578-1742164849116', '1742164849116', 16, 46, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 'LEDDX001', '18W白光-175mm', 'LEDDX00102', 33.93, 33.93, 0, 33.93, 1, NULL, 0, 1, 1, 0, 0, 0, '2026-01-13 10:53:58', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for o_refund
@@ -1191,7 +1193,7 @@ CREATE TABLE `o_refund`  (
   `goods_id` bigint NOT NULL COMMENT '商品id(o_goods外键)',
   `goods_sku_id` bigint NOT NULL COMMENT '商品skuid(o_goods_sku外键)',
   `shipping_status` int NOT NULL DEFAULT 0 COMMENT '订单发货状态 0:未发货， 1:已发货（包含：已发货，已揽收）',
-  `user_shipping_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '0-未勾选 1-消费者选择的收货状态为未收到货 2-消费者选择的收货状态为已收到货',
+  `user_shipping_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '0-未勾选 1-消费者选择的收货状态为未收到货 2-消费者选择的收货状态为已收到货3消费者已退货',
   `has_good_return` int NULL DEFAULT NULL COMMENT '买家是否需要退货。可选值:1(是),0(否)',
   `return_logistics_company` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退货物流公司',
   `return_logistics_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退货物流单号',
@@ -1462,7 +1464,7 @@ CREATE TABLE `o_shop_pull_logs`  (
   `pull_time` datetime NULL DEFAULT NULL COMMENT '拉取时间',
   `duration` bigint NULL DEFAULT NULL COMMENT '耗时（毫秒）',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2010905785949470723 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '店铺更新日志表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2010908149578186755 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '店铺更新日志表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_shop_pull_logs
@@ -1555,6 +1557,7 @@ INSERT INTO `o_shop_pull_logs` VALUES (2010905729053736961, 1011, 300, 'REFUND',
 INSERT INTO `o_shop_pull_logs` VALUES (2010905754399916033, 1011, 300, 'REFUND', '更新退款', '18104483624816', 'SUCCESS', '2026-01-13 10:44:27', 177);
 INSERT INTO `o_shop_pull_logs` VALUES (2010905779217612801, 1011, 300, 'REFUND', '更新退款', '17958668300087', 'SUCCESS', '2026-01-13 10:44:33', 196);
 INSERT INTO `o_shop_pull_logs` VALUES (2010905785949470722, 1011, 300, 'REFUND', '更新退款', '17894479236915', 'SUCCESS', '2026-01-13 10:44:35', 161);
+INSERT INTO `o_shop_pull_logs` VALUES (2010908149578186754, 1011, 300, 'ORDER', '主动拉取订单', '{startTime:2026-01-13 00:00:01,endTime:2026-01-13 23:59:59}', '{insert:1,update:0,fail:0}', '2026-01-13 10:53:58', 390);
 
 -- ----------------------------
 -- Table structure for o_shop_region
@@ -2016,98 +2019,6 @@ INSERT INTO `oms_shop_goods_sku` VALUES (1226, 1012, 500, '10000239803737', '雷
 INSERT INTO `oms_shop_goods_sku` VALUES (1227, 1012, 500, '10000239803737', '雷士照明led吸顶灯灯芯替换圆形灯板节能灯芯冷光高显6W至40W护眼', '', ' 36W白光', '3531485362', '', '', '', 5990, 12, 5, NULL, NULL, 0, 0, 0, 0, '2026-01-03 09:00:25', NULL);
 INSERT INTO `oms_shop_goods_sku` VALUES (1228, 1012, 500, '10000239803737', '雷士照明led吸顶灯灯芯替换圆形灯板节能灯芯冷光高显6W至40W护眼', '', ' 48W白光', '3531313894', '', '', '', 6990, 12, 5, NULL, NULL, 0, 0, 0, 0, '2026-01-03 09:00:25', NULL);
 INSERT INTO `oms_shop_goods_sku` VALUES (1229, 1012, 500, '10000239803737', '雷士照明led吸顶灯灯芯替换圆形灯板节能灯芯冷光高显6W至40W护眼', '', ' 72W白光', '3531430948', '', '', '', 7990, 12, 5, NULL, NULL, 0, 0, 0, 0, '2026-01-03 09:00:25', NULL);
-
--- ----------------------------
--- Table structure for oms_tao_refund
--- ----------------------------
-DROP TABLE IF EXISTS `oms_tao_refund`;
-CREATE TABLE `oms_tao_refund`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `refund_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款id',
-  `dispute_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款类型，可选值REFUND(仅退款),REFUND_AND_RETURN(退货退款),TMALL_EXCHANGE(天猫换货),TAOBAO_EXCHANGE(淘宝换货),REPAIR(维修),RESHIPPING(补寄),OTHERS(其他)',
-  `shop_id` int NOT NULL COMMENT '店铺id',
-  `tid` bigint NULL DEFAULT NULL COMMENT '淘宝交易单号（订单号）',
-  `oid` bigint NULL DEFAULT NULL COMMENT '子订单号。如果是单笔交易oid会等于tid',
-  `payment` float NULL DEFAULT NULL COMMENT '支付给卖家的金额(交易总金额-退还给买家的金额)。精确到2位小数;单位:元。如:200.07，表示:200元7分',
-  `price` float NULL DEFAULT NULL COMMENT '商品价格。',
-  `total_fee` float NULL DEFAULT NULL COMMENT '交易总金额。精确到2位小数;单位:元。如:200.07，表示:200元7分',
-  `refund_fee` float NULL DEFAULT NULL COMMENT '退还金额(退还给买家的金额)。精确到2位小数;单位:元。如:200.07，表示:200元7分',
-  `split_seller_fee` float NULL DEFAULT NULL COMMENT '	分账给卖家的钱',
-  `split_taobao_fee` float NULL DEFAULT NULL COMMENT '分账给淘宝的钱',
-  `created` datetime NULL DEFAULT NULL COMMENT '退款申请时间。格式:yyyy-MM-dd HH:mm:ss',
-  `modified` datetime NULL DEFAULT NULL COMMENT '更新时间。格式:yyyy-MM-dd HH:mm:ss',
-  `seller_nick` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '卖家昵称',
-  `cs_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '不需客服介入1;需要客服介入2;客服已经介入3;客服初审完成4;客服主管复审失败5;客服处理完成6;系统撤销(B2B使用)，维权撤销(集市使用) 7;支持买家 8;支持卖家 9;举证中 10;开放申诉 11;',
-  `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款状态。可选值WAIT_SELLER_AGREE(买家已经申请退款，等待卖家同意) WAIT_BUYER_RETURN_GOODS(卖家已经同意退款，等待买家退货) WAIT_SELLER_CONFIRM_GOODS(买家已经退货，等待卖家确认收货) SELLER_REFUSE_BUYER(卖家拒绝退款) CLOSED(退款关闭) SUCCESS(退款成功)',
-  `order_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款对应的订单交易状态。可选值TRADE_NO_CREATE_PAY(没有创建支付宝交易) WAIT_BUYER_PAY(等待买家付款) WAIT_SELLER_SEND_GOODS(等待卖家发货,即:买家已付款) WAIT_BUYER_CONFIRM_GOODS(等待买家确认收货,即:卖家已发货) TRADE_BUYER_SIGNED(买家已签收,货到付款专用) TRADE_FINISHED(交易成功) TRADE_CLOSED(交易关闭) TRADE_CLOSED_BY_TAOBAO(交易被淘宝关闭) ALL_WAIT_PAY(包含：WAIT_BUYER_PAY、TRADE_NO_CREATE_PAY) ALL_CLOSED(包含：TRADE_CLOSED、TRADE_CLOSED_BY_TAOBAO) 取自\"http://open.taobao.com/dev/index.php/%E4%BA%A4%E6%98%93%E7%8A%B6%E6%80%81\"',
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '卖家收货地址',
-  `advance_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款先行垫付默认的未申请状态 0;退款先行垫付申请中 1;退款先行垫付，垫付完成 2;退款先行垫付，卖家拒绝收货 3;退款先行垫付，垫付关闭 4;退款先行垫付，垫付分账成功 5;',
-  `alipay_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '支付宝交易号',
-  `good_return_time` datetime NULL DEFAULT NULL COMMENT '退货时间。格式:yyyy-MM-dd HH:mm:ss',
-  `good_status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '货物状态。可选值BUYER_NOT_RECEIVED (买家未收到货) BUYER_RECEIVED (买家已收到货) BUYER_RETURNED_GOODS (买家已退货)',
-  `has_good_return` int NULL DEFAULT NULL COMMENT '买家是否需要退货。可选值:true(是),false(否)',
-  `num_iid` bigint NULL DEFAULT NULL COMMENT '申请退款的商品数字编号',
-  `num` bigint NOT NULL DEFAULT 0 COMMENT '退货数量',
-  `outer_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品外部商家编码',
-  `reason` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款原因',
-  `refund_phase` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款阶段，可选值：onsale/aftersale',
-  `shipping_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '物流方式.可选值:free(卖家包邮),post(平邮),express(快递),ems(EMS).',
-  `desc1` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款说明',
-  `company_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '物流公司',
-  `sid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退货运单号',
-  `send_time` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '买家发货时间',
-  `end_time` datetime NULL DEFAULT NULL COMMENT '	完结时间。格式:yyyy-MM-dd HH:mm:ss',
-  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品标题',
-  `sku` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品SKU信息',
-  `buyer_open_uid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '买家openUid',
-  `buyer_nick` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '买家昵称',
-  `combine_item_info` varchar(2550) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组合品信息\r\nnum_iid	String	2342344	商品数字编号\r\nitem_name	String	测试商品	商品标题\r\nquantity	Number	123	数量\r\nsku_id	String	123	sku_id\r\nouter_iid	String	123	商家外部编码(可与商家外部系统对接)\r\nouter_sku_id	String	123	123',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '订单创建时间',
-  `create_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
-  `update_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `sku_id` bigint NULL DEFAULT NULL COMMENT '平台skuId',
-  `o_goods_id` bigint NULL DEFAULT NULL COMMENT '商品id(o_goods外键)',
-  `o_goods_sku_id` bigint NULL DEFAULT NULL COMMENT '商品skuid(o_goods_sku外键)',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `refund_id_index`(`refund_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '淘宝退款表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of oms_tao_refund
--- ----------------------------
-
--- ----------------------------
--- Table structure for oms_tao_waybill_account
--- ----------------------------
-DROP TABLE IF EXISTS `oms_tao_waybill_account`;
-CREATE TABLE `oms_tao_waybill_account`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `shop_id` bigint NOT NULL COMMENT '店铺id',
-  `seller_id` bigint NULL DEFAULT NULL COMMENT '商家ID',
-  `cp_code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '物流服务商编码',
-  `cp_type` int NULL DEFAULT NULL COMMENT '1是直营，2是加盟',
-  `quantity` int NULL DEFAULT NULL COMMENT '可用单数',
-  `allocated_quantity` int NULL DEFAULT NULL COMMENT '已用单数',
-  `branch_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '网点ID',
-  `branch_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '网点名称',
-  `print_quantity` int NULL DEFAULT NULL COMMENT '已经打印的面单总数',
-  `cancel_quantity` int NULL DEFAULT NULL COMMENT '取消的面对总数',
-  `waybill_address_id` bigint NULL DEFAULT NULL COMMENT 'waybill 地址记录ID(非地址库ID)',
-  `province` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '省名称（一级地址）',
-  `city` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '市名称（二级地址）',
-  `area` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '区名称（三级地址）',
-  `address_detail` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '详细地址',
-  `name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发货人',
-  `mobile` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发货手机号',
-  `phone` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发货固定电话',
-  `is_show` int NULL DEFAULT NULL COMMENT '是否前台显示1显示0不显示',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '淘宝电子面单账户信息表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of oms_tao_waybill_account
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for oms_wei_refund
