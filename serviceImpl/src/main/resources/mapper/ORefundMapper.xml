@@ -5,7 +5,7 @@
 <mapper namespace="cn.qihangerp.service.mapper.ORefundMapper">
 
     <resultMap id="BaseResultMap" type="cn.qihangerp.model.entity.ORefund">
-            <id property="id" column="id" jdbcType="BIGINT"/>
+            <id property="id" column="id" jdbcType="BIGINT" />
             <result property="refundNum" column="refund_num" jdbcType="VARCHAR"/>
             <result property="refundType" column="refund_type" jdbcType="INTEGER"/>
             <result property="refundAmount" column="refund_amount" jdbcType="FLOAT"/>
@@ -21,9 +21,10 @@
             <result property="orderItemId" column="order_item_id" jdbcType="BIGINT"/>
             <result property="hasGoodReturn" column="has_good_return" jdbcType="INTEGER"/>
             <result property="skuNum" column="sku_num" jdbcType="VARCHAR"/>
-            <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
+            <result property="productId" column="product_id" jdbcType="VARCHAR"/>
+            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
             <result property="skuName" column="sku_name" jdbcType="VARCHAR"/>
-            <result property="goodsImage" column="goods_image" jdbcType="VARCHAR"/>
+            <result property="productImage" column="product_image" jdbcType="VARCHAR"/>
             <result property="afterNum" column="after_num" jdbcType="INTEGER"/>
             <result property="buyNum" column="buy_num" jdbcType="INTEGER"/>
             <result property="shippingStatus" column="shipping_status" jdbcType="INTEGER"/>
@@ -49,7 +50,7 @@
     <sql id="Base_Column_List">
         id,refund_num,refund_type,refund_amount,order_amount,refund_reason,
         shop_id,shop_type,order_num,user_shipping_status,shipping_status,
-        order_item_num,sku_id,sku_name,sku_num,goods_name,goods_image,after_num,buy_num,
+        order_item_num,sku_id,sku_name,sku_num,product_name,product_image,after_num,buy_num,
           goods_id,goods_sku_id,order_id,order_item_id,has_good_return,platform_status,platform_status_text,
         return_logistics_company,return_logistics_code,receive_time,refund_created,refund_updated,order_time,
         remark,status,create_time,create_by,update_time,update_by,after_sale_id,has_processing

@@ -16,6 +16,8 @@ import cn.qihangerp.open.pdd.PddRefundApiHelper;
 import cn.qihangerp.open.pdd.model.AfterSale;
 import cn.qihangerp.open.tao.TaoRefundApiHelper;
 import cn.qihangerp.open.tao.response.TaoRefundResponse;
+import cn.qihangerp.open.wei.WeiRefundApiHelper;
+import cn.qihangerp.open.wei.model.AfterSaleOrder;
 import cn.qihangerp.service.service.ORefundService;
 import cn.qihangerp.service.service.OShopPullLogsService;
 import com.alibaba.fastjson2.JSONObject;
@@ -221,16 +223,48 @@ public class ShopRefundApiController {
                         var result = oRefundService.saveAndUpdateRefund(oRefund);
                         if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
                             //已经存在
-                            log.info("/**************主动更新tao退款：开始更新数据库：" + oRefund.getRefundNum() + "存在、更新****************/");
+                            log.info("/**************主动更新dou退款：开始更新数据库：" + oRefund.getRefundNum() + "存在、更新****************/");
                             hasExistOrder++;
                         } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
-                            log.info("/**************主动更新tao退款：开始更新数据库：" + oRefund.getRefundNum() + "不存在、新增****************/");
+                            log.info("/**************主动更新dou退款：开始更新数据库：" + oRefund.getRefundNum() + "不存在、新增****************/");
                             insertSuccess++;
                         } else {
-                            log.info("/**************主动更新tao退款：开始更新数据库：" + oRefund.getRefundNum() + "报错****************/");
+                            log.info("/**************主动更新dou退款：开始更新数据库：" + oRefund.getRefundNum() + "报错****************/");
                             totalError++;
                         }
                     }
+
+                }
+            }
+        } else if(shopType == EnumShopType.WEI.getIndex()) {
+            LocalDateTime startTime = LocalDateTime.parse(req.getCreateTime() + " 00:00:01", formatter);
+            LocalDateTime endTime = LocalDateTime.parse(req.getCreateTime() + " 23:59:59", formatter);
+            log.info("=============拉取WEI店铺售后。开始时间：{} 结束时间：{}", startTime.format(formatter), endTime.format(formatter));
+            ApiResultVo<AfterSaleOrder> apiResultVo = WeiRefundApiHelper.pullRefundList(startTime, endTime, accessToken);
+            apiResponseCode = apiResultVo.getCode();
+            apiResponseMsg = apiResultVo.getMsg();
+            if (apiResponseCode == 0) {
+                //循环插入订单数据到数据库
+                for (var refund : apiResultVo.getList()) {
+                    ORefund oRefund = ShopRefundTransform.transformWeiRefund(refund);
+
+                    oRefund.setShopId(shopId);
+                    oRefund.setShopType(shopType);
+
+                    //插入订单数据
+                    var result = oRefundService.saveAndUpdateRefund(oRefund);
+                    if (result.getCode() == ResultVoEnum.DataExist.getIndex()) {
+                        //已经存在
+                        log.info("/**************主动更新wei退款：开始更新数据库：" + oRefund.getRefundNum() + "存在、更新****************/");
+                        hasExistOrder++;
+                    } else if (result.getCode() == ResultVoEnum.SUCCESS.getIndex()) {
+                        log.info("/**************主动更新wei退款：开始更新数据库：" + oRefund.getRefundNum() + "不存在、新增****************/");
+                        insertSuccess++;
+                    } else {
+                        log.info("/**************主动更新wei退款：开始更新数据库：" + oRefund.getRefundNum() + "报错****************/");
+                        totalError++;
+                    }
+
 
                 }
             }

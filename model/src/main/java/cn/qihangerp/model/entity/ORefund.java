@@ -77,10 +77,11 @@ public class ORefund implements Serializable {
      */
     private String skuNum;
 
+    private String productId;
     /**
      * 商品名称
      */
-    private String goodsName;
+    private String productName;
 
     /**
      * 商品sku
@@ -90,7 +91,7 @@ public class ORefund implements Serializable {
     /**
      * 商品图片
      */
-    private String goodsImage;
+    private String productImage;
 
     /**
      * 退货数量

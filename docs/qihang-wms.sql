@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 13/01/2026 15:11:10
+ Date: 13/01/2026 16:42:16
 */
 
 SET NAMES utf8mb4;
@@ -1185,8 +1185,9 @@ CREATE TABLE `o_refund`  (
   `sku_id` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '源skuId',
   `sku_num` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'sku编码',
   `sku_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品sku',
-  `goods_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品名称',
-  `goods_image` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品图片',
+  `product_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '平台商品id',
+  `product_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品名称',
+  `product_image` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品图片',
   `after_num` int NOT NULL COMMENT '售后数量',
   `buy_num` int NOT NULL COMMENT '购买数量',
   `order_id` bigint NOT NULL COMMENT '订单库id',
@@ -1218,13 +1219,13 @@ CREATE TABLE `o_refund`  (
 -- ----------------------------
 -- Records of o_refund
 -- ----------------------------
-INSERT INTO `o_refund` VALUES (1, '17894479236915', 11, 1011, 300, '260101-602941713932531', '260101-602941713932531-1742164849117', 29.32, 29.32, '其他原因', '1742164849117', 'LEDDX00103', '24W白光-215mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 1, 0, 24, 25, 16, 47, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-01 14:53:14', '2026-01-01 06:53:19', '2026-01-01 06:48:36', 0, '2026-01-12 11:35:04', NULL, '2026-01-13 10:44:35', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (2, '17958668300087', 11, 1011, 300, '260101-343073113703028', '260101-343073113703028-1742164849115', 29.35, 29.35, '其他原因', '1742164849115', 'LEDDX00101', '12W白光-135mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/a3e7e689-5c30-495c-b5e0-90e38bd352b5.jpeg.a.jpeg', 1, 0, 25, 26, 16, 45, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-01 20:52:10', '2026-01-01 12:52:17', '2026-01-01 12:47:51', 0, '2026-01-12 11:35:05', NULL, '2026-01-13 10:44:33', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (3, '18094162708216', 10, 1011, 300, '260103-064550356563156', '260103-064550356563156-1742164849116', 33.93, 33.93, '其他原因', '1742164849116', 'LEDDX00102', '18W白光-175mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 1, 0, 2, 2, 16, 46, 1, '0', 1, '德邦快递', 'DPK202672107532', NULL, '', '10', '退款成功', '2026-01-06 14:01:10', '2026-01-09 10:20:38', '2026-01-03 05:45:28', 0, '2026-01-12 12:37:02', NULL, '2026-01-13 10:44:18', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (4, '18104483624816', 10, 1011, 300, '260106-505146273432079', '260106-505146273432079-1742164849117', 74.71, 74.71, '不想要了', '1742164849117', 'LEDDX00103', '24W白光-215mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 2, 0, 29, 30, 16, 47, 1, '0', 0, '德邦快递', 'DPK202675485511', NULL, '', '10', '退款成功', '2026-01-10 22:41:27', '2026-01-12 05:12:11', '2026-01-06 14:40:01', 0, '2026-01-12 12:57:07', NULL, '2026-01-13 10:44:27', 'admin操作售后处理', 1, 2010668039339151361);
-INSERT INTO `o_refund` VALUES (5, '18148057136940', 11, 1011, 300, '260111-141274662501554', '260111-141274662501554-1740677623153', 15.73, 15.73, '其他原因', '1740677623153', 'LEDDP00103', '', '雷士照明超亮LED节能灯E27大功率强光均匀三色可选一级能效护眼', 'https://img.pddpic.com/mms-material-img/2025-05-28/90a9f73e-acc9-4350-bf91-aa3c0c6a19a2.jpeg.a.jpeg', 1, 0, 0, 0, 0, 0, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-11 07:36:15', '2026-01-11 12:33:32', '2026-01-10 23:21:39', 0, '2026-01-12 12:57:08', NULL, '2026-01-12 15:54:41', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (6, '18078171104251', 11, 1011, 300, '260103-143340377723488', '260103-143340377723488-1742164849117', 24.78, 24.78, '不想要了', '1742164849117', 'LEDDX00103', '24W白光-215mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 1, 0, 1, 1, 16, 47, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-03 13:17:53', '2026-01-03 05:18:00', '2026-01-03 05:08:47', 0, '2026-01-12 16:03:29', NULL, '2026-01-13 10:42:54', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (7, '18267421812292', 11, 1011, 300, '260113-074742505040578', '260113-074742505040578-1742164849116', 33.93, 33.93, '不想要了', '1742164849116', 'LEDDX00102', '', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 1, 0, 0, 0, 0, 0, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-13 08:19:22', '2026-01-13 00:19:29', '2026-01-13 00:17:19', 0, '2026-01-13 10:33:34', NULL, '2026-01-13 10:44:14', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (1, '17894479236915', 11, 1011, 300, '260101-602941713932531', '260101-602941713932531-1742164849117', 29.32, 29.32, '其他原因', '1742164849117', 'LEDDX00103', '24W白光-215mm', NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 1, 0, 24, 25, 16, 47, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-01 14:53:14', '2026-01-01 06:53:19', '2026-01-01 06:48:36', 0, '2026-01-12 11:35:04', NULL, '2026-01-13 10:44:35', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (2, '17958668300087', 11, 1011, 300, '260101-343073113703028', '260101-343073113703028-1742164849115', 29.35, 29.35, '其他原因', '1742164849115', 'LEDDX00101', '12W白光-135mm', NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/a3e7e689-5c30-495c-b5e0-90e38bd352b5.jpeg.a.jpeg', 1, 0, 25, 26, 16, 45, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-01 20:52:10', '2026-01-01 12:52:17', '2026-01-01 12:47:51', 0, '2026-01-12 11:35:05', NULL, '2026-01-13 10:44:33', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (3, '18094162708216', 10, 1011, 300, '260103-064550356563156', '260103-064550356563156-1742164849116', 33.93, 33.93, '其他原因', '1742164849116', 'LEDDX00102', '18W白光-175mm', NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 1, 0, 2, 2, 16, 46, 1, '0', 1, '德邦快递', 'DPK202672107532', NULL, '', '10', '退款成功', '2026-01-06 14:01:10', '2026-01-09 10:20:38', '2026-01-03 05:45:28', 0, '2026-01-12 12:37:02', NULL, '2026-01-13 10:44:18', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (4, '18104483624816', 10, 1011, 300, '260106-505146273432079', '260106-505146273432079-1742164849117', 74.71, 74.71, '不想要了', '1742164849117', 'LEDDX00103', '24W白光-215mm', NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 2, 0, 29, 30, 16, 47, 1, '0', 0, '德邦快递', 'DPK202675485511', NULL, '', '10', '退款成功', '2026-01-10 22:41:27', '2026-01-12 05:12:11', '2026-01-06 14:40:01', 0, '2026-01-12 12:57:07', NULL, '2026-01-13 10:44:27', 'admin操作售后处理', 1, 2010668039339151361);
+INSERT INTO `o_refund` VALUES (5, '18148057136940', 11, 1011, 300, '260111-141274662501554', '260111-141274662501554-1740677623153', 15.73, 15.73, '其他原因', '1740677623153', 'LEDDP00103', '', NULL, '雷士照明超亮LED节能灯E27大功率强光均匀三色可选一级能效护眼', 'https://img.pddpic.com/mms-material-img/2025-05-28/90a9f73e-acc9-4350-bf91-aa3c0c6a19a2.jpeg.a.jpeg', 1, 0, 0, 0, 0, 0, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-11 07:36:15', '2026-01-11 12:33:32', '2026-01-10 23:21:39', 0, '2026-01-12 12:57:08', NULL, '2026-01-12 15:54:41', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (6, '18078171104251', 11, 1011, 300, '260103-143340377723488', '260103-143340377723488-1742164849117', 24.78, 24.78, '不想要了', '1742164849117', 'LEDDX00103', '24W白光-215mm', NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 1, 0, 1, 1, 16, 47, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-03 13:17:53', '2026-01-03 05:18:00', '2026-01-03 05:08:47', 0, '2026-01-12 16:03:29', NULL, '2026-01-13 10:42:54', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (7, '18267421812292', 11, 1011, 300, '260113-074742505040578', '260113-074742505040578-1742164849116', 33.93, 33.93, '不想要了', '1742164849116', 'LEDDX00102', '', NULL, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 1, 0, 0, 0, 0, 0, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-13 08:19:22', '2026-01-13 00:19:29', '2026-01-13 00:17:19', 0, '2026-01-13 10:33:34', NULL, '2026-01-13 10:44:14', NULL, 0, NULL);
 
 -- ----------------------------
 -- Table structure for o_ship_stock_up
@@ -1581,71 +1582,6 @@ CREATE TABLE `o_shop_region`  (
 -- Records of o_shop_region
 -- ----------------------------
 INSERT INTO `o_shop_region` VALUES (1, '中国', 1, '86', 0, '2025-02-10 10:42:54', 'system', '2025-02-10 10:42:57', NULL);
-
--- ----------------------------
--- Table structure for oms_dou_refund
--- ----------------------------
-DROP TABLE IF EXISTS `oms_dou_refund`;
-CREATE TABLE `oms_dou_refund`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '售后订单id，自增',
-  `shop_id` bigint NOT NULL COMMENT '订单所属商户id',
-  `aftersale_id` bigint NOT NULL DEFAULT 0 COMMENT '售后id',
-  `aftersale_order_type` bigint NULL DEFAULT NULL COMMENT '售后订单类型，枚举为-1(历史订单),1(商品单),2(店铺单)',
-  `aftersale_type` bigint NOT NULL COMMENT '售后类型；0-退货退款；1-已发货仅退款；2-未发货仅退款；3-换货；6-价保；7-补寄；8-维修',
-  `aftersale_status` bigint NOT NULL COMMENT '售后状态和请求参数standard_aftersale_status字段对应；3-换货待买家收货；6-待商家同意；7-待买家退货；8-待商家发货；11-待商家二次同意；12-售后成功；14-换货成功；27-商家一次拒绝；28-售后失败；29-商家二次拒绝；',
-  `aftersale_status_to_final_time` bigint NULL DEFAULT NULL COMMENT '售后完结时间，完结时间是平台根据商品的类型，售后状态等综合判断生成，当售后单有完结时间返回时售后单不可再做任何操作；未完结售后单的该字段值为0；Unix时间戳：秒',
-  `related_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '\r\n关联的订单ID',
-  `order_sku_order_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '抖音子订单id',
-  `order_status` bigint NULL DEFAULT NULL COMMENT '订单状态',
-  `order_pay_amount` bigint NULL DEFAULT NULL COMMENT '付款金额',
-  `order_post_amount` bigint NULL DEFAULT NULL COMMENT '\r\n付运费金额',
-  `order_item_num` bigint NULL DEFAULT NULL COMMENT '购买数量',
-  `order_product_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品名',
-  `order_product_image` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品图片',
-  `order_product_id` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品id',
-  `order_sku_spec` varchar(550) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品规格JSON',
-  `order_shop_sku_code` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商家SKU编码',
-  `apply_time` bigint NULL DEFAULT NULL COMMENT '申请时间',
-  `update_time` bigint NULL DEFAULT NULL COMMENT '最近更新时间',
-  `status_deadline` bigint NULL DEFAULT NULL COMMENT '当前节点逾期时间',
-  `refund_amount` bigint NULL DEFAULT NULL COMMENT '售后退款金额，单位为分',
-  `refund_post_amount` bigint NULL DEFAULT NULL COMMENT '售后退运费金额，单位为分',
-  `aftersale_num` bigint NULL DEFAULT NULL COMMENT '\r\n售后数量',
-  `part_type` bigint NULL DEFAULT NULL COMMENT '部分退类型',
-  `aftersale_refund_type` bigint NULL DEFAULT NULL COMMENT '售后退款类型，枚举为-1(历史数据默认值),0(订单货款/原路退款),1(货到付款线下退款),2(备用金),3(保证金),4(无需退款),5(平台垫付)',
-  `refund_type` bigint NULL DEFAULT NULL COMMENT '退款方式，枚举为1(极速退款助手)、2(售后小助手)、3(售后急速退)、4(闪电退货)',
-  `arbitrate_status` bigint NULL DEFAULT NULL COMMENT '仲裁状态，枚举为0(无仲裁记录),1(仲裁中),2(客服同意),3(客服拒绝),4(待商家举证),5(协商期),255(仲裁结束)',
-  `create_time` bigint NULL DEFAULT NULL COMMENT '\r\n售后单创建时间',
-  `risk_decision_reason` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '风控理由',
-  `risk_decision_description` varchar(155) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '风控描述',
-  `return_promotion_amount` bigint NULL DEFAULT NULL COMMENT '退优惠金额',
-  `refund_status` bigint NULL DEFAULT NULL COMMENT '退款状态；1-待退款;2-退款中;3-退款成功;4-退款失败;5-追缴成功;',
-  `arbitrate_blame` bigint NULL DEFAULT NULL COMMENT '仲裁责任方 1:商家责任,2:买家责任,3:双方有责,4:平台责任,5:达人责任',
-  `return_logistics_code` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退货物流单号',
-  `return_logistics_company_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退货物流公司名称',
-  `exchange_sku_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '换货SKU信息JSON',
-  `exchange_logistics_company_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '换货物流公司名称',
-  `remark` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `got_pkg` bigint NULL DEFAULT NULL COMMENT '买家是否收到货物，0表示未收到，1表示收到',
-  `is_agree_refuse_sign` bigint NULL DEFAULT NULL COMMENT '是否拒签后退款（1：已同意拒签, 2：未同意拒签）',
-  `order_logistics` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '商家首次发货的正向物流信息JSON',
-  `aftersale_tags` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '售后标签（含时效延长、风险预警、豁免体验分等标签）标签在平台侧会有更新，标签仅做展示使用，请勿作为系统判断依赖。JSON',
-  `aftersale_sub_type` bigint NULL DEFAULT NULL COMMENT '售后子类型；8001-以换代修。',
-  `auto_audit_bits` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '自动审核方式：1-发货前极速退；2-小助手自动同意退款；3-发货后极速退；4-闪电退货；5-跨境零秒退；6-云仓拦截自动退；7-小助手自动同意退货；8-小助手自动同意拒签后退款；9-商家代客填写卡片发起售后；10-治理未发货自动同意退款；11-治理已发货自动同意退款；12-商家快递拦截成功自动退款；13-质检商品免审核；14-协商方案自动同意退款；15-平台卡券自动同意退款；16-三方卡券自动同意退款；17-治理一审自动同意退货退款',
-  `text_part` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '文案部分JSON',
-  `related_order_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '售后关联的订单信息JSON',
-  `pull_time` datetime NULL DEFAULT NULL COMMENT '第一次拉取时间',
-  `pull_last_time` datetime NULL DEFAULT NULL COMMENT '最后一次拉取时间',
-  `sku_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '抖音skuid',
-  `o_goods_id` bigint NULL DEFAULT NULL COMMENT '商品id(o_goods外键)',
-  `o_goods_sku_id` bigint NULL DEFAULT NULL COMMENT '商品skuid(o_goods_sku外键)',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `aftersale_id_index`(`aftersale_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '抖店退款表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of oms_dou_refund
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for oms_shop_goods_sku
@@ -2020,49 +1956,6 @@ INSERT INTO `oms_shop_goods_sku` VALUES (1226, 1012, 500, '10000239803737', '雷
 INSERT INTO `oms_shop_goods_sku` VALUES (1227, 1012, 500, '10000239803737', '雷士照明led吸顶灯灯芯替换圆形灯板节能灯芯冷光高显6W至40W护眼', '', ' 36W白光', '3531485362', '', '', '', 5990, 12, 5, NULL, NULL, 0, 0, 0, 0, '2026-01-03 09:00:25', NULL);
 INSERT INTO `oms_shop_goods_sku` VALUES (1228, 1012, 500, '10000239803737', '雷士照明led吸顶灯灯芯替换圆形灯板节能灯芯冷光高显6W至40W护眼', '', ' 48W白光', '3531313894', '', '', '', 6990, 12, 5, NULL, NULL, 0, 0, 0, 0, '2026-01-03 09:00:25', NULL);
 INSERT INTO `oms_shop_goods_sku` VALUES (1229, 1012, 500, '10000239803737', '雷士照明led吸顶灯灯芯替换圆形灯板节能灯芯冷光高显6W至40W护眼', '', ' 72W白光', '3531430948', '', '', '', 7990, 12, 5, NULL, NULL, 0, 0, 0, 0, '2026-01-03 09:00:25', NULL);
-
--- ----------------------------
--- Table structure for oms_wei_refund
--- ----------------------------
-DROP TABLE IF EXISTS `oms_wei_refund`;
-CREATE TABLE `oms_wei_refund`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `shop_id` int NULL DEFAULT NULL COMMENT '店铺id',
-  `after_sale_order_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '售后单号',
-  `after_sales_status` int NULL DEFAULT NULL COMMENT '售后状态（参考拼多多）',
-  `after_sales_type` int NULL DEFAULT NULL COMMENT '售后类型（参考拼多多）',
-  `status` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '售后单当前状态，参考：\r\nUSER_CANCELD	用户取消申请\r\nMERCHANT_PROCESSING	商家受理中\r\nMERCHANT_REJECT_REFUND	商家拒绝退款\r\nMERCHANT_REJECT_RETURN	商家拒绝退货退款\r\nUSER_WAIT_RETURN	待买家退货\r\nRETURN_CLOSED	退货退款关闭\r\nMERCHANT_WAIT_RECEIPT	待商家收货\r\nMERCHANT_OVERDUE_REFUND	商家逾期未退款\r\nMERCHANT_REFUND_SUCCESS	退款完成\r\nMERCHANT_RETURN_SUCCESS	退货退款完成\r\nPLATFORM_REFUNDING	平台退款中\r\nPLATFORM_REFUND_FAIL	平台退款失败\r\nUSER_WAIT_CONFIRM	待用户确认\r\nMERCHANT_REFUND_RETRY_FAIL	商家打款失败，客服关闭售后\r\nMERCHANT_FAIL	售后关闭\r\nUSER_WAIT_CONFIRM_UPDATE	待用户处理商家协商\r\nUSER_WAIT_HANDLE_MERCHANT_AFTER_SALE	待用户处理商家代发起的售后申请',
-  `openid` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '买家身份标识',
-  `unionid` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '买家在开放平台的唯一标识符，若当前视频号小店已绑定到微信开放平台账号下会返回',
-  `product_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品spuid',
-  `sku_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品skuid',
-  `count` int NULL DEFAULT NULL COMMENT '售后数量',
-  `fast_refund` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '是否极速退款RefundInfo',
-  `refund_reason` int NULL DEFAULT NULL COMMENT '标明售后单退款直接原因, 枚举值参考 RefundReason',
-  `refund_amount` int NULL DEFAULT NULL COMMENT '退款金额（分）',
-  `return_waybill_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快递单号',
-  `return_delivery_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '物流公司id',
-  `return_delivery_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '物流公司名称',
-  `merchant_upload_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '售后相关商品信息JSON',
-  `create_time` int NULL DEFAULT NULL COMMENT '售后单创建时间戳',
-  `update_time` int NULL DEFAULT NULL COMMENT '售后单更新时间戳',
-  `reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款原因',
-  `reason_text` varchar(2550) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退款原因解释',
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '售后类型。REFUND:退款；RETURN:退货退款。',
-  `order_id` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单号，该字段可用于获取订单',
-  `details` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'detail json',
-  `complaint_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '纠纷id，该字段可用于获取纠纷信息',
-  `refund_resp` varchar(2550) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '微信支付退款的响应',
-  `pull_status` int NULL DEFAULT NULL COMMENT '推送状态（0未推送；1推送成功；2推送失败）',
-  `pull_time` datetime NULL DEFAULT NULL COMMENT '订单审核时间',
-  `o_goods_id` bigint NULL DEFAULT NULL COMMENT '商品id(o_goods外键)',
-  `o_goods_sku_id` bigint NULL DEFAULT NULL COMMENT '商品skuid(o_goods_sku外键)',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '视频号小店退款' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of oms_wei_refund
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_config

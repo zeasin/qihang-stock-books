@@ -3,6 +3,7 @@ package cn.qihangerp.api.common;
 import cn.qihangerp.common.enums.PddRefundStatusEnum;
 import cn.qihangerp.model.entity.ORefund;
 import cn.qihangerp.open.tao.response.TaoRefundResponse;
+import cn.qihangerp.open.wei.model.AfterSaleOrder;
 import com.alibaba.fastjson2.JSONObject;
 
 import java.time.Instant;
@@ -42,8 +43,9 @@ public class ShopRefundTransform {
         refund.setSkuId(taoRefund.getNumIid().toString());
         refund.setSkuNum(taoRefund.getOuterId());
         refund.setSkuName(taoRefund.getSku());
-        refund.setGoodsName(taoRefund.getTitle());
-        refund.setGoodsImage(null);
+        refund.setProductId(taoRefund.getNumIid().toString());
+        refund.setProductName(taoRefund.getTitle());
+        refund.setProductImage(null);
         refund.setAfterNum(taoRefund.getNum());
         refund.setBuyNum(taoRefund.getNum());
         //货物状态。可选值BUYER_NOT_RECEIVED (买家未收到货) BUYER_RECEIVED (买家已收到货) BUYER_RETURNED_GOODS (买家已退货)
@@ -107,7 +109,8 @@ public class ShopRefundTransform {
         refund.setSkuId(jdRefund.getSkuId()+"");
 //        refund.setSkuNum(jdRefund.getOuterId());
         refund.setSkuName("");
-        refund.setGoodsName(jdRefund.getWareName());
+        refund.setProductId("");
+        refund.setProductName(jdRefund.getWareName());
 //        refund.setGoodsImage(pddRefund.getGoodImage());
         refund.setAfterNum(jdRefund.getServiceCount());
 //        refund.setUserShippingStatus(pddRefund.getUserShippingStatus());
@@ -148,8 +151,9 @@ public class ShopRefundTransform {
         refund.setSkuId(pddRefund.getSkuId());
         refund.setSkuNum(pddRefund.getOuterId());
         refund.setSkuName("");
-        refund.setGoodsName(pddRefund.getGoodsName());
-        refund.setGoodsImage(pddRefund.getGoodImage());
+        refund.setProductId(pddRefund.getGoodsId().toString());
+        refund.setProductName(pddRefund.getGoodsName());
+        refund.setProductImage(pddRefund.getGoodImage());
         refund.setAfterNum(pddRefund.getGoodsNumber());
         refund.setBuyNum(pddRefund.getGoodsNumber());
         refund.setUserShippingStatus(pddRefund.getUserShippingStatus());
@@ -241,10 +245,11 @@ public class ShopRefundTransform {
             refund.setOrderItemNum(item.getSkuOrderId());
             refund.setRefundAmount(item.getAftersalePayAmount().doubleValue() / 100);
             refund.setSkuId(null);
+            refund.setProductId(item.getProductId().toString());
             refund.setSkuName(JSONObject.toJSONString(item.getSkuSpec()));
             refund.setSkuNum(item.getShopSkuCode());
-            refund.setGoodsName(item.getProductName());
-            refund.setGoodsImage(item.getProductImage());
+            refund.setProductName(item.getProductName());
+            refund.setProductImage(item.getProductImage());
             refund.setBuyNum(item.getItemNum());
             refund.setAfterNum(item.getAftersaleItemNum());
             LocalDateTime orderTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(item.getCreateTime()), ZoneId.of("UTC"));
@@ -252,5 +257,87 @@ public class ShopRefundTransform {
             refunds.add(refund);
         }
         return refunds;
+    }
+
+    public static ORefund transformWeiRefund(AfterSaleOrder weiRefund) {
+        ORefund refund = new ORefund();
+        refund.setRefundNum(weiRefund.getAfter_sale_order_id());
+        // 类型(1-售前退款 10-退货 20-换货 30-维修 40-大家电安装 50-大家电移机 60-大家电增值服务 70-上门维修 90-优鲜赔 80-补发商品 100-试用收回 11-仅退款)
+
+        //售后类型。REFUND:退款；RETURN:退货退款；EXCHANGE:换货。
+        if(weiRefund.getType().equals("REFUND")){
+            refund.setRefundType(11);
+        }else if(weiRefund.getType().equals("RETURN")){
+            refund.setRefundType(10);
+            refund.setShippingStatus(1);
+        }else if(weiRefund.getType().equals("EXCHANGE")){
+            refund.setRefundType(20);
+            refund.setShippingStatus(1);
+        }
+        refund.setRefundReason(weiRefund.getReason_text());
+        refund.setOrderNum(weiRefund.getOrder_id());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime createTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(weiRefund.getCreate_time()), ZoneId.of("UTC"));
+        LocalDateTime updateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(weiRefund.getUpdate_time()), ZoneId.of("UTC"));
+        refund.setRefundCreated(createTime.format(formatter));
+        refund.setRefundUpdated(updateTime.format(formatter));
+
+        refund.setUserShippingStatus(weiRefund.getDetails().getReceive_product()?"1":"0");
+
+        refund.setReturnLogisticsCompany(weiRefund.getReturn_info().getDelivery_name());
+        refund.setReturnLogisticsCode(weiRefund.getReturn_info().getWaybill_id());
+
+        refund.setPlatformStatus(weiRefund.getStatus());
+        //售后状态 3-换货待买家收货；6-待商家同意；7-待买家退货；8-待商家发货；11-待商家二次同意；12-售后成功；14-换货成功；27-商家一次拒绝；28-售后失败；29-商家二次拒绝；
+        if(weiRefund.getStatus().equals("USER_CANCELD")){
+            refund.setPlatformStatusText("用户取消申请");
+        }else if(weiRefund.getStatus().equals("MERCHANT_PROCESSING")){
+            refund.setPlatformStatusText("商家受理中");
+        }else if(weiRefund.getStatus().equals("MERCHANT_REJECT_REFUND")){
+            refund.setPlatformStatusText("商家拒绝退款");
+        }else if(weiRefund.getStatus().equals("MERCHANT_REJECT_RETURN")){
+            refund.setPlatformStatusText("商家拒绝退货退款");
+        }else if(weiRefund.getStatus().equals("USER_WAIT_RETURN")){
+            refund.setPlatformStatusText("待买家退货");
+        }else if(weiRefund.getStatus().equals("RETURN_CLOSED")){
+            refund.setPlatformStatusText("退货退款关闭");
+        }else if(weiRefund.getStatus().equals("MERCHANT_WAIT_RECEIPT")){
+            refund.setPlatformStatusText("待商家收货");
+        }else if(weiRefund.getStatus().equals("MERCHANT_OVERDUE_REFUND")){
+            refund.setPlatformStatusText("商家逾期未退款");
+        }else if(weiRefund.getStatus().equals("MERCHANT_REFUND_SUCCESS")){
+            refund.setPlatformStatusText("退款完成");
+        }else if(weiRefund.getStatus().equals("MERCHANT_RETURN_SUCCESS")){
+            refund.setPlatformStatusText("退货退款完成");
+        }
+        else if(weiRefund.getStatus().equals("PLATFORM_REFUNDING")) refund.setPlatformStatusText("平台退款中");
+        else if(weiRefund.getStatus().equals("PLATFORM_REFUND_FAIL")) refund.setPlatformStatusText("平台退款失败");
+        else if(weiRefund.getStatus().equals("USER_WAIT_CONFIRM")) refund.setPlatformStatusText("待用户确认");
+        else if(weiRefund.getStatus().equals("MERCHANT_REFUND_RETRY_FAIL")) refund.setPlatformStatusText("商家打款失败，客服关闭售后");
+        else if(weiRefund.getStatus().equals("MERCHANT_FAIL")) refund.setPlatformStatusText("售后关闭");
+        else if(weiRefund.getStatus().equals("USER_WAIT_CONFIRM_UPDATE")) refund.setPlatformStatusText("待用户处理商家协商");
+        else if(weiRefund.getStatus().equals("USER_WAIT_HANDLE_MERCHANT_AFTER_SALE")) refund.setPlatformStatusText("待用户处理商家代发起的售后申请");
+        else if(weiRefund.getStatus().equals("WAIT_PACKAGE_INTERCEPT")) refund.setPlatformStatusText("物流线上拦截中");
+        else if(weiRefund.getStatus().equals("MERCHANT_REJECT_EXCHANGE")) refund.setPlatformStatusText("商家拒绝换货");
+        else if(weiRefund.getStatus().equals("MERCHANT_REJECT_RESHIP")) refund.setPlatformStatusText("商家拒绝发货");
+        else if(weiRefund.getStatus().equals("USER_WAIT_RECEIPT")) refund.setPlatformStatusText("待用户收货");
+        else if(weiRefund.getStatus().equals("MERCHANT_EXCHANGE_SUCCESS")) refund.setPlatformStatusText("换货完成");
+
+//        refund.setOrderAmount(item.getPayAmount().doubleValue() / 100);
+//        refund.setOrderItemNum(item.getSkuOrderId());
+        refund.setRefundAmount(weiRefund.getRefund_info().getDouble("amount")/100);
+        refund.setProductId(weiRefund.getProduct_info().getProduct_id());
+        refund.setSkuId(weiRefund.getProduct_info().getSku_id());
+        refund.setSkuName("");
+        refund.setSkuNum(weiRefund.getProduct_info().getSku_code());
+//        refund.setGoodsName(item.getProductName());
+//        refund.setGoodsImage(item.getProductImage());
+        refund.setBuyNum(weiRefund.getProduct_info().getCount());
+        refund.setAfterNum(weiRefund.getProduct_info().getCount());
+//        LocalDateTime orderTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(item.getCreateTime()), ZoneId.of("UTC"));
+//        refund.setOrderTime(orderTime.format(formatter));
+
+        return refund;
     }
 }

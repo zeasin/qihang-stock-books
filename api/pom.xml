@@ -143,7 +143,7 @@
             <artifactId>open-sdk</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/open-sdk-2.1.5.jar</systemPath>
+            <systemPath>${project.basedir}/libs/open-sdk-2.1.6.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>

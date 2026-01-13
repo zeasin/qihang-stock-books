@@ -14,11 +14,9 @@ import cn.qihangerp.service.mapper.OOrderItemMapper;
 import cn.qihangerp.service.mapper.OOrderMapper;
 import cn.qihangerp.service.mapper.ORefundMapper;
 import cn.qihangerp.service.service.ORefundService;
-import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.qihangerp.common.enums.EnumShopType;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -126,8 +124,8 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
         afterSale.setOOrderItemId(oOrderItems.isEmpty()?"0":oOrderItems.get(0).getId());
         afterSale.setSkuId(refund.getSkuId());
         afterSale.setQuantity(refund.getAfterNum());
-        afterSale.setTitle(refund.getGoodsName());
-        afterSale.setImg(refund.getGoodsImage());
+        afterSale.setTitle(refund.getProductName());
+        afterSale.setImg(refund.getProductImage());
         afterSale.setSkuInfo(refund.getSkuId());
         afterSale.setSkuCode(refund.getSkuNum());
         afterSale.setOGoodsId(oGoodsSkus.isEmpty()?"0":oGoodsSkus.get(0).getGoodsId().toString());
