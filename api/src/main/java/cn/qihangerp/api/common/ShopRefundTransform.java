@@ -70,6 +70,7 @@ public class ShopRefundTransform {
         refund.setRefundCreated(pddRefund.getCreatedTime());
         refund.setRefundUpdated(pddRefund.getUpdatedTime());
         refund.setOrderTime(pddRefund.getConfirmTime());
+        refund.setShippingStatus(Integer.parseInt(pddRefund.getShippingStatus()));
         refund.setReturnLogisticsCompany(pddRefund.getShippingName());
         refund.setReturnLogisticsCode(pddRefund.getTrackingNumber());
         return refund;

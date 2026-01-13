@@ -111,7 +111,9 @@ public class ShopRefundApiController {
                     log.info("======循环拉取PDD一天的退款：{} result:{}-{}", pullParams, upResult.getCode(), upResult.getList().size());
                     //循环插入订单数据到数据库
                     for (var refund : upResult.getList()) {
-                        ORefund oRefund = ShopRefundTransform.transformPddRefund(refund);
+                        ApiResultVo<AfterSale> apiResultVo = PddRefundApiHelper.pullRefundDetil(appKey, appSecret, accessToken, refund.getId().toString(), refund.getOrderSn());
+
+                        ORefund oRefund = ShopRefundTransform.transformPddRefund(apiResultVo.getData());
                         oRefund.setShopId(shopId);
                         oRefund.setShopType(shopType);
 

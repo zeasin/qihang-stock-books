@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 12/01/2026 17:14:28
+ Date: 13/01/2026 10:44:47
 */
 
 SET NAMES utf8mb4;
@@ -582,11 +582,12 @@ CREATE TABLE `o_after_sale`  (
   `update_time` datetime NULL DEFAULT NULL,
   `update_by` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OMS售后处理表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2010668039339151362 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OMS售后处理表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_after_sale
 -- ----------------------------
+INSERT INTO `o_after_sale` VALUES (2010668039339151361, 10, 1011, 300, 4, '18104483624816', '260106-505146273432079', '260106-505146273432079-1742164849117', '29', '30', 1742164849117, 2, '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', '1742164849117', 'LEDDX00103', 0, 0, 1, NULL, NULL, 'DPK202675485511', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '2026-01-12 18:59:52', 'admin', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for o_goods
@@ -1189,6 +1190,7 @@ CREATE TABLE `o_refund`  (
   `order_item_id` bigint NOT NULL COMMENT '订单库itemId',
   `goods_id` bigint NOT NULL COMMENT '商品id(o_goods外键)',
   `goods_sku_id` bigint NOT NULL COMMENT '商品skuid(o_goods_sku外键)',
+  `shipping_status` int NOT NULL DEFAULT 0 COMMENT '订单发货状态 0:未发货， 1:已发货（包含：已发货，已揽收）',
   `user_shipping_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '0-未勾选 1-消费者选择的收货状态为未收到货 2-消费者选择的收货状态为已收到货',
   `has_good_return` int NULL DEFAULT NULL COMMENT '买家是否需要退货。可选值:1(是),0(否)',
   `return_logistics_company` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退货物流公司',
@@ -1208,17 +1210,18 @@ CREATE TABLE `o_refund`  (
   `has_processing` int NOT NULL DEFAULT 0 COMMENT '是否处理0未处理1已处理',
   `after_sale_id` bigint NULL DEFAULT NULL COMMENT '处理id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OMS售后处理表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OMS售后处理表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_refund
 -- ----------------------------
-INSERT INTO `o_refund` VALUES (1, '17894479236915', 11, 1011, 300, '260101-602941713932531', '260101-602941713932531-1742164849117', 29.32, 29.32, '其他原因', '1742164849117', 'LEDDX00103', '24W白光-215mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 1, 24, 25, 16, 47, '1', 0, NULL, NULL, NULL, '', '10', '退款成功', '2026-01-01 14:53:14', '2026-01-01 14:53:19', NULL, 0, '2026-01-12 11:35:04', NULL, '2026-01-12 12:48:48', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (2, '17958668300087', 11, 1011, 300, '260101-343073113703028', '260101-343073113703028-1742164849115', 29.35, 29.35, '其他原因', '1742164849115', 'LEDDX00101', '12W白光-135mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/a3e7e689-5c30-495c-b5e0-90e38bd352b5.jpeg.a.jpeg', 1, 25, 26, 16, 45, '1', 0, NULL, NULL, NULL, '', '10', '退款成功', '2026-01-01 20:52:10', '2026-01-01 20:52:17', NULL, 0, '2026-01-12 11:35:05', NULL, '2026-01-12 12:48:49', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (3, '18094162708216', 10, 1011, 300, '260103-064550356563156', '260103-064550356563156-1742164849116', 33.93, 33.93, '其他原因', '1742164849116', 'LEDDX00102', '18W白光-175mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 1, 2, 2, 16, 46, '0', 1, NULL, NULL, NULL, '', '10', '退款成功', '2026-01-06 14:01:10', '2026-01-09 18:20:38', NULL, 0, '2026-01-12 12:37:02', NULL, '2026-01-12 12:48:34', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (4, '18104483624816', 10, 1011, 300, '260106-505146273432079', '260106-505146273432079-1742164849117', 74.71, 74.71, '不想要了', '1742164849117', 'LEDDX00103', '24W白光-215mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 2, 29, 30, 16, 47, '0', 0, '德邦快递', 'DPK202675485511', NULL, '', '10', '退款成功', '2026-01-10 22:41:27', '2026-01-12 05:12:11', '2026-01-06 14:40:01', 0, '2026-01-12 12:57:07', NULL, '2026-01-12 15:44:31', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (5, '18148057136940', 11, 1011, 300, '260111-141274662501554', '260111-141274662501554-1740677623153', 15.73, 15.73, '其他原因', '1740677623153', 'LEDDP00103', '', '雷士照明超亮LED节能灯E27大功率强光均匀三色可选一级能效护眼', 'https://img.pddpic.com/mms-material-img/2025-05-28/90a9f73e-acc9-4350-bf91-aa3c0c6a19a2.jpeg.a.jpeg', 1, 0, 0, 0, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-11 07:36:15', '2026-01-11 12:33:32', '2026-01-10 23:21:39', 0, '2026-01-12 12:57:08', NULL, '2026-01-12 15:54:41', NULL, 0, NULL);
-INSERT INTO `o_refund` VALUES (6, '18078171104251', 11, 1011, 300, '260103-143340377723488', '260103-143340377723488-1742164849117', 24.78, 24.78, '不想要了', '1742164849117', 'LEDDX00103', '24W白光-215mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 1, 1, 1, 16, 47, '1', 0, NULL, '', NULL, '', '10', '退款成功', '2026-01-03 13:17:53', '2026-01-03 13:18:00', '2026-01-03 13:08:47', 0, '2026-01-12 16:03:29', NULL, NULL, NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (1, '17894479236915', 11, 1011, 300, '260101-602941713932531', '260101-602941713932531-1742164849117', 29.32, 29.32, '其他原因', '1742164849117', 'LEDDX00103', '24W白光-215mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 1, 24, 25, 16, 47, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-01 14:53:14', '2026-01-01 06:53:19', '2026-01-01 06:48:36', 0, '2026-01-12 11:35:04', NULL, '2026-01-13 10:44:35', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (2, '17958668300087', 11, 1011, 300, '260101-343073113703028', '260101-343073113703028-1742164849115', 29.35, 29.35, '其他原因', '1742164849115', 'LEDDX00101', '12W白光-135mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/a3e7e689-5c30-495c-b5e0-90e38bd352b5.jpeg.a.jpeg', 1, 25, 26, 16, 45, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-01 20:52:10', '2026-01-01 12:52:17', '2026-01-01 12:47:51', 0, '2026-01-12 11:35:05', NULL, '2026-01-13 10:44:33', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (3, '18094162708216', 10, 1011, 300, '260103-064550356563156', '260103-064550356563156-1742164849116', 33.93, 33.93, '其他原因', '1742164849116', 'LEDDX00102', '18W白光-175mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 1, 2, 2, 16, 46, 1, '0', 1, '德邦快递', 'DPK202672107532', NULL, '', '10', '退款成功', '2026-01-06 14:01:10', '2026-01-09 10:20:38', '2026-01-03 05:45:28', 0, '2026-01-12 12:37:02', NULL, '2026-01-13 10:44:18', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (4, '18104483624816', 10, 1011, 300, '260106-505146273432079', '260106-505146273432079-1742164849117', 74.71, 74.71, '不想要了', '1742164849117', 'LEDDX00103', '24W白光-215mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 2, 29, 30, 16, 47, 1, '0', 0, '德邦快递', 'DPK202675485511', NULL, '', '10', '退款成功', '2026-01-10 22:41:27', '2026-01-12 05:12:11', '2026-01-06 14:40:01', 0, '2026-01-12 12:57:07', NULL, '2026-01-13 10:44:27', 'admin操作售后处理', 1, 2010668039339151361);
+INSERT INTO `o_refund` VALUES (5, '18148057136940', 11, 1011, 300, '260111-141274662501554', '260111-141274662501554-1740677623153', 15.73, 15.73, '其他原因', '1740677623153', 'LEDDP00103', '', '雷士照明超亮LED节能灯E27大功率强光均匀三色可选一级能效护眼', 'https://img.pddpic.com/mms-material-img/2025-05-28/90a9f73e-acc9-4350-bf91-aa3c0c6a19a2.jpeg.a.jpeg', 1, 0, 0, 0, 0, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-11 07:36:15', '2026-01-11 12:33:32', '2026-01-10 23:21:39', 0, '2026-01-12 12:57:08', NULL, '2026-01-12 15:54:41', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (6, '18078171104251', 11, 1011, 300, '260103-143340377723488', '260103-143340377723488-1742164849117', 24.78, 24.78, '不想要了', '1742164849117', 'LEDDX00103', '24W白光-215mm', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/70732144-21a8-423c-90df-553c3ea4fe36.jpeg.a.jpeg', 1, 1, 1, 16, 47, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-03 13:17:53', '2026-01-03 05:18:00', '2026-01-03 05:08:47', 0, '2026-01-12 16:03:29', NULL, '2026-01-13 10:42:54', NULL, 0, NULL);
+INSERT INTO `o_refund` VALUES (7, '18267421812292', 11, 1011, 300, '260113-074742505040578', '260113-074742505040578-1742164849116', 33.93, 33.93, '不想要了', '1742164849116', 'LEDDX00102', '', '雷士照明LED光源灯芯正品保障客厅卧室餐厅书房吸顶灯LED灯板替换', 'https://img.pddpic.com/mms-material-img/2025-05-29/dfb81deb-a7c1-4028-b6b1-b3f02fb63c72.jpeg.a.jpeg', 1, 0, 0, 0, 0, 0, '1', 0, '', '', NULL, '', '10', '退款成功', '2026-01-13 08:19:22', '2026-01-13 00:19:29', '2026-01-13 00:17:19', 0, '2026-01-13 10:33:34', NULL, '2026-01-13 10:44:14', NULL, 0, NULL);
 
 -- ----------------------------
 -- Table structure for o_ship_stock_up
@@ -1390,7 +1393,7 @@ CREATE TABLE `o_shop`  (
 -- Records of o_shop
 -- ----------------------------
 INSERT INTO `o_shop` VALUES (1007, '抖店测试', 400, NULL, 9, 1, NULL, '4463798', NULL, NULL, 'c3tzx2q5p41h7zl69zjws9900002noae-11', NULL, NULL, '070t45roa51h7zl69zjws9900002noae-12', NULL, NULL, NULL, NULL, NULL, 0, 0, 1759307372, 1759307261);
-INSERT INTO `o_shop` VALUES (1011, '爱顾家的小店', 300, NULL, 9, 1, NULL, '0', NULL, NULL, '81cc668a58204029b18f7fc6248f0c329afc3e59', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 1759371874, 1759371874);
+INSERT INTO `o_shop` VALUES (1011, '爱顾家的小店', 300, NULL, 9, 1, NULL, '0', NULL, NULL, 'd7b50ba1a8aa42c7b0b040ee6f86b5f8e83027c2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 1759371874, 1759371874);
 INSERT INTO `o_shop` VALUES (1012, '微信小店测试', 500, NULL, 9, 1, NULL, '0', 'wx82dd65f284dd6ee3', 'a6054ccf2694e8dc51d2616e634cad39', '99_fTlkZRP6GjasIVJEoEmbvMpEFOIO99Pld8JwA4eSzFfIa2-sbgbjbL6iGSzt2ZX7ydg0CKxe6kzLxvs9L1GxoINeyST5efbptdvrqu0LJkCEXzkZ4crveaIK5vMKKMgABAUUW', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 1759373401, 1759373401);
 INSERT INTO `o_shop` VALUES (1013, '测试TMALL', 100, NULL, 9, 1, NULL, '2', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 1767360004, 1767360004);
 
@@ -1459,7 +1462,7 @@ CREATE TABLE `o_shop_pull_logs`  (
   `pull_time` datetime NULL DEFAULT NULL COMMENT '拉取时间',
   `duration` bigint NULL DEFAULT NULL COMMENT '耗时（毫秒）',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2010624872233537539 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '店铺更新日志表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2010905785949470723 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '店铺更新日志表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of o_shop_pull_logs
@@ -1541,6 +1544,17 @@ INSERT INTO `o_shop_pull_logs` VALUES (2010624734295461889, 1011, 300, 'REFUND',
 INSERT INTO `o_shop_pull_logs` VALUES (2010624778486648833, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-05 23:30:01,endTime:2026-01-06 00:00:01}', '{insert:0,update:0,fail:0}', '2026-01-12 16:07:53', 4171);
 INSERT INTO `o_shop_pull_logs` VALUES (2010624829141258242, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-06 23:30:01,endTime:2026-01-07 00:00:01}', '{insert:0,update:0,fail:0}', '2026-01-12 16:08:06', 4000);
 INSERT INTO `o_shop_pull_logs` VALUES (2010624872233537538, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-07 23:30:01,endTime:2026-01-08 00:00:01}', '{insert:0,update:0,fail:0}', '2026-01-12 16:08:16', 4047);
+INSERT INTO `o_shop_pull_logs` VALUES (2010902199752433665, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-13 00:00:01,endTime:2026-01-13 00:30:01}', 'access_token已过期', '2026-01-13 10:30:05', 15008);
+INSERT INTO `o_shop_pull_logs` VALUES (2010903028253302786, 1011, 300, 'REFUND', '主动拉取退款', '{startTime:2026-01-13 23:30:01,endTime:2026-01-14 00:00:01}', '{insert:1,update:0,fail:0}', '2026-01-13 10:31:59', 98462);
+INSERT INTO `o_shop_pull_logs` VALUES (2010903159501463553, 1011, 300, 'REFUND', '更新退款', '18267421812292', 'SUCCESS', '2026-01-13 10:33:57', 11236);
+INSERT INTO `o_shop_pull_logs` VALUES (2010903477412929537, 1011, 300, 'REFUND', '更新退款', '18094162708216', 'SUCCESS', '2026-01-13 10:34:32', 52946);
+INSERT INTO `o_shop_pull_logs` VALUES (2010905363838910466, 1011, 300, 'REFUND', '更新退款', '18078171104251', 'SUCCESS', '2026-01-13 10:42:51', 3574);
+INSERT INTO `o_shop_pull_logs` VALUES (2010905699152543745, 1011, 300, 'REFUND', '更新退款', '18267421812292', 'SUCCESS', '2026-01-13 10:44:14', 401);
+INSERT INTO `o_shop_pull_logs` VALUES (2010905717511012353, 1011, 300, 'REFUND', '更新退款', '18094162708216', 'SUCCESS', '2026-01-13 10:44:18', 190);
+INSERT INTO `o_shop_pull_logs` VALUES (2010905729053736961, 1011, 300, 'REFUND', '更新退款', '17958668300087', 'SUCCESS', '2026-01-13 10:44:21', 176);
+INSERT INTO `o_shop_pull_logs` VALUES (2010905754399916033, 1011, 300, 'REFUND', '更新退款', '18104483624816', 'SUCCESS', '2026-01-13 10:44:27', 177);
+INSERT INTO `o_shop_pull_logs` VALUES (2010905779217612801, 1011, 300, 'REFUND', '更新退款', '17958668300087', 'SUCCESS', '2026-01-13 10:44:33', 196);
+INSERT INTO `o_shop_pull_logs` VALUES (2010905785949470722, 1011, 300, 'REFUND', '更新退款', '17894479236915', 'SUCCESS', '2026-01-13 10:44:35', 161);
 
 -- ----------------------------
 -- Table structure for o_shop_region
@@ -2532,7 +2546,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-12 14:36:24', 'admin', '2023-08-07 19:31:37', '', '2026-01-12 06:36:23', '管理员');
+INSERT INTO `sys_user` VALUES (1, NULL, 'admin', '启航老齐A', '00', '280645618@qq.com', '18123879144', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2026-01-13 10:29:17', 'admin', '2023-08-07 19:31:37', '', '2026-01-13 02:29:16', '管理员');
 INSERT INTO `sys_user` VALUES (2, NULL, 'openapi', 'openApi接口专用', '00', '2806456181@qq.com', '15818590000', '0', '', '$2a$10$fHkhoqbMiyracAsTzl38H.55bu.M.of1FXk2EK7RQBjfic3tLU0Ue', '0', '0', '127.0.0.1', '2024-06-24 10:23:35', 'admin', '2024-03-17 14:55:22', 'admin', '2024-06-24 10:23:35', NULL);
 INSERT INTO `sys_user` VALUES (101, 101, '15818590119', 'aaa123', '00', '', '', '0', '', '$2a$10$pXcT6cHaObMeKuYd9vZb5uEb8PyUdF2AcqqRN1cBqiA9rV4qYQW7G', '0', '2', '', NULL, 'admin', '2024-08-15 13:45:25', '', NULL, NULL);
 INSERT INTO `sys_user` VALUES (102, 101, '15818590119', '老齐', '00', '', '', '0', '', '$2a$10$ysk.zgJ8wh25c7vOjKyZ8uarM2hkG0S51j8GYdJSo2kZmc3f8HdKe', '0', '0', '', NULL, 'admin', '2024-08-15 13:49:59', 'admin', '2025-02-10 16:26:20', NULL);

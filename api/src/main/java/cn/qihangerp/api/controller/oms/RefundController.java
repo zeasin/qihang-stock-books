@@ -10,7 +10,9 @@ import cn.qihangerp.model.bo.RefundProcessingBo;
 import cn.qihangerp.model.bo.RefundSearchBo;
 import cn.qihangerp.service.service.ORefundService;
 import cn.qihangerp.security.common.BaseController;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
  * @author qihang
  * @date 2024-01-13
  */
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/refund")
@@ -82,6 +85,7 @@ public class RefundController extends BaseController
 
     @PostMapping("/processing")
     public AjaxResult refundProcessing(@RequestBody RefundProcessingBo bo ) {
+        log.info("===============处理售后：{}", JSONObject.toJSONString(bo));
         if (bo.getRefundId() == null) return AjaxResult.error(500, "缺少参数refundId");
         ResultVo<Long> resultVo = refundService.refundProcessing(bo,getUsername());
         if(resultVo.getCode() == 0) return success();

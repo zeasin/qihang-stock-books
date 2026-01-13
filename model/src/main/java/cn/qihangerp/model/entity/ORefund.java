@@ -128,6 +128,7 @@ public class ORefund implements Serializable {
     private String refundCreated;
     private String refundUpdated;
     private String orderTime;
+    private Integer shippingStatus;
 
     /**
      * 订单创建时间

@@ -1,0 +1,498 @@
+<template>
+  <div class="app-container">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="108px">
+      <el-form-item label="退款单号" prop="refundNum">
+        <el-input
+          v-model="queryParams.refundNum"
+          placeholder="请输入退款单号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="源订单号" prop="orderNum">
+        <el-input
+          v-model="queryParams.orderNum"
+          placeholder="请输入源订单号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
+      <el-form-item label="店铺" prop="shopId">
+        <el-select v-model="queryParams.shopId" placeholder="请选择店铺" clearable @change="handleQuery">
+          <el-option
+            v-for="item in shopList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+            <span style="float: left">{{ item.name }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 500">视频号小店</span>
+            <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 200">京东POP</span>
+            <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 280">京东自营</span>
+            <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 100">淘宝天猫</span>
+            <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 300">拼多多</span>
+            <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 400">抖店</span>
+            <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 999">线下渠道</span>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="类型" prop="refundType">
+        <el-select v-model="queryParams.refundType" placeholder="请选择类型" clearable @change="handleQuery">
+          <el-option label="售前退款" value="1" ></el-option>
+          <el-option label="仅退款" value="11" ></el-option>
+          <el-option label="退货" value="10"></el-option>
+          <el-option label="换货" value="20"> </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="处理状态" prop="hasProcessing">
+        <el-select v-model="queryParams.hasProcessing" placeholder="请选择类型" clearable @change="handleQuery">
+          <el-option label="已处理" value="1" ></el-option>
+          <el-option label="待处理" value="0" ></el-option>
+        </el-select>
+      </el-form-item>
+<!--      <el-form-item label="推送ERP状态" prop="hasLink">-->
+<!--        <el-select v-model="queryParams.erpPushStatus" placeholder="推送ERP状态" clearable @change="handleQuery">-->
+<!--          <el-option label="推送成功" value="200"></el-option>-->
+<!--          <el-option label="推送失败" value="500"></el-option>-->
+<!--          <el-option label="未推送" value="0"></el-option>-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          @click="handlePullOpen"
+        >API下载店铺售后</el-button>
+      </el-col>
+
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+    </el-row>
+
+    <el-table v-loading="loading" :data="returnedList" @selection-change="handleSelectionChange">
+<!--       <el-table-column type="selection" width="55" align="center" />-->
+<!--      <el-table-column label="ID" align="center" prop="id" />-->
+      <el-table-column label="退货单号" align="left" prop="refundNum" width="160">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleDetail(scope.row)"
+          >{{scope.row.refundNum}} </el-button><br/>
+          <el-tag type="info">{{ shopList.find(x=>x.id === scope.row.shopId) ? shopList.find(x=>x.id === scope.row.shopId).name : '' }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="订单号" align="center" prop="orderNum" width="200"/>
+      <el-table-column label="订单ItemId" align="center" prop="orderItemId" width="120" />
+      <el-table-column label="类型" align="center" prop="refundType" width="100">
+        <template slot-scope="scope">
+          <el-tag size="small" v-if="scope.row.refundType === 1">售前退款</el-tag>
+          <el-tag size="small" v-if="scope.row.refundType === 11">仅退款</el-tag>
+          <el-tag size="small" v-if="scope.row.refundType === 10">退货</el-tag>
+          <el-tag size="small" v-if="scope.row.refundType === 20">换货</el-tag>
+          <el-tag size="small" v-if="scope.row.refundType === 30">维修</el-tag>
+          <el-tag size="small" v-if="scope.row.refundType === 80">补发商品</el-tag>
+        </template>
+      </el-table-column>
+<!--      <el-table-column label="店铺" align="center" prop="shopId" >-->
+<!--        <template slot-scope="scope">-->
+<!--          <span>{{ shopList.find(x=>x.id === scope.row.shopId).name  }}</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+      <el-table-column label="图片" align="center" prop="goodsImage" width="60">
+        <template slot-scope="scope">
+          <image-preview :src="scope.row.goodsImage" :width="50" :height="50"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="商品名" align="left" prop="goodsName" width="280"/>
+      <el-table-column label="规格" align="left" prop="skuName" width="150"/>
+
+
+      <el-table-column label="平台SkuId" align="center" prop="skuId" width="120"/>
+      <el-table-column label="系统SkuId" align="center" prop="goodsSkuId" />
+
+      <el-table-column label="数量" align="center" prop="quantity" />
+      <el-table-column label="订单金额" align="center" prop="orderAmount" :formatter="amountFormatter"/>
+      <el-table-column label="退款金额" align="center" prop="refundAmount" :formatter="amountFormatter"/>
+<!--      <el-table-column label="物流单号" align="center" prop="logisticsCode" />-->
+<!--      <el-table-column label="收货时间" align="center" prop="receiveTime" width="180">-->
+<!--        <template slot-scope="scope">-->
+<!--          <span>{{ parseTime(scope.row.receiveTime, '{y}-{m}-{d}') }}</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+      <el-table-column label="退款理由" align="center" prop="refundReason" />
+      <el-table-column label="是否发货" align="center" prop="shippingStatus" >
+        <template slot-scope="scope">
+          <el-tag style="margin-top: 5px" size="small" v-if="scope.row.shippingStatus === 0">未发货</el-tag>
+          <el-tag style="margin-top: 5px" size="small" v-else>已发货</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="售后更新时间" align="center" prop="refundUpdated" width="180"></el-table-column>
+      <el-table-column label="退回物流" align="center" prop="returnLogisticsCode" width="180"></el-table-column>
+<!--      <el-table-column label="售后状态" align="center" prop="platformStatusText" width="180"></el-table-column>-->
+      <el-table-column label="状态" align="center" prop="status" >
+        <template slot-scope="scope">
+
+          <el-tag size="small" type="info">{{scope.row.platformStatusText}}</el-tag>
+          <br/>
+          <el-tag size="small" type="danger" v-if="scope.row.status === 0"> 待处理</el-tag>
+          <el-tag size="small" v-if="scope.row.status === 1"> 处理中</el-tag>
+          <el-tag size="small" v-if="scope.row.status === 2"> 已处理</el-tag>
+
+<!--          <el-tag type="info" style="margin-top: 5px" size="small" v-if="scope.row.hasProcessing === 1"> 已处理</el-tag>-->
+<!--          <el-tag type="danger" style="margin-top: 5px" size="small" v-if="scope.row.hasProcessing === 0"> 待处理</el-tag>-->
+<!--          <br />-->
+<!--          <el-tag style="margin-bottom: 6px;" v-if="scope.row.erpPushStatus === 200">已推送到ERP</el-tag>-->
+<!--          <el-tag type="danger" style="margin-bottom: 6px;" v-if="!scope.row.erpPushStatus || scope.row.erpPushStatus === 0">待推送到ERP</el-tag>-->
+<!--          <el-tag type="danger" style="margin-bottom: 6px;" v-if="scope.row.erpPushStatus > 200">推送错误</el-tag>-->
+<!--          <div style="margin-bottom: 6px;color:red" v-if="scope.row.erpPushStatus > 200">{{scope.row.erpPushResult}}</div>-->
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button style="padding-right: 6px;padding-left: 6px"
+                     :loading="pullLoading"
+                     size="mini"
+                     type="text"
+                     icon="el-icon-refresh"
+                     @click="handlePullUpdate(scope.row)"
+          >更新状态</el-button>
+          <el-button style="padding-left: 10px;padding-right: 10px;"
+            type="primary"
+            plain
+            icon="el-icon-refresh"
+            size="mini"
+            @click="handleRefundProcessing(scope.row)"
+          >处理售后</el-button>
+          <el-button
+           v-if="(scope.row.refundType === 10 || scope.row.refundType === 20) && scope.row.status === 10005"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['api:returned:edit']"
+          >确认收货</el-button>
+          <el-button
+            v-if="(scope.row.refundType === 20 || scope.row.refundType === 80)"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['api:returned:edit']"
+          >补发商品</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
+
+    <!-- 添加或修改退换货对话框 -->
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+        <el-form-item label="是否已发货" prop="hasGoodsSend">
+          <el-select v-model="form.hasGoodsSend" placeholder="是否已发货" clearable>
+            <el-option label="未发货" value="0"></el-option>
+            <el-option label="已发货" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="处理方式" prop="type">
+          <el-select v-model="form.type" placeholder="售后处理方式" clearable @change="handleTypeChange">
+            <el-option label="无需处理" value="0"></el-option>
+            <el-option label="退货" value="10"></el-option>
+            <el-option label="换货" value="20"></el-option>
+            <el-option label="补发" value="80"></el-option>
+            <el-option label="订单拦截" value="99"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="源订单号" prop="orderNum">
+          <el-input v-model="form.orderNum" placeholder="请输入源订单号" />
+        </el-form-item>
+        <el-form-item label="发货单号" prop="sendLogisticsCode">
+          <el-input v-model="form.sendLogisticsCode" placeholder="发货单号" />
+        </el-form-item>
+        <el-form-item label="退回物流单号" prop="returnLogisticsCode">
+          <el-input v-model="form.returnLogisticsCode" placeholder="退回物流单号" />
+        </el-form-item>
+        <el-form-item label="补发/换货单号" prop="reissueLogisticsCode">
+          <el-input v-model="form.reissueLogisticsCode" placeholder="补发/换货单号" />
+        </el-form-item>
+        <el-form-item label="收件人" prop="receiverName">
+          <el-input v-model="form.receiverName" placeholder="收件人" />
+        </el-form-item>
+        <el-form-item label="收件手机号" prop="receiverTel">
+          <el-input v-model="form.receiverTel" placeholder="收件手机号" />
+        </el-form-item>
+        <el-form-item label="收件地址" prop="receiverAddress">
+          <el-input v-model="form.receiverAddress" placeholder="收件地址" />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input type="textarea" v-model="form.remark" placeholder="请输入备注" />
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="下载店铺售后" :visible.sync="pullOpen" width="500px" append-to-body :close-on-click-modal="false">
+      <el-form ref="pullForm" :model="pullForm" :rules="pullRules" label-width="120px">
+        <el-form-item label="店铺" prop="shopId">
+          <el-select v-model="pullForm.shopId" placeholder="请选择店铺" clearable >
+            <el-option
+              v-for="item in shopList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+              <span style="float: left">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 500">微信小店</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 200">京东POP</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 280">京东自营</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 100">淘宝天猫</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 300">拼多多</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"  v-if="item.type === 400">抖店</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="售后更新时间" prop="createTime">
+          <el-date-picker clearable
+                          v-model="pullForm.createTime" value-format="yyyy-MM-dd"
+                          type="date"
+                          range-separator="至"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handlePull" :loading="pullLoading">下载店铺售后</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import {
+  listReturned,
+  getReturned,
+  refundProcessing
+} from "@/api/refund/refund";
+import {listShop} from "@/api/shop/shop";
+import {pullRefund, pullRefundUpdate} from "@/api/shop/refund";
+import {MessageBox} from "element-ui";
+import {isRelogin} from "@/utils/request";
+
+export default {
+  name: "Returned",
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      shopList:[],
+      // 非单个禁用
+      single: true,
+      pullLoading: false,
+      pullOpen: false,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 总条数
+      total: 0,
+      // 退换货表格数据
+      returnedList: [],
+      // 弹出层标题
+      title: "",
+      // 是否显示弹出层
+      open: false,
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        refundNum: null,
+        refundType: null,
+        orderNum: null,
+        shopId: null,
+        shopType: null,
+        hasProcessing: '0',
+        status: null,
+      },
+      pullForm:{
+
+      },
+      pullRules: {
+        shopId: [{ required: true, message: "请选择店铺", trigger: "blur" }],
+        createTime: [{ required: true, message: "请选择售后创建日期", trigger: "blur" }],
+      },
+      // 表单参数
+      form: {
+        refundId:undefined,
+        hasGoodsSend:undefined,
+        type:undefined,
+        orderNum:undefined,
+        sendLogisticsCode:undefined,
+        returnLogisticsCode:undefined,
+        reissueLogisticsCode:undefined,
+        remark:undefined,
+        receiverName:undefined,
+        receiverTel:undefined,
+        receiverAddress:undefined,
+      },
+      // 表单校验
+      rules: {
+        hasGoodsSend: [{ required: true, message: "请选择是否发货", trigger: "blur" }],
+        type: [{ required: true, message: "请选择处理方式", trigger: "blur" }],
+        orderNum: [{ required: true, message: "源订单号不能为空", trigger: "blur" }],
+      },
+
+    };
+  },
+  created() {
+    listShop({}).then(response => {
+      this.shopList = response.rows;
+      this.getList();
+    });
+
+  },
+  methods: {
+    amountFormatter(row, column, cellValue, index) {
+      return '￥' + cellValue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    },
+    /** 查询退换货列表 */
+    getList() {
+      this.loading = true;
+      listReturned(this.queryParams).then(response => {
+        this.returnedList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
+    },
+    // 取消按钮
+    cancel() {
+      this.open = false;
+      this.pullLoading = false
+      this.pullOpen = false;
+      this.reset();
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        refundId: null,
+        hasGoodsSend: null,
+        type: null,
+        orderNum: null,
+        sendLogisticsCode: null,
+        returnLogisticsCode: null,
+        reissueLogisticsCode: null,
+        remark: null
+      };
+      this.resetForm("form");
+    },
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.pullLoading = false
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.resetForm("queryForm");
+      this.handleQuery();
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length!==1
+      this.multiple = !selection.length
+    },
+    handlePullOpen() {
+      this.pullOpen = true
+    },
+    handlePullUpdate(row){
+      pullRefundUpdate({refundId:row.id}).then(resp=>{
+          if (resp.code === 200) {
+            this.getList()
+            this.$modal.msgSuccess("更新成功")
+          }else{
+            this.$modal.msgError(resp.msg)
+          }
+      })
+    },
+    handlePull() {
+      this.$refs["pullForm"].validate(valid => {
+        if (valid) {
+          this.pullLoading = true
+          pullRefund(this.pullForm).then(response => {
+            console.log('拉取淘宝订单接口返回=====', response)
+            if (response.code === 1401) {
+              MessageBox.confirm('Token已过期，需要重新授权！请前往店铺列表重新获取授权！', '系统提示', {
+                confirmButtonText: '前往授权',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$router.push({path: "/shop/shop_list", query: {type: 4}})
+                // isRelogin.show = false;
+                // store.dispatch('LogOut').then(() => {
+                // location.href = response.data.tokenRequestUrl+'?shopId='+this.queryParams.shopId
+                // })
+              }).catch(() => {
+                isRelogin.show = false;
+              });
+
+              // return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+            } else {
+              this.pullOpen = false
+              this.$modal.msgSuccess(JSON.stringify(response));
+              this.getList()
+            }
+            this.pullLoading = false
+          })
+        }
+      })
+    },
+    /** 处理方式选择*/
+    handleTypeChange(){
+
+    },
+    submitForm(){
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          refundProcessing(this.form).then(response => {
+            console.log('======返回====',response)
+            this.$modal.msgSuccess("处理成功！");
+            this.open = false
+            this.getList()
+          });
+        }
+      })
+    },
+    /** 售后处理*/
+    handleRefundProcessing(row) {
+      this.open = true
+      this.form.refundId = row.id
+      this.form.orderNum = row.orderNum
+      this.form.returnLogisticsCode = row.returnLogisticsCode
+    },
+  }
+};
+</script>

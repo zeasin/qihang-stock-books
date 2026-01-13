@@ -25,6 +25,7 @@
             <result property="skuName" column="sku_name" jdbcType="VARCHAR"/>
             <result property="goodsImage" column="goods_image" jdbcType="VARCHAR"/>
             <result property="quantity" column="quantity" jdbcType="BIGINT"/>
+            <result property="shippingStatus" column="shipping_status" jdbcType="INTEGER"/>
             <result property="userShippingStatus" column="user_shipping_status" jdbcType="VARCHAR"/>
             <result property="returnLogisticsCompany" column="return_logistics_company" jdbcType="VARCHAR"/>
             <result property="returnLogisticsCode" column="return_logistics_code" jdbcType="VARCHAR"/>
@@ -46,7 +47,7 @@
 
     <sql id="Base_Column_List">
         id,refund_num,refund_type,refund_amount,order_amount,refund_reason,
-        shop_id,shop_type,order_num,user_shipping_status,
+        shop_id,shop_type,order_num,user_shipping_status,shipping_status,
         order_item_num,sku_id,sku_name,sku_num,goods_name,goods_image,quantity,
           goods_id,goods_sku_id,order_id,order_item_id,has_good_return,platform_status,platform_status_text,
         return_logistics_company,return_logistics_code,receive_time,refund_created,refund_updated,order_time,
