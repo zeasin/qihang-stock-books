@@ -108,12 +108,12 @@
 <!--          <span>{{ shopList.find(x=>x.id === scope.row.shopId).name  }}</span>-->
 <!--        </template>-->
 <!--      </el-table-column>-->
-      <el-table-column label="图片" align="center" prop="goodsImage" width="60">
+      <el-table-column label="图片" align="center" prop="productImage" width="60">
         <template slot-scope="scope">
-          <image-preview :src="scope.row.goodsImage" :width="50" :height="50"/>
+          <image-preview :src="scope.row.productImage" :width="50" :height="50"/>
         </template>
       </el-table-column>
-      <el-table-column label="商品名" align="left" prop="goodsName" width="280"/>
+      <el-table-column label="商品名" align="left" prop="productName" width="280"/>
       <el-table-column label="规格" align="left" prop="skuName" width="150"/>
 
 
