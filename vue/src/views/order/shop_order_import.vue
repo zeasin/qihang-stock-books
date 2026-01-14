@@ -55,13 +55,14 @@
       <el-table-column label="规格" align="center" prop="goodsSpec" />
       <el-table-column label="SkuId" align="center" prop="skuId" />
       <el-table-column label="规格编码" align="center" prop="skuNum" />
-      <el-table-column label="价格" align="center" prop="goodsPrice" :formatter="amountFormatter"/>
+      <el-table-column label="价格" align="center" prop="goodsAmount" :formatter="amountFormatter"/>
+      <el-table-column label="订单备注" align="center" prop="remark" />
       <el-table-column label="订单状态" align="center" prop="orderStatusText" />
       <el-table-column label="退款状态" align="center" prop="refundStatusText" />
-      <el-table-column label="发货快递" align="center" prop="goodsNum" />
-      <el-table-column label="下单时间" align="center" prop="pullTime" >
+      <el-table-column label="发货快递" align="center" prop="expressCode" />
+      <el-table-column label="下单时间" align="center" prop="orderTime" >
         <template slot-scope="scope">
-          {{ parseTime(scope.row.subOrderNum) }}
+          {{ parseTime(scope.row.orderTime) }}
         </template>
       </el-table-column>
 
@@ -148,7 +149,7 @@ export default {
       this.pullLoading = false
       this.queryParams.shopId = this.form.shopId
       this.queryParams.pageNum = 1;
-      this.getList();
+      // this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
@@ -158,7 +159,7 @@ export default {
     },
     handlePull() {
         this.pullLoading = true
-      importOrder({shopId:this.queryParams.shopId,createTime:this.form.createTime}).then(response => {
+      importOrder({shopId:this.form.shopId,itemList:this.lists,orderNums:this.ids}).then(response => {
           console.log('导入店铺订单接口返回=====',response)
           this.pullLoading = false
         })

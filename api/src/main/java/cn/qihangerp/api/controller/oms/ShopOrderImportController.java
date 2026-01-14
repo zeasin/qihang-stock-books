@@ -8,6 +8,8 @@ import cn.qihangerp.model.entity.OGoodsSku;
 import cn.qihangerp.model.entity.OOrder;
 import cn.qihangerp.model.entity.OOrderItem;
 import cn.qihangerp.model.entity.OShop;
+import cn.qihangerp.model.request.OrderImportRequest;
+import cn.qihangerp.model.vo.OrderItemImportVo;
 import cn.qihangerp.service.service.OShopService;
 import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -78,32 +80,43 @@ public class ShopOrderImportController {
         file.transferTo(destFile);
 //        File csvFile = new File(destFileName);
 
-        List<OOrderItem> orderItemList = new ArrayList<>();
+        List<OrderItemImportVo> orderItemList = new ArrayList<>();
         if (shop.getType().intValue() == EnumShopType.PDD.getIndex()) {
             // 读取CSV
             List<LinkedHashMap<String, String>> data = CSVReaderWithApacheCommons.readCSVToMap(destFile);
-            // 打印数据
+            // 组合数据
             for (LinkedHashMap<String, String> row : data) {
-                OOrderItem orderItem = new OOrderItem();
+                OrderItemImportVo orderItem = new OrderItemImportVo();
                 Map.Entry<String, String> firstEntry = row.entrySet().iterator().next();
                 orderItem.setGoodsTitle(firstEntry.getValue());
-//            for (String key : row.keySet()) {
-//                System.out.println(key + ":" + row.get(key));
-//                if(key.equals("商品")){
-//                    orderItem.setGoodsTitle(row.get(key));
-//                }
-//            }
-                System.out.println(row);
-
-                orderItem.setOrderNum(row.get("订单号"));
-                orderItem.setSkuId(row.get("样式ID"));
+                String orderSn = row.get("订单号");
+                String skuId = row.get("样式ID");
+                orderItem.setOrderNum(orderSn);
+                orderItem.setSubOrderNum(orderSn+"-"+skuId);
                 orderItem.setOrderStatusText(row.get("订单状态"));
                 orderItem.setRefundStatusText(row.get("售后状态"));
-                orderItem.setGoodsPrice(Double.parseDouble(row.get("商品总价(元)")));
-                orderItem.setSubOrderNum(row.get("订单成交时间"));
+                orderItem.setOrderTime(row.get("订单成交时间"));
+
+                orderItem.setGoodsId(row.get("商品id"));
+                orderItem.setSkuId(skuId);
                 orderItem.setSkuNum(row.get("商家编码-规格维度"));
                 orderItem.setGoodsSpec(row.get("商品规格"));
-                orderItem.setGoodsNum(row.get("快递单号"));
+
+                orderItem.setGoodsAmount(Double.parseDouble(row.get("商品总价(元)")));
+                orderItem.setPostAmount(Double.parseDouble(row.get("邮费(元)")));
+                orderItem.setSellerDiscount(Double.parseDouble(row.get("店铺优惠折扣(元)")));
+                orderItem.setPlatformDiscount(Double.parseDouble(row.get("平台优惠折扣(元)")));
+                orderItem.setPaymentDiscount(Double.parseDouble(row.get("多多支付立减金额(元)")));
+                orderItem.setPayment(Double.parseDouble(row.get("用户实付金额(元)")));
+                orderItem.setSellerAmount(Double.parseDouble(row.get("商家实收金额(元)")));
+                orderItem.setRemark(row.get("商家备注"));
+
+                orderItem.setQuantity(Integer.parseInt(row.get("商品数量(件)")));
+
+                orderItem.setShipTime(row.get("发货时间"));
+                orderItem.setDeliveryTime(row.get("确认收货时间"));
+                orderItem.setExpressCompany(row.get("快递公司"));
+                orderItem.setExpressCode(row.get("快递单号"));
                 orderItemList.add(orderItem);
             }
             return AjaxResult.success(orderItemList);
@@ -140,7 +153,7 @@ public class ShopOrderImportController {
                     for (int i = 1; i <= lastRowNum; i++) {
                         row = sheet.getRow(i);
                         //数据
-                        OOrderItem orderItem = new OOrderItem();
+                        OrderItemImportVo orderItem = new OrderItemImportVo();
 
                         String orderSn = row.getCell(1).getStringCellValue().replace("\t", "");
                         String goodsName = row.getCell(0).getStringCellValue().replace("\t", "");
@@ -175,7 +188,8 @@ public class ShopOrderImportController {
 
 
     @RequestMapping(value = "/order_import", method = RequestMethod.POST)
-    public AjaxResult orderImport() {
+    public AjaxResult orderImport(@RequestBody OrderImportRequest request) {
+        log.info("========订单导入：{}",JSON.toJSONString(request));
         return AjaxResult.success();
     }
 }
