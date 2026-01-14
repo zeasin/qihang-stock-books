@@ -98,6 +98,7 @@ public class ShopOrderImportController {
                 orderItem.setOrderNum(row.get("订单号"));
                 orderItem.setSkuId(row.get("样式ID"));
                 orderItem.setOrderStatusText(row.get("订单状态"));
+                orderItem.setRefundStatusText(row.get("售后状态"));
                 orderItem.setGoodsPrice(Double.parseDouble(row.get("商品总价(元)")));
                 orderItem.setSubOrderNum(row.get("订单成交时间"));
                 orderItem.setSkuNum(row.get("商家编码-规格维度"));

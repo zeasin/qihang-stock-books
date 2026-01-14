@@ -56,8 +56,9 @@
       <el-table-column label="SkuId" align="center" prop="skuId" />
       <el-table-column label="规格编码" align="center" prop="skuNum" />
       <el-table-column label="价格" align="center" prop="goodsPrice" :formatter="amountFormatter"/>
+      <el-table-column label="订单状态" align="center" prop="orderStatusText" />
+      <el-table-column label="退款状态" align="center" prop="refundStatusText" />
       <el-table-column label="发货快递" align="center" prop="goodsNum" />
-
       <el-table-column label="下单时间" align="center" prop="pullTime" >
         <template slot-scope="scope">
           {{ parseTime(scope.row.subOrderNum) }}

@@ -125,6 +125,8 @@ public class OOrderItem implements Serializable {
      * 售后状态 1：无售后或售后关闭，2：售后处理中，3：退款中，4： 退款成功 
      */
     private Integer refundStatus;
+    @TableField(exist = false)
+    private String refundStatusText;
 
     /**
      * 订单状态1：待发货，2：已发货，3：已完成，11已取消；21待付款
