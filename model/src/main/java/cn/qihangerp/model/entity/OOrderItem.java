@@ -130,6 +130,8 @@ public class OOrderItem implements Serializable {
      * 订单状态1：待发货，2：已发货，3：已完成，11已取消；21待付款
      */
     private Integer orderStatus;
+    @TableField(exist = false)
+    private String orderStatusText;
 
     //发货方
     private Long shipper;

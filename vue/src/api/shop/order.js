@@ -16,3 +16,11 @@ export function pullOrderDetail(data) {
     data: data
   })
 }
+
+export function importOrder(data) {
+  return request({
+    url: '/shop/order/order_import',
+    method: 'post',
+    data: data
+  })
+}
