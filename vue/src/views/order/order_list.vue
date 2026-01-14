@@ -85,17 +85,14 @@
         @click="handlePull"
       >API下载订单</el-button>
       </el-col>
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          :loading="pushLoading"-->
-<!--          type="primary"-->
-<!--          plain-->
-<!--          icon="el-icon-refresh"-->
-<!--          size="mini"-->
-<!--          :disabled="multiple"-->
-<!--          @click="handlePushErp"-->
-<!--        >手动将选中订单推送到ERP</el-button>-->
-<!--      </el-col>-->
+      <el-col :span="1.5">
+        <el-button
+          plain
+          icon="el-icon-refresh"
+          size="mini"
+          @click="handleImport"
+        >批量导入订单</el-button>
+      </el-col>
 <!--      <el-col :span="1.5">-->
 <!--        <el-button-->
 <!--          type="warning"-->
@@ -573,7 +570,10 @@ export default {
       this.$router.push('/sales/order_create');
     },
     handlePull() {
-      this.$router.push('/sales/order_pull');
+      this.$router.push('/sales/shop_order_pull');
+    },
+    handleImport() {
+      this.$router.push('/sales/shop_order_import');
     },
     /** 查询店铺订单列表 */
     getList() {
