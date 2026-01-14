@@ -685,11 +685,19 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
             order.setServiceFee(0.0);
             order.setCreateTime(new Date());
             order.setCreateBy("Excel导入");
-            this.baseMapper.insert(order);
-            for(OOrderItem oOrderItem : orderItemList){
-                oOrderItem.setOrderId(order.getId());
-                oOrderItem.setCreateTime(new Date());
-                orderItemMapper.insert(oOrderItem);
+            List<OOrder> oOrders = this.baseMapper.selectList(new LambdaQueryWrapper<OOrder>()
+                    .eq(OOrder::getOrderNum, order.getOrderNum())
+                    .eq(OOrder::getShopId, order.getShopId()));
+            if(oOrders==null ||oOrders.isEmpty()){
+                this.baseMapper.insert(order);
+                for(OOrderItem oOrderItem : orderItemList){
+                    oOrderItem.setOrderId(order.getId());
+                    oOrderItem.setCreateTime(new Date());
+                    orderItemMapper.insert(oOrderItem);
+                }
+                log.info("===========新增订单成功");
+            }else{
+                log.info("===========订单已存在，不操作");
             }
         }
 
