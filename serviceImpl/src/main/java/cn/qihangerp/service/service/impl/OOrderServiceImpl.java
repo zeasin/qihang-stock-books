@@ -8,8 +8,6 @@ import cn.qihangerp.model.vo.OrderItemImportVo;
 import cn.qihangerp.service.mapper.OGoodsMapper;
 import cn.qihangerp.service.mapper.OGoodsSkuMapper;
 import cn.qihangerp.service.mapper.OGoodsSupplierMapper;
-import cn.qihangerp.model.bo.OrderAllocateShipRequest;
-import cn.qihangerp.model.bo.OrderShipRequest;
 import cn.qihangerp.model.vo.OrderDiscountVo;
 import cn.qihangerp.model.vo.SalesDailyVo;
 import cn.qihangerp.service.mapper.*;
@@ -21,11 +19,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.qihangerp.common.PageQuery;
 import cn.qihangerp.common.PageResult;
 import cn.qihangerp.common.ResultVo;
-import cn.qihangerp.common.ResultVoEnum;
 import cn.qihangerp.common.enums.EnumShopType;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -245,7 +241,7 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
 
         // 更新子订单order_status字段值
         OOrderItem itemUpdate = new OOrderItem();
-        itemUpdate.setOrderStatus(11);
+//        itemUpdate.setOrderStatus(11);
         itemUpdate.setUpdateBy(update.getUpdateBy());
         itemUpdate.setUpdateTime(new Date());
         orderItemMapper.update(itemUpdate, new LambdaQueryWrapper<OOrderItem>().eq(OOrderItem::getOrderId, id));
@@ -516,12 +512,12 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
             outItem.setSourceOrderNum(item.getOrderNum());
             outItem.setSourceSubOrderNum(item.getSubOrderNum());
             outItem.setGoodsId(item.getGoodsId());
-            outItem.setGoodsTitle(item.getGoodsTitle());
-            outItem.setGoodsImg(item.getGoodsImg());
+            outItem.setGoodsTitle(item.getProductTitle());
+            outItem.setGoodsImg(item.getProductImage());
             outItem.setGoodsNum(item.getGoodsNum());
             outItem.setGoodsSkuId(item.getGoodsSkuId());
             outItem.setSkuCode(item.getSkuNum());
-            outItem.setSkuName(item.getGoodsSpec());
+            outItem.setSkuName(item.getSkuName());
             outItem.setQuantity(item.getQuantity());
             outItem.setOutQuantity(0);
             outItem.setStatus(0);
@@ -624,20 +620,76 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
             }else{
                 order.setRefundStatus(4);
             }
+            order.setOrderCreated(orderItemVoList.get(0).getOrderTime());
+            order.setOrderUpdated(orderItemVoList.get(0).getOrderTime());
+            order.setOrderPayTime(orderItemVoList.get(0).getOrderTime());
+            order.setOrderFinishTime(orderItemVoList.get(0).getDeliveryTime());
 
             String remark = "";
+            Double goodsAmount = 0.0;
+            Double changeAmount = 0.0;
+            Double postFee = 0.0;
+            Double sellerDiscount = 0.0;
+            Double platformDiscount = 0.0;
+            Double amount = 0.0;
+            Double paymentAmount = 0.0;
             List<OOrderItem> orderItemList = new ArrayList<>();
             // 处理每个订单项
             for (OrderItemImportVo item : orderItemVoList) {
                 if(StringUtils.hasText(item.getRemark())){
                     remark+=item.getRemark()+",";
                 }
+                goodsAmount+=item.getGoodsAmount();
+                changeAmount+=0.0;
+                postFee+=item.getPostAmount();
+                sellerDiscount+=item.getSellerDiscount();
+                platformDiscount+=item.getPlatformDiscount();
+                amount+=item.getItemAmount();
+                paymentAmount+=item.getPayment();
+
                 OOrderItem oOrderItem = new OOrderItem();
                 oOrderItem.setSubOrderNum(item.getSubOrderNum());
                 oOrderItem.setOrderNum(item.getOrderNum());
-                System.out.println("  - 产品: " + item.getGoodsId()
-                        + ", 数量: " + item.getQuantity()
-                        + ", 金额: " + item.getGoodsAmount());
+                oOrderItem.setProductId(item.getGoodsId());
+                oOrderItem.setProductTitle(item.getGoodsTitle());
+                oOrderItem.setGoodsNum(item.getGoodsNum());
+                oOrderItem.setSkuId(item.getSkuId());
+                oOrderItem.setSkuNum(item.getSkuNum());
+                oOrderItem.setSkuName(item.getGoodsSpec());
+                oOrderItem.setPrice(item.getGoodsAmount()/item.getQuantity());
+                oOrderItem.setItemAmount(item.getItemAmount());
+                oOrderItem.setSellerDiscount(item.getSellerDiscount());
+                oOrderItem.setPlatformDiscount(item.getPlatformDiscount());
+                oOrderItem.setChangeAmount(0.0);
+                oOrderItem.setPayment(item.getPayment());
+                oOrderItem.setQuantity(item.getQuantity());
+                oOrderItem.setRemark(item.getRemark());
+                if(item.getRefundStatusText().equals("无售后或售后取消")) {
+                    oOrderItem.setRefundStatus(1);
+                    oOrderItem.setRefundCount(0);
+                }else{
+                    oOrderItem.setRefundStatus(4);
+                    oOrderItem.setRefundCount(item.getQuantity());
+                }
+                orderItemList.add(oOrderItem);
+            }
+            // 插入数据库
+            order.setBuyerMemo(remark);
+            order.setGoodsAmount(goodsAmount);
+            order.setChangeAmount(changeAmount);
+            order.setPostFee(postFee);
+            order.setSellerDiscount(sellerDiscount);
+            order.setPlatformDiscount(platformDiscount);
+            order.setAmount(amount);
+            order.setPayment(paymentAmount);
+            order.setServiceFee(0.0);
+            order.setCreateTime(new Date());
+            order.setCreateBy("Excel导入");
+            this.baseMapper.insert(order);
+            for(OOrderItem oOrderItem : orderItemList){
+                oOrderItem.setOrderId(order.getId());
+                oOrderItem.setCreateTime(new Date());
+                orderItemMapper.insert(oOrderItem);
             }
         }
 

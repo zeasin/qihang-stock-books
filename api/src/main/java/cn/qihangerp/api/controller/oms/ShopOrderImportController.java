@@ -104,6 +104,7 @@ public class ShopOrderImportController {
                 orderItem.setSkuId(skuId);
                 orderItem.setSkuNum(row.get("商家编码-规格维度"));
                 orderItem.setGoodsSpec(row.get("商品规格"));
+                orderItem.setGoodsNum(row.get("商家编码-商品维度"));
 
                 orderItem.setGoodsAmount(Double.parseDouble(row.get("商品总价(元)")));
                 orderItem.setPostAmount(Double.parseDouble(row.get("邮费(元)")));

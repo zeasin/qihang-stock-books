@@ -191,7 +191,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
                 //has_good_return
                 refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);
                 if (StringUtils.isEmpty(refund.getSkuName())) {
-                    refund.setSkuName(oOrderItems.get(0).getGoodsSpec());
+                    refund.setSkuName(oOrderItems.get(0).getSkuName());
                 }
             } else {
                 refund.setOrderId(0L);
@@ -211,7 +211,7 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
                 refund.setGoodsId(oOrderItems.get(0).getGoodsId());
                 refund.setGoodsSkuId(oOrderItems.get(0).getGoodsSkuId());
                 if (StringUtils.isEmpty(refund.getSkuName())) {
-                    refund.setSkuName(oOrderItems.get(0).getGoodsSpec());
+                    refund.setSkuName(oOrderItems.get(0).getSkuName());
                 }
                 //has_good_return
                 refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);

@@ -13,6 +13,7 @@ public class OrderItemImportVo {
     private Integer shopId;
 
     private String goodsImg;
+    private String goodsNum;
     private String goodsTitle;
     private String goodsSpec;
 

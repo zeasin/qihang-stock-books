@@ -3,19 +3,16 @@ package cn.qihangerp.api.common;
 import cn.qihangerp.model.entity.OOrder;
 import cn.qihangerp.model.entity.OOrderItem;
 import cn.qihangerp.open.jd.response.JdOrderListResponse;
-import cn.qihangerp.open.pdd.model.Order;
 import cn.qihangerp.open.pdd.model.OrderItem;
 import cn.qihangerp.open.tao.response.TaoOrderListResponse;
 import com.alibaba.fastjson2.JSONObject;
 import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ShopOrderTransform {
@@ -115,13 +112,14 @@ public class ShopOrderTransform {
                 item.setOrderNum(shopOrder.getOrderNum());
                 item.setSubOrderNum(line.getOid());
                 item.setSkuId(line.getSku_id());
-                item.setGoodsTitle(line.getTitle());
-                item.setGoodsImg(line.getPic_path());
+                item.setProductId(line.getNum_iid()+"");
+                item.setProductTitle(line.getTitle());
+                item.setProductImage(line.getPic_path());
                 item.setGoodsNum("");
-                item.setGoodsSpec(line.getSku_properties_name());
+                item.setSkuName(line.getSku_properties_name());
                 item.setSkuNum(line.getOuter_sku_id());
 
-                item.setGoodsPrice(Double.parseDouble(line.getPrice()));
+                item.setPrice(Double.parseDouble(line.getPrice()));
                 item.setItemAmount(Double.parseDouble(line.getTotal_fee()));
                 item.setPayment(Double.parseDouble(line.getPayment()));
                 item.setChangeAmount(Double.parseDouble(line.getAdjust_fee()));
@@ -133,7 +131,7 @@ public class ShopOrderTransform {
                 item.setQuantity(line.getNum());
                 item.setRefundCount(0);
                 item.setRefundStatus(1);
-                item.setOrderStatus(shopOrder.getOrderStatus());
+//                item.setOrderStatus(shopOrder.getOrderStatus());
                 itemList.add(item);
             }
         }
@@ -199,14 +197,15 @@ public class ShopOrderTransform {
                 OOrderItem item = new OOrderItem();
                 item.setOrderNum(shopOrder.getOrderNum());
                 item.setSubOrderNum(shopOrder.getOrderNum()+"-"+line.getSkuId());
+                item.setProductId(line.getWareId());
                 item.setSkuId(line.getSkuId());
-                item.setGoodsTitle(line.getSkuName());
-                item.setGoodsImg("");
+                item.setProductTitle(line.getSkuName());
+                item.setProductImage("");
                 item.setGoodsNum("");
-                item.setGoodsSpec("");
-                item.setGoodsPrice(Double.parseDouble(line.getJdPrice()));
+                item.setSkuName("");
+                item.setPrice(Double.parseDouble(line.getJdPrice()));
                 item.setSkuNum(line.getOuterSkuId());
-                item.setItemAmount(item.getGoodsPrice()* Double.parseDouble(line.getItemTotal()));
+                item.setItemAmount(item.getPrice()* Double.parseDouble(line.getItemTotal()));
                 item.setChangeAmount(0.0);
                 item.setSellerDiscount(0.0);
                 item.setPlatformDiscount(0.0);
@@ -214,7 +213,7 @@ public class ShopOrderTransform {
                 item.setQuantity(Integer.parseInt(line.getItemTotal()));
                 item.setRefundCount(0);
                 item.setRefundStatus(1);
-                item.setOrderStatus(shopOrder.getOrderStatus());
+//                item.setOrderStatus(shopOrder.getOrderStatus());
                 itemList.add(item);
             }
         }
@@ -303,14 +302,15 @@ public class ShopOrderTransform {
                 OOrderItem item = new OOrderItem();
                 item.setOrderNum(line.getParentOrderId());
                 item.setSubOrderNum(line.getOrderId());
+                item.setProductId(line.getProductIdStr());
                 item.setSkuId(line.getSkuId()+"");
-                item.setGoodsTitle(line.getProductName());
-                item.setGoodsImg(line.getProductPic());
+                item.setProductTitle(line.getProductName());
+                item.setProductImage(line.getProductPic());
                 item.setGoodsNum(line.getOutProductId());
-                item.setGoodsSpec(JSONObject.toJSONString(line.getSpec()));
+                item.setSkuName(JSONObject.toJSONString(line.getSpec()));
                 item.setSkuNum(line.getOutSkuId());
 
-                item.setGoodsPrice(line.getGoodsPrice().doubleValue()/100);
+                item.setPrice(line.getGoodsPrice().doubleValue()/100);
                 item.setItemAmount( line.getOrderAmount().doubleValue()/100);
                 item.setPayment(line.getPayAmount().doubleValue()/100);
                 item.setSellerDiscount(line.getPromotionShopAmount().doubleValue()/100);
@@ -326,7 +326,7 @@ public class ShopOrderTransform {
                     item.setRefundCount(0);
                     item.setRefundStatus(1);
                 }
-                item.setOrderStatus(line.getOrderStatus());
+//                item.setOrderStatus(line.getOrderStatus());
 
                 itemList.add(item);
             }
@@ -386,12 +386,13 @@ public class ShopOrderTransform {
                 OOrderItem item = new OOrderItem();
                 item.setOrderNum(shopOrder.getOrderNum());
                 item.setSubOrderNum(shopOrder.getOrderNum()+"-"+line.getSkuId());
+                item.setProductId(line.getGoodsId()+"");
                 item.setSkuId(line.getSkuId()+"");
-                item.setGoodsTitle(line.getGoodsName());
-                item.setGoodsImg(line.getGoodsImg());
+                item.setProductTitle(line.getGoodsName());
+                item.setProductImage(line.getGoodsImg());
                 item.setGoodsNum(line.getOuterGoodsId());
-                item.setGoodsSpec(line.getGoodsSpec());
-                item.setGoodsPrice(line.getGoodsPrice());
+                item.setSkuName(line.getGoodsSpec());
+                item.setPrice(line.getGoodsPrice());
                 item.setSkuNum(line.getOuterId());
                 item.setItemAmount(shopOrder.getAmount());
                 item.setSellerDiscount(shopOrder.getSellerDiscount());
@@ -405,7 +406,7 @@ public class ShopOrderTransform {
                 }else {
                     item.setRefundStatus(line.getGoodsCount());
                 }
-                item.setOrderStatus(order.getOrderStatus());
+//                item.setOrderStatus(order.getOrderStatus());
 
                 itemList.add(item);
             }
@@ -498,14 +499,15 @@ public class ShopOrderTransform {
                 OOrderItem item = new OOrderItem();
                 item.setOrderNum(shopOrder.getOrderNum());
                 item.setSubOrderNum(shopOrder.getOrderNum()+"-"+line.getSku_id());
+                item.setProductId(line.getProduct_id());
                 item.setSkuId(line.getSku_id());
-                item.setGoodsTitle(line.getTitle());
-                item.setGoodsImg(line.getThumb_img());
+                item.setProductTitle(line.getTitle());
+                item.setProductImage(line.getThumb_img());
                 item.setGoodsNum(line.getOut_product_id());
-                item.setGoodsSpec(JSONObject.toJSONString(line.getSku_attrs()));
+                item.setSkuName(JSONObject.toJSONString(line.getSku_attrs()));
                 item.setSkuNum(line.getOut_sku_id());
                 // 价格
-                item.setGoodsPrice(line.getSale_price().doubleValue()/100);
+                item.setPrice(line.getSale_price().doubleValue()/100);
                 item.setItemAmount(line.getReal_price().doubleValue()/100);
                 if(line.getChange_price()==null){
                     line.setChange_price(0);
@@ -519,7 +521,7 @@ public class ShopOrderTransform {
                 item.setQuantity(line.getSku_cnt());
                 item.setRefundCount(0);
                 item.setRefundStatus(1);
-                item.setOrderStatus(shopOrder.getOrderStatus());
+//                item.setOrderStatus(shopOrder.getOrderStatus());
                 itemList.add(item);
             }
         }
