@@ -21,7 +21,9 @@
             <result property="skuNum" column="sku_num" jdbcType="VARCHAR"/>
             <result property="goodsPrice" column="goods_price" jdbcType="DOUBLE"/>
             <result property="itemAmount" column="item_amount" jdbcType="DOUBLE"/>
-            <result property="discountAmount" column="discount_amount" jdbcType="DOUBLE"/>
+            <result property="sellerDiscount" column="seller_discount" jdbcType="DOUBLE"/>
+            <result property="platformDiscount" column="platform_discount" jdbcType="DOUBLE"/>
+            <result property="changeAmount" column="change_amount" jdbcType="DOUBLE"/>
             <result property="payment" column="payment" jdbcType="DOUBLE"/>
             <result property="quantity" column="quantity" jdbcType="INTEGER"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
@@ -43,7 +45,7 @@
         sku_id,goods_id,goods_sku_id,
         goods_title,goods_img,goods_num,
         goods_spec,sku_num,goods_price,
-        item_amount,discount_amount,payment,
+        item_amount,seller_discount,platform_discount,change_amount,payment,
         quantity,remark,refund_count,
         refund_status,order_status,shipper,
         ship_type,ship_status,create_time,

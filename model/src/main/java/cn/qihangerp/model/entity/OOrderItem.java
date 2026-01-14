@@ -97,14 +97,24 @@ public class OOrderItem implements Serializable {
     private Double itemAmount;
 
     /**
-     * 子订单优惠金额
+     * 商家优惠金额，单位：元
      */
-    private Double discountAmount;
+    private Double sellerDiscount;
+
+    /**
+     * 平台优惠金额，单位：元
+     */
+    private Double platformDiscount;
 
     /**
      * 实际支付金额
      */
     private Double payment;
+
+    /**
+     * 订单改价金额
+     */
+    private Double changeAmount;
 
     /**
      * 商品数量

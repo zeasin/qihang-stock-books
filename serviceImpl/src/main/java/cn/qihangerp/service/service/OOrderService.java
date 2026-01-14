@@ -5,6 +5,7 @@ import cn.qihangerp.model.entity.OOrder;
 import cn.qihangerp.model.entity.OOrderItem;
 import cn.qihangerp.model.bo.OrderAllocateShipRequest;
 import cn.qihangerp.model.bo.OrderShipRequest;
+import cn.qihangerp.model.request.OrderImportRequest;
 import cn.qihangerp.model.vo.SalesDailyVo;
 import cn.qihangerp.model.request.OrderSearchRequest;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -71,4 +72,6 @@ public interface OOrderService extends IService<OOrder> {
      * @return
      */
     ResultVo<Long> generateStockOutEntryByShipOrderId(Long shipOrderId);
+
+    ResultVo<Long> importOrder(OrderImportRequest request);
 }

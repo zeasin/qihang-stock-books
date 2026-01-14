@@ -119,11 +119,17 @@ public class ShopOrderTransform {
                 item.setGoodsImg(line.getPic_path());
                 item.setGoodsNum("");
                 item.setGoodsSpec(line.getSku_properties_name());
-                item.setGoodsPrice(Double.parseDouble(line.getPrice()));
                 item.setSkuNum(line.getOuter_sku_id());
+
+                item.setGoodsPrice(Double.parseDouble(line.getPrice()));
                 item.setItemAmount(Double.parseDouble(line.getTotal_fee()));
-                item.setDiscountAmount(0.0);
-                item.setPayment(item.getItemAmount());
+                item.setPayment(Double.parseDouble(line.getPayment()));
+                item.setChangeAmount(Double.parseDouble(line.getAdjust_fee()));
+                Double discount = Double.parseDouble(line.getDiscount_fee());
+                Double mjDiscount = Double.parseDouble(line.getPart_mjz_discount());
+                item.setSellerDiscount(mjDiscount);
+                item.setPlatformDiscount(discount-mjDiscount);
+
                 item.setQuantity(line.getNum());
                 item.setRefundCount(0);
                 item.setRefundStatus(1);
@@ -186,8 +192,6 @@ public class ShopOrderTransform {
         shopOrder.setCity(order.getConsigneeInfo().getCity());
         shopOrder.setTown(order.getConsigneeInfo().getTown());
 
-
-
         // 订单明细
         List<OOrderItem> itemList = new ArrayList<>();
         if (order.getItemInfoList() != null) {
@@ -203,7 +207,9 @@ public class ShopOrderTransform {
                 item.setGoodsPrice(Double.parseDouble(line.getJdPrice()));
                 item.setSkuNum(line.getOuterSkuId());
                 item.setItemAmount(item.getGoodsPrice()* Double.parseDouble(line.getItemTotal()));
-                item.setDiscountAmount(0.0);
+                item.setChangeAmount(0.0);
+                item.setSellerDiscount(0.0);
+                item.setPlatformDiscount(0.0);
                 item.setPayment(item.getItemAmount());
                 item.setQuantity(Integer.parseInt(line.getItemTotal()));
                 item.setRefundCount(0);
@@ -301,16 +307,16 @@ public class ShopOrderTransform {
                 item.setGoodsTitle(line.getProductName());
                 item.setGoodsImg(line.getProductPic());
                 item.setGoodsNum(line.getOutProductId());
-//                item.setGoodsSpec(line.getSpec());
-                Integer price = line.getGoodsPrice();
-                item.setGoodsPrice(price.doubleValue()/100);
+                item.setGoodsSpec(JSONObject.toJSONString(line.getSpec()));
                 item.setSkuNum(line.getOutSkuId());
-                Integer itemAmount =  line.getOrderAmount();
-                item.setItemAmount(itemAmount.doubleValue()/100);
-                Integer promotionAmount =line.getPromotionAmount();
-                item.setDiscountAmount(promotionAmount.doubleValue()/100);
-                Integer payment = line.getPayAmount();
-                item.setPayment(payment.doubleValue()/100);
+
+                item.setGoodsPrice(line.getGoodsPrice().doubleValue()/100);
+                item.setItemAmount( line.getOrderAmount().doubleValue()/100);
+                item.setPayment(line.getPayAmount().doubleValue()/100);
+                item.setSellerDiscount(line.getPromotionShopAmount().doubleValue()/100);
+                item.setPlatformDiscount(line.getPromotionShopAmount().doubleValue()/100);
+                item.setChangeAmount(line.getModifyAmount().doubleValue()/100);
+
                 item.setQuantity(line.getItemNum());
                 //主流程状态，1 待确认/待支付（订单创建完毕）103 部分支付105 已支付2 备货中101 部分发货3 已发货（全部发货）4 已取消5 已完成（已收货）21 发货前退款完结22 发货后退款完结39 收货后退款完结
                 if(line.getMainStatus() == 4 || line.getMainStatus() == 21 || line.getMainStatus() == 22 || line.getMainStatus() == 39){
@@ -361,7 +367,7 @@ public class ShopOrderTransform {
         shopOrder.setPlatformDiscount(order.getPlatformDiscount());
         shopOrder.setPayment(order.getPayAmount());
         shopOrder.setServiceFee(0.0);
-        shopOrder.setAmount(shopOrder.getPayment() - shopOrder.getServiceFee());
+        shopOrder.setAmount(shopOrder.getGoodsAmount());
         // 收货地址
         shopOrder.setProvince(order.getProvince());
         shopOrder.setCity(order.getCity());
@@ -387,9 +393,11 @@ public class ShopOrderTransform {
                 item.setGoodsSpec(line.getGoodsSpec());
                 item.setGoodsPrice(line.getGoodsPrice());
                 item.setSkuNum(line.getOuterId());
-                item.setItemAmount(line.getGoodsPrice()*line.getGoodsCount());
-                item.setDiscountAmount(0.0);
-                item.setPayment(item.getItemAmount());
+                item.setItemAmount(shopOrder.getAmount());
+                item.setSellerDiscount(shopOrder.getSellerDiscount());
+                item.setPlatformDiscount(shopOrder.getPlatformDiscount());
+                item.setChangeAmount(shopOrder.getChangeAmount());
+                item.setPayment(shopOrder.getPayment());
                 item.setQuantity(line.getGoodsCount());
                 item.setRefundStatus(order.getRefundStatus());
                 if(order.getRefundStatus()==1){
@@ -495,10 +503,18 @@ public class ShopOrderTransform {
                 item.setGoodsImg(line.getThumb_img());
                 item.setGoodsNum(line.getOut_product_id());
                 item.setGoodsSpec(JSONObject.toJSONString(line.getSku_attrs()));
-                item.setGoodsPrice(line.getReal_price().doubleValue()/100);
                 item.setSkuNum(line.getOut_sku_id());
-                item.setItemAmount(line.getSale_price().doubleValue()/100);
-                item.setDiscountAmount(line.getChange_price().doubleValue()/100);
+                // 价格
+                item.setGoodsPrice(line.getSale_price().doubleValue()/100);
+                item.setItemAmount(line.getReal_price().doubleValue()/100);
+                if(line.getChange_price()==null){
+                    line.setChange_price(0);
+                }
+                Integer changeAmount = line.getSale_price() * line.getSku_cnt() - line.getChange_price();
+                item.setChangeAmount(changeAmount.doubleValue()/100);
+                item.setSellerDiscount(line.getMerchant_discounted_price().doubleValue()/100);
+                item.setPlatformDiscount(0.0);
+
                 item.setPayment(item.getItemAmount());
                 item.setQuantity(line.getSku_cnt());
                 item.setRefundCount(0);

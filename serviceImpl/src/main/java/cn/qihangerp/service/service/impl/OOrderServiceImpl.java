@@ -3,6 +3,8 @@ package cn.qihangerp.service.service.impl;
 import cn.qihangerp.common.enums.EnumStockOutType;
 import cn.qihangerp.common.utils.DateUtils;
 import cn.qihangerp.model.entity.*;
+import cn.qihangerp.model.request.OrderImportRequest;
+import cn.qihangerp.model.vo.OrderItemImportVo;
 import cn.qihangerp.service.mapper.OGoodsMapper;
 import cn.qihangerp.service.mapper.OGoodsSkuMapper;
 import cn.qihangerp.service.mapper.OGoodsSupplierMapper;
@@ -33,6 +35,7 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
 * @author qilip
@@ -58,7 +61,7 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
     private final OShipmentMapper shipmentMapper;
     private final OShipmentItemMapper shipmentItemMapper;
 
-    private final OLogisticsCompanyMapper oLogisticsCompanyMapper;
+    private final OShopMapper oShopMapper;
 
 
     private final ErpStockOutMapper outMapper;
@@ -565,6 +568,79 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
         orderUpdate.setUpdateTime(new Date());
         orderUpdate.setUpdateBy("生成出库单");
         orderMapper.updateById(orderUpdate);
+        return ResultVo.success();
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public ResultVo<Long> importOrder(OrderImportRequest request) {
+        if(request.getShopId()==null) return ResultVo.error("缺少参数：shopId");
+        if(request.getOrderNums()==null||request.getOrderNums().length==0){
+            return ResultVo.error("没有选择订单");
+        }
+        if(request.getItemList()==null||request.getItemList().isEmpty()){
+            return ResultVo.error("没有订单数据");
+        }
+        OShop oShop = oShopMapper.selectById(request.getShopId());
+        if(oShop==null){
+            return ResultVo.error("没有找到店铺");
+        }
+        Set<String> orderNumSet = new HashSet<>(Arrays.asList(request.getOrderNums()));
+        // 组合订单item
+        List<OrderItemImportVo> newItemList = request.getItemList().stream()
+                .filter(item -> item != null && item.getOrderNum() != null)
+                .filter(item -> orderNumSet.contains(item.getOrderNum()))
+                .collect(Collectors.toList());
+
+        // 合并订单
+        Map<String, List<OrderItemImportVo>> grouped = newItemList.stream()
+                .filter(Objects::nonNull)
+                .filter(item -> item.getOrderNum() != null)
+                .collect(Collectors.groupingBy(OrderItemImportVo::getOrderNum));
+
+        for (Map.Entry<String, List<OrderItemImportVo>> entry : grouped.entrySet()) {
+            String orderNum = entry.getKey();
+            OOrder order = new OOrder();
+            order.setShopId(oShop.getId());
+            order.setShopType(oShop.getType());
+            order.setOrderNum(orderNum);
+
+            List<OrderItemImportVo> orderItemVoList = entry.getValue();
+
+            order.setPlatformOrderStatusText(orderItemVoList.get(0).getOrderStatusText());
+            if(order.getPlatformOrderStatusText().indexOf("已发货")>-1){
+                order.setPlatformOrderStatus("2");
+                order.setOrderStatus(2);
+            }else if(order.getPlatformOrderStatusText().indexOf("待发货")>-1){
+                order.setPlatformOrderStatus("1");
+                order.setOrderStatus(1);
+            }else if(order.getPlatformOrderStatusText().indexOf("已签收")>-1){
+                order.setPlatformOrderStatus("3");
+                order.setOrderStatus(3);
+            }
+            if(orderItemVoList.get(0).getRefundStatusText().equals("无售后或售后取消")){
+                order.setRefundStatus(1);
+            }else{
+                order.setRefundStatus(4);
+            }
+
+            String remark = "";
+            List<OOrderItem> orderItemList = new ArrayList<>();
+            // 处理每个订单项
+            for (OrderItemImportVo item : orderItemVoList) {
+                if(StringUtils.hasText(item.getRemark())){
+                    remark+=item.getRemark()+",";
+                }
+                OOrderItem oOrderItem = new OOrderItem();
+                oOrderItem.setSubOrderNum(item.getSubOrderNum());
+                oOrderItem.setOrderNum(item.getOrderNum());
+                System.out.println("  - 产品: " + item.getGoodsId()
+                        + ", 数量: " + item.getQuantity()
+                        + ", 金额: " + item.getGoodsAmount());
+            }
+        }
+
         return ResultVo.success();
     }
 }

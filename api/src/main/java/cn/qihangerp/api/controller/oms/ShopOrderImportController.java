@@ -2,6 +2,7 @@ package cn.qihangerp.api.controller.oms;
 
 import cn.qihangerp.api.request.PddTokenCreateBo;
 import cn.qihangerp.common.AjaxResult;
+import cn.qihangerp.common.ResultVo;
 import cn.qihangerp.common.csv.CSVReaderWithApacheCommons;
 import cn.qihangerp.common.enums.EnumShopType;
 import cn.qihangerp.model.entity.OGoodsSku;
@@ -10,6 +11,7 @@ import cn.qihangerp.model.entity.OOrderItem;
 import cn.qihangerp.model.entity.OShop;
 import cn.qihangerp.model.request.OrderImportRequest;
 import cn.qihangerp.model.vo.OrderItemImportVo;
+import cn.qihangerp.service.service.OOrderService;
 import cn.qihangerp.service.service.OShopService;
 import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -39,6 +41,7 @@ import java.util.*;
 @RestController
 public class ShopOrderImportController {
     private final OShopService shopService;
+    private final OOrderService orderService;
 
     /**
      * 订单导入
@@ -190,6 +193,9 @@ public class ShopOrderImportController {
     @RequestMapping(value = "/order_import", method = RequestMethod.POST)
     public AjaxResult orderImport(@RequestBody OrderImportRequest request) {
         log.info("========订单导入：{}",JSON.toJSONString(request));
-        return AjaxResult.success();
+        ResultVo<Long> resultVo = orderService.importOrder(request);
+        if(resultVo.getCode()==0)
+            return AjaxResult.success();
+        else return AjaxResult.error(resultVo.getMsg());
     }
 }
