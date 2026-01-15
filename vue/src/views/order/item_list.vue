@@ -71,23 +71,22 @@
 
     <el-table v-loading="loading" :data="orderList" @selection-change="handleSelectionChange">
 <!--      <el-table-column type="selection" width="55" align="center" />-->
-      <el-table-column label="子订单编号" align="center" prop="subOrderNum" />
-      <el-table-column label="订单编号" align="center" prop="orderNum" />
-      <el-table-column label="店铺" align="center" prop="shopId" >
+      <el-table-column label="子订单编号" align="left" prop="subOrderNum" width="180px"/>
+      <el-table-column label="订单编号" align="center" prop="orderNum" width="200px"/>
+      <el-table-column label="店铺" align="center" prop="shopId" width="160px">
         <template slot-scope="scope">
           <el-tag type="info">{{ shopList.find(x=>x.id === scope.row.shopId) ? shopList.find(x=>x.id === scope.row.shopId).name : '' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="图片"  prop="goodsImg" width="50px">
+      <el-table-column label="图片"  prop="productImage" width="50px">
         <template slot-scope="scope">
-<!--              <el-image style="width: 70px; height: 70px;" :src="scope.row.goodsImg"></el-image>-->
-          <el-image  style="width: 40px; height: 40px;" :src="scope.row.goodsImg" :preview-src-list="[scope.row.goodsImg]"></el-image>
+          <el-image  style="width: 40px; height: 40px;" :src="scope.row.productImage" :preview-src-list="[scope.row.productImage]"></el-image>
         </template>
       </el-table-column>
-      <el-table-column label="商品名" align="center" prop="goodsTitle" width="250px"/>
-      <el-table-column label="SKU名" align="center" prop="goodsSpec" />
+      <el-table-column label="商品名" align="left" prop="productTitle" width="350px"/>
+      <el-table-column label="SKU名" align="center" prop="skuName" width="180px"/>
 <!--      <el-table-column label="Sku编码" align="center" prop="skuNum" />-->
-      <el-table-column label="平台SkuId" align="center" prop="skuId" />
+      <el-table-column label="平台SkuId" align="center" prop="skuId" width="180px"/>
       <el-table-column label="系统 SkuId" align="center" prop="goodsSkuId" />
 <!--      <el-table-column label="外部ERP SkuId" align="center" prop="outerErpSkuId" />-->
       <el-table-column label="子订单金额" align="center" prop="itemAmount" :formatter="amountFormatter"/>
