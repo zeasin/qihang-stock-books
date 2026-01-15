@@ -3,9 +3,9 @@
 
     <panel-group :chart-data="report" @handleSetLineChartData="handleSetLineChartData" />
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData" />
-    </el-row>
+<!--    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">-->
+<!--      <line-chart :chart-data="lineChartData" />-->
+<!--    </el-row>-->
 <!--    <el-row>-->
 <!--      <el-table-->
 <!--        :data="tableData"-->
@@ -32,11 +32,11 @@
 <!--          <raddar-chart />-->
 <!--        </div>-->
 <!--      </el-col>-->
-      <el-col :xs="24" :sm="24" :lg="24">
-        <div class="chart-wrapper">
-          <pie-chart :chart-data="skuTopData" />
-        </div>
-      </el-col>
+<!--      <el-col :xs="24" :sm="24" :lg="24">-->
+<!--        <div class="chart-wrapper">-->
+<!--          <pie-chart :chart-data="skuTopData" />-->
+<!--        </div>-->
+<!--      </el-col>-->
 <!--      <el-col :xs="24" :sm="24" :lg="12">-->
 <!--        <div class="chart-wrapper">-->
 <!--          <bar-chart />-->
