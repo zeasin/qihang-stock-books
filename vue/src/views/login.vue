@@ -119,7 +119,7 @@
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 import { getCodeImg } from "@/api/login";
-import {getConfig} from "@/api/system/config";
+
 export default {
   name: "Login",
   data() {
@@ -189,13 +189,9 @@ export default {
     }
   },
   created() {
-    getConfig('sys.name').then(resp=>{
-      if(resp.data){
-        this.title = resp.data.configValue
-      }
-    })
     this.getCode();
     this.getCookie();
+    this.title = process.env.VUE_APP_TITLE;
   },
   directives: {
     move(el, binding, vnode) {

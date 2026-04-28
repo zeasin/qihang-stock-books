@@ -1,7 +1,7 @@
 {
-  "name": "qihang-wms",
-  "version": "2.1.1",
-  "description": "启航电商WMS系统",
+  "name": "qihang-stock-books",
+  "version": "1.1.1",
+  "description": "启航店铺账本-电商进销存管家",
   "author": "qihang",
   "license": "AGPL-3.0",
   "scripts": {
