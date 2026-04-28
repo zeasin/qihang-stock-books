@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>cn.qihangerp</groupId>
-  <artifactId>qihang-wms</artifactId>
-  <version>2.0.1</version>
+  <artifactId>stock-books</artifactId>
+  <version>1.0.1</version>
   <packaging>pom</packaging>
 
-  <name>qihang-wms</name>
-  <url>http://maven.apache.org</url>
+  <name>qihang-stock-books</name>
+  <url>https://github.com/zeasin/qihang-stock-books.git</url>
   <modules>
     <module>core</module>
     <module>api</module>
