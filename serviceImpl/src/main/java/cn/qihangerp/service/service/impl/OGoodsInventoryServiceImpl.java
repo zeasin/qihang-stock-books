@@ -3,7 +3,7 @@ package cn.qihangerp.service.service.impl;
 import cn.qihangerp.common.PageQuery;
 import cn.qihangerp.common.PageResult;
 import cn.qihangerp.model.entity.OGoodsInventory;
-import cn.qihangerp.service.mapper.OGoodsInventoryMapper;
+import cn.qihangerp.mapper.OGoodsInventoryMapper;
 import cn.qihangerp.service.service.OGoodsInventoryService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

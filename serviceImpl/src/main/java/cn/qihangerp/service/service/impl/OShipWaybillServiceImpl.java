@@ -1,7 +1,7 @@
 package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.model.entity.OShipWaybill;
-import cn.qihangerp.service.mapper.OShipWaybillMapper;
+import cn.qihangerp.mapper.OShipWaybillMapper;
 import cn.qihangerp.service.service.OShipWaybillService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 

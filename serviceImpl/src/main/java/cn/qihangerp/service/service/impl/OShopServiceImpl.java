@@ -2,7 +2,7 @@ package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.common.enums.EnumShopType;
 import cn.qihangerp.model.entity.OShop;
-import cn.qihangerp.service.mapper.OShopMapper;
+import cn.qihangerp.mapper.OShopMapper;
 import cn.qihangerp.service.service.OShopService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -42,8 +42,6 @@ public class OShopServiceImpl extends ServiceImpl<OShopMapper, OShop>
 
     @Override
     public int insertShop(OShop shop) {
-        shop.setModifyOn(System.currentTimeMillis()/1000);
-        shop.setCreateOn(System.currentTimeMillis()/1000);
         shop.setApiStatus(0);
         return mapper.insert(shop);
     }

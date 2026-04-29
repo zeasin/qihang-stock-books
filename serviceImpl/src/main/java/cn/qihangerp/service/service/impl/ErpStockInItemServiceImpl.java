@@ -1,7 +1,7 @@
 package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.model.entity.ErpStockInItem;
-import cn.qihangerp.service.mapper.ErpStockInItemMapper;
+import cn.qihangerp.mapper.ErpStockInItemMapper;
 import cn.qihangerp.service.service.ErpStockInItemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 

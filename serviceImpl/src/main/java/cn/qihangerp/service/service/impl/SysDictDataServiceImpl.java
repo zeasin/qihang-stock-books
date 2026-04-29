@@ -2,7 +2,7 @@ package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.model.entity.SysDictData;
 import cn.qihangerp.service.DictUtils;
-import cn.qihangerp.service.mapper.SysDictDataMapper;
+import cn.qihangerp.mapper.SysDictDataMapper;
 import cn.qihangerp.service.service.ISysDictDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

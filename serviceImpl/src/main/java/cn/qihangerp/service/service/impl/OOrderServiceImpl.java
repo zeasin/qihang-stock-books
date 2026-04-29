@@ -2,15 +2,12 @@ package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.common.enums.EnumStockOutType;
 import cn.qihangerp.common.utils.DateUtils;
+import cn.qihangerp.mapper.*;
 import cn.qihangerp.model.entity.*;
 import cn.qihangerp.model.request.OrderImportRequest;
 import cn.qihangerp.model.vo.OrderItemImportVo;
-import cn.qihangerp.service.mapper.OGoodsMapper;
-import cn.qihangerp.service.mapper.OGoodsSkuMapper;
-import cn.qihangerp.service.mapper.OGoodsSupplierMapper;
 import cn.qihangerp.model.vo.OrderDiscountVo;
 import cn.qihangerp.model.vo.SalesDailyVo;
-import cn.qihangerp.service.mapper.*;
 import cn.qihangerp.service.service.OOrderService;
 import cn.qihangerp.model.request.OrderSearchRequest;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -95,8 +92,8 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
                 .eq(bo.getShopId()!=null,OOrder::getShopId,bo.getShopId())
                 .eq(org.springframework.util.StringUtils.hasText(bo.getOrderNum()),OOrder::getOrderNum,bo.getOrderNum())
                 .eq(bo.getOrderStatus()!=null,OOrder::getOrderStatus,bo.getOrderStatus())
-                .ge(org.springframework.util.StringUtils.hasText(bo.getStartTime()),OOrder::getOrderCreated,bo.getStartTime()+" 00:00:00")
-                .le(org.springframework.util.StringUtils.hasText(bo.getEndTime()),OOrder::getOrderCreated,bo.getEndTime()+" 23:59:59")
+                .ge(org.springframework.util.StringUtils.hasText(bo.getStartTime()),OOrder::getOrderTime,bo.getStartTime()+" 00:00:00")
+                .le(org.springframework.util.StringUtils.hasText(bo.getEndTime()),OOrder::getOrderTime,bo.getEndTime()+" 23:59:59")
 
 //                .eq(org.springframework.util.StringUtils.hasText(bo.getReceiverName()),OOrder::getReceiverName,bo.getReceiverName())
 //                .like(org.springframework.util.StringUtils.hasText(bo.getReceiverMobile()),OOrder::getReceiverMobile,bo.getReceiverMobile())
@@ -140,11 +137,11 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
                 .eq(bo.getShopId()!=null,OOrder::getShopId,bo.getShopId())
                 .eq(bo.getShopType()!=null,OOrder::getShopType,bo.getShopType())
                 .eq(OOrder::getOrderStatus,1)
-                .eq(OOrder::getRefundStatus,1)
+//                .eq(OOrder::getRefundStatus,1)
                 .eq(OOrder::getShipStatus,0)//发货状态 0 待发货 1 已分配供应商发货 2全部发货
 //                .lt(ErpOrder::getShipType,2)//ship_type发货方式 0 自己发货1联合发货2供应商发货
-                .ge(org.springframework.util.StringUtils.hasText(bo.getStartTime()),OOrder::getOrderCreated,bo.getStartTime())
-                .le(org.springframework.util.StringUtils.hasText(bo.getEndTime()),OOrder::getOrderCreated,bo.getEndTime())
+                .ge(org.springframework.util.StringUtils.hasText(bo.getStartTime()),OOrder::getOrderTime,bo.getStartTime())
+                .le(org.springframework.util.StringUtils.hasText(bo.getEndTime()),OOrder::getOrderTime,bo.getEndTime())
                 .eq(org.springframework.util.StringUtils.hasText(bo.getOrderNum()),OOrder::getOrderNum,bo.getOrderNum())
                 ;
         Page<OOrder> pages = orderMapper.selectPage(pageQuery.build(), queryWrapper);
@@ -512,12 +509,12 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
             outItem.setSourceOrderNum(item.getOrderNum());
             outItem.setSourceSubOrderNum(item.getSubOrderNum());
             outItem.setGoodsId(item.getGoodsId());
-            outItem.setGoodsTitle(item.getProductTitle());
-            outItem.setGoodsImg(item.getProductImage());
+            outItem.setGoodsTitle(item.getGoodsTitle());
+            outItem.setGoodsImg(item.getGoodsImg());
             outItem.setGoodsNum(item.getGoodsNum());
             outItem.setGoodsSkuId(item.getGoodsSkuId());
             outItem.setSkuCode(item.getSkuNum());
-            outItem.setSkuName(item.getSkuName());
+//            outItem.setSkuName(item.getSkuName());
             outItem.setQuantity(item.getQuantity());
             outItem.setOutQuantity(0);
             outItem.setStatus(0);
@@ -604,26 +601,26 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
 
             List<OrderItemImportVo> orderItemVoList = entry.getValue();
 
-            order.setPlatformOrderStatusText(orderItemVoList.get(0).getOrderStatusText());
-            if(order.getPlatformOrderStatusText().indexOf("已发货")>-1){
-                order.setPlatformOrderStatus("2");
+            order.setPlatformStatusDesc(orderItemVoList.get(0).getOrderStatusText());
+            if(order.getPlatformStatusDesc().indexOf("已发货")>-1){
+                order.setPlatformStatusCode("2");
                 order.setOrderStatus(2);
-            }else if(order.getPlatformOrderStatusText().indexOf("待发货")>-1){
-                order.setPlatformOrderStatus("1");
+            }else if(order.getPlatformStatusDesc().indexOf("待发货")>-1){
+                order.setPlatformStatusCode("1");
                 order.setOrderStatus(1);
-            }else if(order.getPlatformOrderStatusText().indexOf("已签收")>-1){
-                order.setPlatformOrderStatus("3");
+            }else if(order.getPlatformStatusDesc().indexOf("已签收")>-1){
+                order.setPlatformStatusCode("3");
                 order.setOrderStatus(3);
             }
-            if(orderItemVoList.get(0).getRefundStatusText().equals("无售后或售后取消")){
-                order.setRefundStatus(1);
-            }else{
-                order.setRefundStatus(4);
-            }
-            order.setOrderCreated(orderItemVoList.get(0).getOrderTime());
-            order.setOrderUpdated(orderItemVoList.get(0).getOrderTime());
-            order.setOrderPayTime(orderItemVoList.get(0).getOrderTime());
-            order.setOrderFinishTime(orderItemVoList.get(0).getDeliveryTime());
+//            if(orderItemVoList.get(0).getRefundStatusText().equals("无售后或售后取消")){
+//                order.setRefundStatus(1);
+//            }else{
+//                order.setRefundStatus(4);
+//            }
+//            order.setOrderTime(orderItemVoList.get(0).getOrderTime());
+//            order.setOrderUpdated(orderItemVoList.get(0).getOrderTime());
+//            order.setOrderPayTime(orderItemVoList.get(0).getOrderTime());
+//            order.setOrderFinishTime(orderItemVoList.get(0).getDeliveryTime());
 
             String remark = "";
             Double goodsAmount = 0.0;
@@ -651,16 +648,16 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
                 oOrderItem.setSubOrderNum(item.getSubOrderNum());
                 oOrderItem.setOrderNum(item.getOrderNum());
                 oOrderItem.setProductId(item.getGoodsId());
-                oOrderItem.setProductTitle(item.getGoodsTitle());
+                oOrderItem.setGoodsTitle(item.getGoodsTitle());
                 oOrderItem.setGoodsNum(item.getGoodsNum());
                 oOrderItem.setSkuId(item.getSkuId());
                 oOrderItem.setSkuNum(item.getSkuNum());
-                oOrderItem.setSkuName(item.getGoodsSpec());
-                oOrderItem.setPrice(item.getGoodsAmount()/item.getQuantity());
+//                oOrderItem.setSkuName(item.getGoodsSpec());
+                oOrderItem.setGoodsPrice(item.getGoodsAmount()/item.getQuantity());
                 oOrderItem.setItemAmount(item.getItemAmount());
-                oOrderItem.setSellerDiscount(item.getSellerDiscount());
-                oOrderItem.setPlatformDiscount(item.getPlatformDiscount());
-                oOrderItem.setChangeAmount(0.0);
+                oOrderItem.setDiscountAmount(item.getSellerDiscount());
+//                oOrderItem.setPlatformDiscount(item.getPlatformDiscount());
+//                oOrderItem.setChangeAmount(0.0);
                 oOrderItem.setPayment(item.getPayment());
                 oOrderItem.setQuantity(item.getQuantity());
                 oOrderItem.setRemark(item.getRemark());
@@ -682,7 +679,7 @@ public class OOrderServiceImpl extends ServiceImpl<OOrderMapper, OOrder>
             order.setPlatformDiscount(platformDiscount);
             order.setAmount(amount);
             order.setPayment(paymentAmount);
-            order.setServiceFee(0.0);
+//            order.setServiceFee(0.0);
             order.setCreateTime(new Date());
             order.setCreateBy("Excel导入");
             List<OOrder> oOrders = this.baseMapper.selectList(new LambdaQueryWrapper<OOrder>()

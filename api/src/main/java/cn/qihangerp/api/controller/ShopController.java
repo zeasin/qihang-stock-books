@@ -55,7 +55,7 @@ public class ShopController extends BaseController {
     @PostMapping("/shop")
     public AjaxResult add(@RequestBody OShop shop)
     {
-        shop.setModifyOn(System.currentTimeMillis()/1000);
+
         return toAjax(shopService.insertShop(shop));
     }
 
@@ -67,7 +67,7 @@ public class ShopController extends BaseController {
     public AjaxResult edit(@RequestBody OShop shop)
     {
 //        if(shop.getId()==null) return AjaxResult.error("缺少参数：id");
-        shop.setModifyOn(System.currentTimeMillis() /1000);
+
         shopService.updateShopById(shop);
 //        try{
 //            erpPushHelper.shopSave(shopService.getById(shop.getId()));

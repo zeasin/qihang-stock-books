@@ -2,13 +2,12 @@ package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.common.PageQuery;
 import cn.qihangerp.common.PageResult;
-import cn.qihangerp.model.entity.ErpStockIn;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.qihangerp.model.entity.ErpStockInItemDetail;
 import cn.qihangerp.service.service.ErpStockInItemDetailService;
-import cn.qihangerp.service.mapper.ErpStockInItemDetailMapper;
+import cn.qihangerp.mapper.ErpStockInItemDetailMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 

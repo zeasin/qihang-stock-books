@@ -44,6 +44,7 @@ public class OrderItemListBo implements Serializable {
      * 商品规格编码
      */
     private String skuNum;
+    private Long merchantId;
 
     private Integer hasLink;//是否关联ERP商品
     private static final long serialVersionUID = 1L;

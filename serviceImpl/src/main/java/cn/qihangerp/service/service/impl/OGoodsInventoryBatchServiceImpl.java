@@ -1,7 +1,7 @@
 package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.model.entity.OGoodsInventoryBatch;
-import cn.qihangerp.service.mapper.OGoodsInventoryBatchMapper;
+import cn.qihangerp.mapper.OGoodsInventoryBatchMapper;
 import cn.qihangerp.service.service.OGoodsInventoryBatchService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

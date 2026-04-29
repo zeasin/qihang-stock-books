@@ -3,7 +3,7 @@ package cn.qihangerp.service.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.qihangerp.model.entity.OShipmentItem;
 import cn.qihangerp.service.service.ErpShipmentItemService;
-import cn.qihangerp.service.mapper.OShipmentItemMapper;
+import cn.qihangerp.mapper.OShipmentItemMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

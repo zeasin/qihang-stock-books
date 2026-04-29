@@ -3,7 +3,7 @@ package cn.qihangerp.service.service.impl;
 import cn.qihangerp.model.entity.ErpWarehouseStockTakeItem;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.qihangerp.service.service.ErpWarehouseStockTakeItemService;
-import cn.qihangerp.service.mapper.ErpWarehouseStockTakeItemMapper;
+import cn.qihangerp.mapper.ErpWarehouseStockTakeItemMapper;
 import org.springframework.stereotype.Service;
 
 /**

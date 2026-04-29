@@ -1,7 +1,7 @@
 package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.model.entity.OGoodsSkuAttr;
-import cn.qihangerp.service.mapper.OGoodsSkuAttrMapper;
+import cn.qihangerp.mapper.OGoodsSkuAttrMapper;
 import cn.qihangerp.service.service.OGoodsSkuAttrService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

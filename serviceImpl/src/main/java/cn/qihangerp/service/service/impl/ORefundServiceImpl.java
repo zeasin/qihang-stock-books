@@ -2,17 +2,17 @@ package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.common.*;
 import cn.qihangerp.model.entity.OGoodsSku;
-import cn.qihangerp.service.mapper.OGoodsSkuMapper;
+import cn.qihangerp.mapper.OGoodsSkuMapper;
 import cn.qihangerp.model.entity.OAfterSale;
 import cn.qihangerp.model.entity.OOrder;
 import cn.qihangerp.model.entity.OOrderItem;
 import cn.qihangerp.model.entity.ORefund;
 import cn.qihangerp.model.bo.RefundProcessingBo;
 import cn.qihangerp.model.bo.RefundSearchBo;
-import cn.qihangerp.service.mapper.OAfterSaleMapper;
-import cn.qihangerp.service.mapper.OOrderItemMapper;
-import cn.qihangerp.service.mapper.OOrderMapper;
-import cn.qihangerp.service.mapper.ORefundMapper;
+import cn.qihangerp.mapper.OAfterSaleMapper;
+import cn.qihangerp.mapper.OOrderItemMapper;
+import cn.qihangerp.mapper.OOrderMapper;
+import cn.qihangerp.mapper.ORefundMapper;
 import cn.qihangerp.service.service.ORefundService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -190,9 +190,9 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
                 refund.setGoodsSkuId(oOrderItems.get(0).getGoodsSkuId());
                 //has_good_return
                 refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);
-                if (StringUtils.isEmpty(refund.getSkuName())) {
-                    refund.setSkuName(oOrderItems.get(0).getSkuName());
-                }
+//                if (StringUtils.isEmpty(refund.getSkuName())) {
+//                    refund.setSkuName(oOrderItems.get(0).getSkuName());
+//                }
             } else {
                 refund.setOrderId(0L);
                 refund.setOrderItemId(0L);
@@ -210,9 +210,9 @@ public class ORefundServiceImpl extends ServiceImpl<ORefundMapper, ORefund>
                 refund.setOrderItemId(Long.parseLong(oOrderItems.get(0).getId()));
                 refund.setGoodsId(oOrderItems.get(0).getGoodsId());
                 refund.setGoodsSkuId(oOrderItems.get(0).getGoodsSkuId());
-                if (StringUtils.isEmpty(refund.getSkuName())) {
-                    refund.setSkuName(oOrderItems.get(0).getSkuName());
-                }
+//                if (StringUtils.isEmpty(refund.getSkuName())) {
+//                    refund.setSkuName(oOrderItems.get(0).getSkuName());
+//                }
                 //has_good_return
                 refund.setHasGoodReturn(oOrderItems.get(0).getShipStatus().intValue() == 0 ? 0 : 1);
             } else {

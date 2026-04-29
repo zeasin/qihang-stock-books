@@ -1,7 +1,7 @@
 package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.model.entity.SysConfig;
-import cn.qihangerp.service.mapper.SysConfigMapper;
+import cn.qihangerp.mapper.SysConfigMapper;
 import cn.qihangerp.service.service.SysConfigService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

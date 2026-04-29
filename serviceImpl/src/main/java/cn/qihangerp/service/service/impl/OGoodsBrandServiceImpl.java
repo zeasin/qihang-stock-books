@@ -1,7 +1,7 @@
 package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.model.entity.OGoodsBrand;
-import cn.qihangerp.service.mapper.OGoodsBrandMapper;
+import cn.qihangerp.mapper.OGoodsBrandMapper;
 import cn.qihangerp.service.service.OGoodsBrandService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

@@ -1,7 +1,7 @@
 package cn.qihangerp.service.service.impl;
 
 import cn.qihangerp.model.entity.OShopPullLogs;
-import cn.qihangerp.service.mapper.OShopPullLogsMapper;
+import cn.qihangerp.mapper.OShopPullLogsMapper;
 import cn.qihangerp.service.service.OShopPullLogsService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

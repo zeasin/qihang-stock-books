@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.qihangerp.service.mapper.SysDictTypeMapper">
+<mapper namespace="cn.qihangerp.mapper.SysDictTypeMapper">
 
 	<resultMap type="cn.qihangerp.model.entity.SysDictType" id="SysDictTypeResult">
 		<id     property="dictId"     column="dict_id"     />
