@@ -1,15 +1,19 @@
 package cn.qihangerp.api.controller.finance;
 
-import cn.qihangerp.api.domain.ErpBillShopOrder;
-import cn.qihangerp.api.domain.Shop;
-import cn.qihangerp.api.service.ErpBillShopOrderService;
-import cn.qihangerp.api.service.ShopService;
+import cn.qihangerp.api.common.ErpBillShopOrder;
+import cn.qihangerp.common.AjaxResult;
+import cn.qihangerp.common.PageQuery;
+import cn.qihangerp.common.TableDataInfo;
+import cn.qihangerp.model.entity.OShop;
+import cn.qihangerp.security.common.BaseController;
+import cn.qihangerp.service.service.OShopService;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,28 +27,30 @@ import java.util.*;
 @RestController
 @RequestMapping("/financial")
 public class OrderBillController extends BaseController {
-    private final ShopService shopService;
-    private final ErpBillShopOrderService erpBillShopOrderService;
+    private final OShopService shopService;
+//    private final ErpBillShopOrderService erpBillShopOrderService;
     /**
      * 查询订单账单
      */
     @GetMapping("/order_bill/list")
-    public TableDataInfo list(ErpBillShopOrder goods, PageQuery pageQuery)
+    public TableDataInfo list( PageQuery pageQuery)
     {
-        if(getUserId()!=1) {
-            goods.setTenantId(getUserId());
-        }
-        PageResult<ErpBillShopOrder> pageResult = erpBillShopOrderService.queryPageList(goods, pageQuery);
-        return getDataTable(pageResult);
+//        if(getUserId()!=1) {
+//            goods.setTenantId(getUserId());
+//        }
+//        PageResult<ErpBillShopOrder> pageResult = erpBillShopOrderService.queryPageList(goods, pageQuery);
+//        return getDataTable(pageResult);
+        return getDataTable(new ArrayList<>());
     }
 
     @DeleteMapping("/order_bill/del/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
-        if(getUserId()==1) {
-            return AjaxResult.error("超级管理员账号不允许操作");
-        }
-        return toAjax(erpBillShopOrderService.removeBatchByIds(Arrays.stream(ids).toList()));
+//        if(getUserId()==1) {
+//            return AjaxResult.error("超级管理员账号不允许操作");
+//        }
+//        return toAjax(erpBillShopOrderService.removeBatchByIds(Arrays.stream(ids).toList()));
+        return AjaxResult.error("暂不支持删除");
     }
 
     /**
@@ -56,7 +62,7 @@ public class OrderBillController extends BaseController {
      */
     @RequestMapping(value = "/order_bill/pdd_bill_import", method = RequestMethod.POST)
     public AjaxResult orderSendExcel(@RequestPart("file") MultipartFile file, @RequestParam Long shopId) throws IOException, InvalidFormatException {
-        Shop shop = shopService.getById(shopId);
+        OShop shop = shopService.getById(shopId);
         if(shop == null){
             return AjaxResult.error("店铺不存在");
         }
@@ -108,7 +114,7 @@ public class OrderBillController extends BaseController {
             ErpBillShopOrder bill = new ErpBillShopOrder();
             bill.setShopId(shopId);
             bill.setShopType(shop.getType());
-            bill.setTenantId(shop.getTenantId());
+            bill.setTenantId(0l);
             bill.setOrderId(row[0]);
             Integer type=null;
             Float amount=null;
@@ -128,7 +134,7 @@ public class OrderBillController extends BaseController {
             bill.setRemark(remark);
             bill.setDetail(detail);
             bill.setCreateTime(new Date());
-            erpBillShopOrderService.save(bill);
+//            erpBillShopOrderService.save(bill);
         }
         Map<String, Integer> result = new HashMap<>();
         result.put("success",0);

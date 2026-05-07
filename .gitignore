@@ -36,5 +36,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
+api/src/main/resources/application-*.yml
 import_order

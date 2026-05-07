@@ -6,7 +6,9 @@ spring:
     # 国际化资源文件路径
     basename: i18n/messages
   application:
-    name: qihang-wms
+    name: qihang-stock-books
+  profiles:
+    active: dev
   data:
     # redis 配置
     redis:

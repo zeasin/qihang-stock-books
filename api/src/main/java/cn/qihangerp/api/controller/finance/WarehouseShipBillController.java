@@ -1,12 +1,18 @@
 package cn.qihangerp.api.controller.finance;
 
-import cn.qihangerp.api.domain.ErpBillShipment;
-import cn.qihangerp.api.service.ErpBillShipmentService;
+
+import cn.qihangerp.api.common.ErpBillShipment;
+import cn.qihangerp.common.PageQuery;
+import cn.qihangerp.common.PageResult;
+import cn.qihangerp.common.TableDataInfo;
+import cn.qihangerp.security.common.BaseController;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
 
 /**
  * 仓库发货账单
@@ -16,18 +22,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/financial")
 public class WarehouseShipBillController extends BaseController {
-    private final ErpBillShipmentService erpBillShipmentService;
+//    private final ErpBillShipmentService erpBillShipmentService;
     /**
      * 发货费用账单
      */
     @GetMapping("/warehouse_ship_bill/list")
     public TableDataInfo list(ErpBillShipment goods, PageQuery pageQuery)
     {
-        if(getUserId()!=1) {
-            goods.setTenantId(getUserId());
-        }
-        PageResult<ErpBillShipment> pageResult = erpBillShipmentService.queryWarehousePageList(goods, pageQuery);
-        return getDataTable(pageResult);
+//        if(getUserId()!=1) {
+//            goods.setTenantId(getUserId());
+//        }
+//        PageResult<ErpBillShipment> pageResult = erpBillShipmentService.queryWarehousePageList(goods, pageQuery);
+//        return getDataTable(pageResult);
+        return getDataTable(new ArrayList<>());
     }
 
 //    @PostMapping("/supplier_ship_bill/confirmBillSettlement/{ids}")
