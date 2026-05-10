@@ -139,9 +139,7 @@ location /prod-api/ {
 
 👉 **[启航电商ERP商业版功能预览](https://gitee.com/qiliping/qihangerp-docs)**
 
-**了解更多？→**
-
-电话/微信：15818590119
+👉 **了解更多？→** 电话/微信：15818590119
 
 
 
