@@ -48,13 +48,14 @@
 
 ### 🚀 业务规模扩大，需要全自动同步？
 
-当您的店铺流水达到一定规模、申请到了官方 API (AppKey) 权限，或者需要处理千万级订单的并发自动化抓取时，欢迎升级至我们的旗舰级产品：
+当您的店铺流水达到一定规模、申请到了官方 API (AppKey) 权限，或者需要处理千万级订单的并发自动化抓取时，欢迎升级至：
 
-👉 **[启航电商 ERP — 开源版](https://gitee.com/qiliping/qihang-ecom-erp-open)**
+👉 **[启航电商ERP商业版](https://qihangerp.cn)**
 
 * **全自动集成**：通过 API 实现全渠道订单、商品、库存的实时自动同步，无需人工导入。
-* **高性能架构**：支持大并发处理与复杂的电商自动化流程。
+* **多平台对接**：已对接淘宝、京东、拼多多、抖音、快手、小红书等主流平台。
 * **AI-Native**：深度集成的 AI 接口协议，支持构建企业级 AI 电商助手。
+* **省心省力**：无需自建技术团队，即买即用，持续更新。
 
 ---
 
@@ -122,24 +123,45 @@ location /prod-api/ {
 
 ---
 
-## 🚀 支持与服务
+## 📦 启航电商开源生态
+
+启航电商旗下开源项目矩阵，所有项目共同指向统一商业版：
+
+| 项目 | 定位 | Gitee | GitHub |
+|:----|:----|:-----|:-------|
+| [启航电商ERP](https://gitee.com/qiliping/qihang-ecom-erp-open) | 电商业务中台底座（微服务） | [Gitee](https://gitee.com/qiliping/qihang-ecom-erp-open) | [GitHub](https://github.com/zeasin/qihang-ecom-erp-open) |
+| [OMS 订单中台](https://gitee.com/qiliping/qihang-oms) | 轻量级订单管理 | [Gitee](https://gitee.com/qiliping/qihang-oms) | [GitHub](https://github.com/zeasin/qihang-ecom-oms) |
+| **库存账簿 ⬅** | **极简进销存** | [Gitee](https://gitee.com/qiliping/qihang-stock-books) | [GitHub](https://github.com/zeasin/qihang-stock-books) |
+| [跨境ERP](https://gitee.com/qiliping/qihang-cb-erp) | 跨境电商 | [Gitee](https://gitee.com/qiliping/qihang-cb-erp) | [GitHub](https://github.com/zeasin/qihang-cb-erp) |
+| [SCM 供应链](https://gitee.com/qiliping/qihangerp-scm) | 多商户多供应商系统（已合并到商业版） | [Gitee](https://gitee.com/qiliping/qihangerp-scm) | [GitHub](https://github.com/zeasin/qihangerp-scm) |
+
+## 💼 商业版
+
+需要完整功能？→ [启航电商ERP商业版](https://qihangerp.cn)
+电话/微信：15818590119
+
+## 📱 关注我们
+
+|                   公众号：启航电商ERP                   |                   个人号：码农老齐                   |
+|:-----------------------------------------------:|:--------------------------------------------:|
+|                 产品动态·行业方案·客户案例                  |                技术实战·开源故事·创业心得                |
+| <img src="docs/wxmp_qherp.jpg" width="200px" /> | <img src="docs/wxmp_qi.jpg" width="200px" /> |
+
 
 **感谢关注！我希望将从事电商 10 余年的行业经验沉淀在代码中，帮助大家真正提升经营效率。**
 
 💖 如果项目对您有帮助，请点个 **Star ⭐** 给予鼓励！
 
-💖 **加入社群：** 欢迎关注微信公众号，获取最新行业动态，与数千位电商同仁交流架构与经营心得。
-
-<img src="docs/微信公众号.jpg" width="300px" />
 
 ---
 
 ### ☕ 捐助作者
 项目完全开源，利用业余时间高频迭代确实耗费了巨大的精力。如果这个项目帮您省下了雇佣财务或购买高价 SaaS 的费用，欢迎请作者吃个盒饭，您的支持是项目持续更新的动力！
 
-<img src="docs/微信收款码.jpg" width="300px" />
 
-<img src="docs/支付宝收款码.jpg" width="300px" />
-
+|                      微信支付                       |                     支付宝                      |
+|:-----------------------------------------------:|:--------------------------------------------:|
+|                   捐赠随意，捐赠进交流群                   |                捐赠随意，捐赠进交流群                |
+| <img src="docs/微信收款码.jpg" width="200px" /> | <img src="docs/支付宝收款码.jpg" width="200px" /> |
 
 
