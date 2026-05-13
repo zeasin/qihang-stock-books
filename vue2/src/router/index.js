@@ -77,24 +77,6 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/b2b/order_create',
-    component: () => import('@/views/help/index'),
-    hidden: true
-  },
-  {
-    path: '/help',
-    component: () => import('@/views/help/index'),
-    hidden: true
-  }, {
-    path: '/oauth/pdd_callback',
-    component: () => import('@/views/oauth/pdd_callback'),
-    hidden: true
-  }, {
-    path: '/oauth/weidian_callback',
-    component: () => import('@/views/oauth/weidian_callback'),
-    hidden: true
-  },
-  {
     path: '/user',
     component: Layout,
     hidden: true,
@@ -107,63 +89,7 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
-  },
-
-  // AI智能分析路由（隐藏菜单，通过浮动按钮访问）
-  {
-    path: '/ai',
-    component: Layout,
-    redirect: '/ai/analysis',
-    hidden: true,
-    children: [
-      {
-        path: 'analysis',
-        component: () => import('@/views/ai/analysis'),
-        name: 'AiAnalysis',
-        meta: { title: '智能分析' }
-      },
-      {
-        path: 'config',
-        component: () => import('@/views/ai/config'),
-        name: 'AiConfig',
-        meta: { title: 'AI配置' }
-      },
-      {
-        path: 'history/:id',
-        component: () => import('@/views/ai/history'),
-        name: 'AiHistoryDetail',
-        meta: { title: '报告详情' }
-      }
-    ]
-  },
-
-  // H5内销订单路由（隐藏，不显示在侧边栏）
-  {
-    path: '/h5',
-    component: () => import('@/views/common/H5Layout'),
-    hidden: true,
-    children: [
-      {
-        path: 'sales/create',
-        component: () => import('@/views/order/sales/h5/create'),
-        name: 'H5SalesCreate',
-        meta: { title: 'H5下单' }
-      },
-      {
-        path: 'sales/list',
-        component: () => import('@/views/order/sales/h5/list'),
-        name: 'H5SalesList',
-        meta: { title: 'H5订单' }
-      },
-      {
-        path: 'sales/detail/:id',
-        component: () => import('@/views/order/sales/h5/detail'),
-        name: 'H5SalesDetail',
-        meta: { title: 'H5订单详情' }
-      }
-    ]
   }
-
 ]
 
 // 动态路由，基于用户权限动态去加载

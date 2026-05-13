@@ -6,6 +6,7 @@ import cn.qihangerp.common.sys.SysRole;
 import cn.qihangerp.common.sys.SysUser;
 import cn.qihangerp.common.utils.StringUtils;
 import cn.qihangerp.common.sys.ISysUserService;
+import cn.qihangerp.common.vo.UserVo;
 import cn.qihangerp.model.entity.SysDept;
 import cn.qihangerp.model.entity.SysUserRole;
 import cn.qihangerp.service.service.ISysDeptService;
@@ -103,15 +104,17 @@ public class SysRoleController extends BaseController
             return error("修改角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
         role.setUpdateBy(getUsername());
-        
+
         if (roleService.updateRole(role) > 0)
         {
             // 更新缓存用户权限
             LoginUser loginUser = getLoginUser();
-            if (StringUtils.isNotNull(loginUser.getUser()) && !loginUser.getUser().isAdmin())
+            if (StringUtils.isNotNull(loginUser.getUser()) && loginUser.getUser().getUserId()==1)
             {
-                loginUser.setPermissions(permissionService.getMenuPermission(loginUser.getUser()));
-                loginUser.setUser(userService.selectUserByUserName(loginUser.getUser().getUserName()));
+                UserVo userVo = loginUser.getUser();
+                SysUser user = userService.selectUserById(loginUser.getUser().getUserId());
+                loginUser.setPermissions(permissionService.getMenuPermission(user));
+                loginUser.setUser(userVo);
                 tokenService.setLoginUser(loginUser);
             }
             return success();

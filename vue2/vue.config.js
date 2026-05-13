@@ -14,7 +14,7 @@ const name = process.env.VUE_APP_TITLE || '启航智云电商ERP系统'
 const port = process.env.port || process.env.npm_config_port || 88
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
+  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
@@ -29,7 +29,7 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://localhost:8088`,
+        target: `http://localhost:8087`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
@@ -45,12 +45,12 @@ module.exports = {
         modules: {
           auto: (resourcePath) => {
             // 支持 .module.* 和 .icss.* 文件（默认行为），同时支持 variables.scss 的 :export 导出
-            return /\.module(s)?\.\w+$/i.test(resourcePath) || /\.icss\.\w+$/i.test(resourcePath) || resourcePath.endsWith('variables.scss');
+            return /\.module(s)?\.\w+$/i.test(resourcePath) || /\.icss\.\w+$/i.test(resourcePath) || resourcePath.endsWith('variables.scss')
           }
         }
       },
       sass: {
-        sassOptions: { outputStyle: "expanded" }
+        sassOptions: { outputStyle: 'expanded' }
       }
     }
   },
@@ -61,10 +61,10 @@ module.exports = {
         '@': resolve('src')
       },
       fallback: {
-        "path": require.resolve("path-browserify"),
-        "util": require.resolve("util/"),
-        "buffer": require.resolve("buffer/"),
-        "assert": require.resolve("assert/")
+        'path': require.resolve('path-browserify'),
+        'util': require.resolve('util/'),
+        'buffer': require.resolve('buffer/'),
+        'assert': require.resolve('assert/')
         // process 由 NodePolyfillPlugin 提供，无需再配置
       }
     },
@@ -77,10 +77,10 @@ module.exports = {
         minRatio: 0.8
       }),
       new webpack.NormalModuleReplacementPlugin(
-          /@babel\/runtime\/helpers\/esm\//,
-          resource => {
-            resource.request = resource.request.replace(/@babel\/runtime\/helpers\/esm\//, '@babel/runtime/helpers/')
-          }
+        /@babel\/runtime\/helpers\/esm\//,
+        resource => {
+          resource.request = resource.request.replace(/@babel\/runtime\/helpers\/esm\//, '@babel/runtime/helpers/')
+        }
       ),
       // 修正：只定义 process.env，保留 process 的其他方法（如 cwd）
       new webpack.DefinePlugin({
@@ -108,34 +108,34 @@ module.exports = {
     config.plugins.delete('prefetch')
 
     config.module
-        .rule('vant')
-        .test(/vant\/es\//)
-        .use('babel-loader')
-        .loader('babel-loader')
-        .options({
-          presets: [
-            ['@babel/preset-env', {
-              modules: 'commonjs'
-            }]
-          ]
-        })
-        .end()
+      .rule('vant')
+      .test(/vant\/es\//)
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        presets: [
+          ['@babel/preset-env', {
+            modules: 'commonjs'
+          }]
+        ]
+      })
+      .end()
 
     config.module
-        .rule('svg')
-        .exclude.add(resolve('src/assets/icons'))
-        .end()
+      .rule('svg')
+      .exclude.add(resolve('src/assets/icons'))
+      .end()
     config.module
-        .rule('icons')
-        .test(/\.svg$/)
-        .include.add(resolve('src/assets/icons'))
-        .end()
-        .use('svg-sprite-loader')
-        .loader('svg-sprite-loader')
-        .options({
-          symbolId: 'icon-[name]'
-        })
-        .end()
+      .rule('icons')
+      .test(/\.svg$/)
+      .include.add(resolve('src/assets/icons'))
+      .end()
+      .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
+      .options({
+        symbolId: 'icon-[name]'
+      })
+      .end()
 
     config.when(process.env.NODE_ENV !== 'development', config => {
       config.optimization.splitChunks({

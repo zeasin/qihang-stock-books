@@ -1,11 +1,13 @@
 package cn.qihangerp.security;
 
 import cn.qihangerp.common.ServiceException;
+import cn.qihangerp.common.enums.EnumUserType;
 import cn.qihangerp.common.enums.UserStatus;
+import cn.qihangerp.common.sys.ISysUserService;
 import cn.qihangerp.common.sys.SysUser;
 import cn.qihangerp.common.utils.MessageUtils;
 import cn.qihangerp.common.utils.StringUtils;
-import cn.qihangerp.common.sys.ISysUserService;
+import cn.qihangerp.common.vo.UserVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,8 @@ public class UserDetailsServiceImpl implements UserDetailsService
 
     @Autowired
     private ISysUserService userService;
-    
+    @Autowired
+    private UserPasswordService passwordService;
 //    @Autowired
 //    private SysPasswordService passwordService;
 
@@ -55,17 +58,40 @@ public class UserDetailsServiceImpl implements UserDetailsService
             log.info("登录用户：{} 已被停用.", username);
             throw new ServiceException(MessageUtils.message("user.blocked"));
         }
+        Integer userIdentity = null;
+        //用户类型（00系统用户10仓库20商户30供应商）
+        if(user.getUserType().equals("00")){
+            userIdentity= EnumUserType.SUPPER.getIndex();
+        }else if(user.getUserType().equals("20")){
+//            userIdentity = 20;
+            userIdentity = EnumUserType.MERCHANT.getIndex();
+        }else if(user.getUserType().equals("10")){
+//            userIdentity = 10;
+            userIdentity = EnumUserType.WAREHOUSE.getIndex();
+        }
 
-//        passwordService.validate(user);
-
-        return createLoginUser(user);
+        UserVo userVo = new UserVo();
+        userVo.setMerchantId(user.getDeptId());
+        userVo.setNickName(user.getNickName());
+        userVo.setUserIdentity(userIdentity);
+        userVo.setUserId(user.getUserId());
+        userVo.setDeptId(user.getDeptId());
+        userVo.setCreateTime(user.getCreateTime());
+        userVo.setUserName(user.getUserName());
+        userVo.setPassword(user.getPassword());
+        if(user.getUserType().equals("00")) {
+            //如果是管理员，那么验证密码
+            passwordService.validate(userVo);
+        }
+        return createLoginUser(userVo);
     }
 
-    public UserDetails createLoginUser(SysUser user)
+    public UserDetails createLoginUser(UserVo userVo)
     {
         Set<String> perms = new HashSet<String>();
         perms.add("*:*:*");
+        return new LoginUser(userVo.getUserId(), userVo.getDeptId(),userVo.getUserIdentity(), userVo, perms);
 //        return new LoginUser(user.getUserId(), user.getDeptId(), user, permissionService.getMenuPermission(user));
-        return new LoginUser(user.getUserId(), user.getDeptId(), user, perms);
+//        return new LoginUser(user.getUserId(), user.getDeptId(), user, perms);
     }
 }

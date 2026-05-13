@@ -12,13 +12,7 @@ export function listConfig(query) {
 // 查询参数详细
 export function getConfig(configId) {
   return request({
-    url: '/api/sys-api/system/config/getConfigValue/' + configId,
-    method: 'get'
-  })
-}
-export function getSysName() {
-  return request({
-    url: '/api/erp-api/config/getSysName',
+    url: '/system/config/getConfigValue/' + configId,
     method: 'get'
   })
 }
@@ -62,14 +56,5 @@ export function refreshCache() {
   return request({
     url: '/system/config/refreshCache',
     method: 'delete'
-  })
-}
-
-
-
-export function getHelpDetail(path) {
-  return request({
-    url: '/api/sys-api/help/getDetail?path=' + path,
-    method: 'get'
   })
 }

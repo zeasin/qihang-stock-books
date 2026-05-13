@@ -1,9 +1,6 @@
 package cn.qihangerp.security.common;
 
-
-
 import cn.qihangerp.common.ServiceException;
-import cn.qihangerp.common.enums.HttpStatus;
 import cn.qihangerp.security.LoginUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +24,7 @@ public class SecurityUtils
         }
         catch (Exception e)
         {
-            throw new ServiceException("获取用户ID异常", HttpStatus.UNAUTHORIZED);
+            throw new ServiceException("获取用户ID异常", 401);
         }
     }
 
@@ -42,7 +39,7 @@ public class SecurityUtils
         }
         catch (Exception e)
         {
-            throw new ServiceException("获取部门ID异常", HttpStatus.UNAUTHORIZED);
+            throw new ServiceException("获取部门ID异常", 401);
         }
     }
     
@@ -57,7 +54,19 @@ public class SecurityUtils
         }
         catch (Exception e)
         {
-            throw new ServiceException("获取用户账户异常", HttpStatus.UNAUTHORIZED);
+            throw new ServiceException("获取用户账户异常", 401);
+        }
+    }
+
+    public static Integer getUserIdentity()
+    {
+        try
+        {
+            return getLoginUser().getUserIdentity();
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("获取用户账户异常", 401);
         }
     }
 
@@ -72,7 +81,7 @@ public class SecurityUtils
         }
         catch (Exception e)
         {
-            throw new ServiceException("获取用户信息异常", HttpStatus.UNAUTHORIZED);
+            throw new ServiceException("获取用户信息异常", 401);
         }
     }
 
