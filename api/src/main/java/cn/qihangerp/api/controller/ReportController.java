@@ -19,7 +19,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/oms-api/report")
+@RequestMapping("/report")
 public class ReportController extends BaseController {
     private final OOrderService orderService;
     private final OOrderItemService orderItemService;

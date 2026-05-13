@@ -1,57 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-
     <panel-group :chart-data="report" @handleSetLineChartData="handleSetLineChartData" />
-
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;" v-if="report.userType!=='10'">
-      <line-chart :chart-data="lineChartData" />
-    </el-row>
-<!--    <el-row>-->
-<!--      <el-table-->
-<!--        :data="tableData"-->
-<!--        style="width: 100%">-->
-<!--        <el-table-column-->
-<!--          prop="date"-->
-<!--          label="日期"-->
-<!--          width="180">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--          prop="name"-->
-<!--          label="姓名"-->
-<!--          width="180">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--          prop="address"-->
-<!--          label="地址">-->
-<!--        </el-table-column>-->
-<!--      </el-table>-->
-<!--    </el-row>-->
-    <el-row :gutter="32">
-<!--      <el-col :xs="24" :sm="24" :lg="8">-->
-<!--        <div class="chart-wrapper">-->
-<!--          <raddar-chart />-->
-<!--        </div>-->
-<!--      </el-col>-->
-<!--      <el-col :xs="24" :sm="24" :lg="24">-->
-<!--        <div class="chart-wrapper">-->
-<!--          <pie-chart :chart-data="skuTopData" />-->
-<!--        </div>-->
-<!--      </el-col>-->
-<!--      <el-col :xs="24" :sm="24" :lg="12">-->
-<!--        <div class="chart-wrapper">-->
-<!--          <bar-chart />-->
-<!--        </div>-->
-<!--      </el-col>-->
-    </el-row>
-
-    <!-- 浮动智能分析按钮 -->
-    <div class="floating-ai-menu">
-      <el-button type="primary" circle @click="goToAiAnalysis">
-        <i class="el-icon-star-on"></i>
-      </el-button>
-      <div class="floating-menu-tooltip">智能分析</div>
-    </div>
-
   </div>
 </template>
 
@@ -61,7 +10,7 @@ import LineChart from './dashboard/LineChart'
 import RaddarChart from './dashboard/RaddarChart'
 import PieChart from './dashboard/PieChart'
 import BarChart from './dashboard/BarChart'
-import { todayDaily,salesDaily } from "@/api/report/report";
+import { todayDaily } from '@/api/report/report'
 const lineChartData = {
   // newVisitis: {
   //   expectedData: [100, 120, 161, 134, 105, 160, 165],
@@ -123,30 +72,13 @@ export default {
   mounted() {
     // 加载统计
     todayDaily().then(resp=>{
-
       this.report = resp.data
-    })
-    salesDaily().then(resp=>{
-      this.lineChartData.date=[]
-      this.lineChartData.salesVolume =[]
-      this.lineChartData.salesOrder =[]
-      if(resp.data.list){
-        resp.data.list.forEach(x=>{
-          this.lineChartData.date.push(x.date)
-          this.lineChartData.salesVolume.push(x.amount)
-          this.lineChartData.salesOrder.push(x.count)
-        })
-      }
-
     })
   },
   methods: {
     handleSetLineChartData(type) {
       // this.lineChartData = lineChartData[type]
     },
-    goToAiAnalysis() {
-      this.$router.push('/ai/analysis')
-    }
   }
 }
 </script>

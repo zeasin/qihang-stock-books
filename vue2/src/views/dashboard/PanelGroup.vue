@@ -1,18 +1,5 @@
 <template>
   <el-row :gutter="40" class="panel-group">
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col" v-if="chartData.userType!=='10'">
-      <div class="card-panel" @click="handleSetLineChartData('purchases')">
-        <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            今日销售额
-          </div>
-          <count-to :start-val="0" :end-val="chartData.salesVolume" :duration="3200" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col"  v-if="chartData.userType!=='10'">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
         <div class="card-panel-icon-wrapper icon-shopping">
@@ -40,7 +27,7 @@
       </div>
     </el-col>
 
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col" v-if="chartData.userType==20||chartData.userType==0">
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col" >
       <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="shop" class-name="card-panel-icon" />
