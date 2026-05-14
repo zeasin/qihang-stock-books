@@ -1,49 +1,49 @@
 <template>
   <div>
-       <order-list :shopType="shopType" :shopId="shopId" :merchantId="merchantId" ></order-list>
+    <order-list :shop-type="shopType" :shop-id="shopId" :merchant-id="merchantId" />
   </div>
 </template>
 
 <script>
 
-import OrderList from "@/views/shop/order/order_list.vue";
+import OrderList from '@/views/shop/order/order_list.vue'
 
 export default {
-  name: "ShopOrderIndex",
-  components:{
-    OrderList,OrderListTl
+  name: 'ShopOrderIndex',
+  components: {
+    OrderList
   },
   props: {
     shopType: {
       type: Number,
-      required: false,
+      required: false
     },
     shopId: {
       type: Number,
-      required: false,
+      required: false
     },
     merchantId: {
       type: Number,
-      required: false,
-    },
+      required: false
+    }
   },
   data() {
     return {
 
-    };
+    }
   },
   created() {
-    console.log('店铺类型：'+this.shopType);
-    console.log('商户ID：'+this.merchantId);
-    console.log('店铺ID：'+this.shopId);
+    console.log('店铺类型：' + this.shopType)
+    console.log('商户ID：' + this.merchantId)
+    console.log('店铺ID：' + this.shopId)
   },
   mounted() {
 
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event);
+      console.log(tab, event)
     }
   }
-};
+}
 </script>
